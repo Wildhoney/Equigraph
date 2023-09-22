@@ -27,9 +27,7 @@ async fn graphql(st: web::Data<Schema>, data: web::Json<GraphQLRequest>) -> impl
 
 #[actix_web::main]
 async fn main() -> io::Result<()> {
-
     let schema = Arc::new(create_schema());
-
 
     HttpServer::new(move || {
         App::new()

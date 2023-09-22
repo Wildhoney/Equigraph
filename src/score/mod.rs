@@ -1,4 +1,4 @@
-use juniper::{GraphQLObject, FieldResult, GraphQLEnum};
+use juniper::{FieldResult, GraphQLEnum, GraphQLObject};
 
 use crate::schema::QueryRoot;
 
@@ -9,11 +9,10 @@ struct ScoreObject {
     maximum: i32,
 }
 
-
 #[derive(GraphQLEnum)]
 pub enum ScoreKind {
     RNOLF04,
-    PSOLF01
+    PSOLF01,
 }
 
 #[juniper::graphql_object]
@@ -24,7 +23,7 @@ impl QueryRoot {
             maximum: match kind {
                 ScoreKind::RNOLF04 => 700,
                 ScoreKind::PSOLF01 => 1000,
-            }
+            },
         })
     }
 }

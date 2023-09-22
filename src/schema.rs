@@ -1,8 +1,6 @@
-use juniper::{EmptySubscription, RootNode, EmptyMutation};
-
+use juniper::{EmptyMutation, EmptySubscription, RootNode};
 
 pub struct QueryRoot;
-
 
 pub type Schema = RootNode<'static, QueryRoot, EmptyMutation, EmptySubscription>;
 
