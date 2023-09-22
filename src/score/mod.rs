@@ -1,4 +1,4 @@
-use juniper::{FieldResult, GraphQLEnum, GraphQLObject};
+use juniper::{FieldResult, GraphQLEnum};
 
 use crate::utils::{Impact, Polarity, Since};
 
@@ -6,11 +6,7 @@ pub struct ScoreObject {
     pub kind: ScoreKind,
 }
 
-#[derive(GraphQLObject)]
-pub struct ChangeObject {
-    pub impact: Impact,
-    pub polarity: Polarity,
-}
+pub struct ChangeObject {}
 
 #[derive(GraphQLEnum)]
 pub enum ScoreKind {
@@ -32,9 +28,25 @@ impl ScoreObject {
     }
 
     pub fn change(&self, _since: Since) -> FieldResult<ChangeObject> {
-        Ok(ChangeObject {
-            impact: Impact::High,
-            polarity: Polarity::Negative,
-        })
+        Ok(ChangeObject {})
+    }
+}
+
+#[juniper::graphql_object]
+impl ChangeObject {
+    pub fn delta(&self) -> i32 {
+        125
+    }
+
+    pub fn impact(&self) -> Impact {
+        Impact::High
+    }
+
+    pub fn polarity(&self) -> Polarity {
+        Polarity::Negative
+    }
+
+    pub fn score(&self, kind: ScoreKind) -> FieldResult<ScoreObject> {
+        Ok(ScoreObject { kind })
     }
 }
