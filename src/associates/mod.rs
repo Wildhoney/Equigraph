@@ -1,26 +1,22 @@
-use juniper::GraphQLObject;
+use crate::utils::{DateObject, NameObject};
 
-#[derive(GraphQLObject)]
-#[graphql(description = "")]
-pub struct NameObject {
-    pub title: String,
-    pub forename: String,
-    pub surname: String,
-}
+pub struct AssociateObject {}
 
-#[derive(GraphQLObject)]
-#[graphql(description = "")]
-pub struct DateOfBirthObject {
-    pub day: i32,
-    pub month: i32,
-    pub year: i32,
-}
-
-#[derive(GraphQLObject)]
-#[graphql(description = "")]
-pub struct AssociateObject {
-    pub name: NameObject,
-
+#[juniper::graphql_object]
+impl AssociateObject {
+    pub fn name(&self) -> NameObject {
+        NameObject {
+            title: "Mr".to_string(),
+            forename: "Adam".to_string(),
+            surname: "Timberlake".to_string(),
+        }
+    }
     #[graphql(name = "date_of_birth")]
-    pub date_of_birth: DateOfBirthObject,
+    pub fn date_of_birth(&self) -> DateObject {
+        DateObject {
+            day: 10,
+            month: 10,
+            year: 1985,
+        }
+    }
 }

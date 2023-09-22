@@ -23,8 +23,8 @@ async fn graphql_playground() -> impl Responder {
 
 #[route("/graphql", method = "GET", method = "POST")]
 async fn graphql(st: web::Data<Schema>, data: web::Json<GraphQLRequest>) -> impl Responder {
-    let user = data.execute(&st, &()).await;
-    HttpResponse::Ok().json(user)
+    let report = data.execute(&st, &()).await;
+    HttpResponse::Ok().json(report)
 }
 
 #[actix_web::main]

@@ -2,4 +2,4 @@
 
 ## Queries
 
-- [Score](score)
+- [Score](tree/main/src/score)

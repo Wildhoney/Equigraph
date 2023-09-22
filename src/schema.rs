@@ -1,7 +1,7 @@
 use juniper::{EmptyMutation, EmptySubscription, FieldResult, RootNode};
 
 use crate::{
-    associates::{AssociateObject, DateOfBirthObject, NameObject},
+    associates::AssociateObject,
     score::{ScoreKind, ScoreRoot},
 };
 
@@ -19,17 +19,6 @@ impl QueryRoot {
         Ok(ScoreRoot { kind })
     }
     fn associates() -> FieldResult<Vec<AssociateObject>> {
-        Ok(vec![AssociateObject {
-            name: NameObject {
-                title: "Mr".to_string(),
-                forename: "Adam".to_string(),
-                surname: "Timberlake".to_string(),
-            },
-            date_of_birth: DateOfBirthObject {
-                day: 10,
-                month: 10,
-                year: 1985,
-            },
-        }])
+        Ok(vec![AssociateObject {}])
     }
 }
