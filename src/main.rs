@@ -10,6 +10,7 @@ use actix_web_lab::respond::Html;
 use juniper::http::{graphiql::graphiql_source, GraphQLRequest};
 
 mod schema;
+mod score;
 
 use crate::schema::{create_schema, Schema};
 

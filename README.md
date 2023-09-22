@@ -1,1 +1,5 @@
 # Equigraph
+
+## Queries
+
+- [Score](score)
