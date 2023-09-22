@@ -2,7 +2,7 @@ use juniper::{EmptyMutation, EmptySubscription, FieldResult, RootNode};
 
 use crate::{
     associates::{AssociateObject, DateOfBirthObject, NameObject},
-    score::{ScoreKind, ScoreObject},
+    score::{ScoreKind, ScoreRoot},
 };
 
 pub struct QueryRoot;
@@ -15,8 +15,8 @@ pub fn create_schema() -> Schema {
 
 #[juniper::graphql_object]
 impl QueryRoot {
-    fn score(kind: ScoreKind) -> FieldResult<ScoreObject> {
-        Ok(ScoreObject { kind })
+    fn score(kind: ScoreKind) -> FieldResult<ScoreRoot> {
+        Ok(ScoreRoot { kind })
     }
     fn associates() -> FieldResult<Vec<AssociateObject>> {
         Ok(vec![AssociateObject {
