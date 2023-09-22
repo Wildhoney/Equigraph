@@ -9,8 +9,10 @@ use actix_web::{
 use actix_web_lab::respond::Html;
 use juniper::http::{graphiql::graphiql_source, GraphQLRequest};
 
+mod associates;
 mod schema;
 mod score;
+mod utils;
 
 use crate::schema::{create_schema, Schema};
 
