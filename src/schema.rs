@@ -1,6 +1,6 @@
 use juniper::{EmptyMutation, EmptySubscription, FieldResult, RootNode};
 
-use crate::{
+use crate::queries::{
     associates::AssociateObject,
     score::{ScoreKind, ScoreRoot},
 };
