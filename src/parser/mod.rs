@@ -10,6 +10,7 @@ pub fn parse_reports(reports: Vec<String>) -> Reports {
             let report: Option<Report> = serde_json::from_str(&report).ok();
             report
         })
+        .filter(|report| report.is_some())
         .collect::<Vec<_>>()
 }
 
@@ -43,7 +44,6 @@ mod tests {
 
         let reports: Reports = super::parse_reports(vec![report.to_string()]);
         assert_eq!(reports.len(), 1);
-        assert_eq!(reports.get(0).unwrap().is_some(), true);
     }
 
     #[test]
@@ -71,6 +71,5 @@ mod tests {
 
         let reports: Reports = super::parse_reports(vec![report.to_string()]);
         assert_eq!(reports.len(), 1);
-        assert_eq!(reports.get(0).unwrap().is_some(), true);
     }
 }
