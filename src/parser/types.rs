@@ -1,5 +1,7 @@
 use serde::Deserialize;
 
+use crate::queries::{associates::types::Associates, score::types::Scores};
+
 pub type Reports = Vec<Option<Report>>;
 
 #[derive(Debug, Deserialize)]
@@ -15,40 +17,14 @@ struct NonAddressSpecificData {
 }
 
 #[derive(Debug, Deserialize)]
-struct Scores {
-    score: Vec<Score>,
-}
-
-#[derive(Debug, Deserialize)]
-struct Score {
-    positive: bool,
-    #[serde(alias = "scoreLabel")]
-    score_label: String,
-    #[serde(alias = "sourcedFrom")]
-    sourced_from: String,
-    value: u16,
-}
-
-#[derive(Debug, Deserialize)]
-struct Associates {
-    associate: Vec<Associate>,
-}
-
-#[derive(Debug, Deserialize)]
-struct Associate {
-    dob: Date,
-    name: Name,
-}
-
-#[derive(Debug, Deserialize)]
-struct Date {
+pub struct Date {
     day: u8,
     month: u8,
     year: u16,
 }
 
 #[derive(Debug, Deserialize)]
-struct Name {
+pub struct Name {
     title: String,
     forename: String,
     surname: String,

@@ -1,3 +1,8 @@
+mod parser;
+mod queries;
+mod schema;
+mod utils;
+
 use std::{io, sync::Arc};
 
 use actix_cors::Cors;
@@ -8,11 +13,6 @@ use actix_web::{
 };
 use actix_web_lab::respond::Html;
 use juniper::http::{graphiql::graphiql_source, GraphQLRequest};
-
-mod parser;
-mod queries;
-mod schema;
-mod utils;
 
 use crate::schema::{create_schema, Schema};
 

@@ -1,3 +1,5 @@
+pub mod types;
+
 use crate::utils::{DateObject, NameObject};
 
 pub struct AssociateObject {}

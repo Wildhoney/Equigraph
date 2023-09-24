@@ -1,8 +1,7 @@
-use serde_json;
+pub mod types;
 
 use self::types::{Report, Reports};
-
-mod types;
+use serde_json;
 
 pub fn parse_reports(reports: Vec<String>) -> Reports {
     reports
@@ -25,17 +24,17 @@ mod tests {
                 "associates": {
                     "associate": [
                         {
-                            "dob": {
-                                "day": 7,
-                                "month": 2,
-                                "year": 1991
-                            },
                             "name": {
-                                "forename": "GIHOY",
-                                "surname": "HENYJACI",
-                                "title": "MRS"
+                                "title": "Mr",
+                                "forename": "Adam",
+                                "surname": "Timberlake"
                             },
-                            "sourcedFrom": "ASC"
+                            "dob": {
+                                "day": 10,
+                                "month": 10,
+                                "year": 1985
+                            },
+                            "sourcedFrom": "Somewhere"
                         }
                     ]
                 }
@@ -56,14 +55,14 @@ mod tests {
                         {
                             "positive": true,
                             "scoreLabel": "RNOLF04",
-                            "sourcedFrom": "SCO",
-                            "value": 538
+                            "sourcedFrom": "Somewhere",
+                            "value": 520
                         },
                         {
                             "positive": true,
                             "scoreLabel": "PSOLF01",
-                            "sourcedFrom": "SCO",
-                            "value": 956
+                            "sourcedFrom": "Somewhere",
+                            "value": 980
                         }
                     ]
                 }

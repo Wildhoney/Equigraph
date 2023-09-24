@@ -1,3 +1,5 @@
+pub mod types;
+
 use juniper::{FieldResult, GraphQLEnum};
 
 use crate::utils::{Impact, Polarity, Since};
