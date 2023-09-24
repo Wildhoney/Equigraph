@@ -19,7 +19,7 @@ mod tests {
     use crate::parser::Reports;
 
     #[test]
-    fn it_can_parse_reports() {
+    fn it_can_parse_reports_with_associates() {
         let report = r#"{
             "nonAddressSpecificData": {
                 "associates": {
@@ -36,6 +36,34 @@ mod tests {
                                 "title": "MRS"
                             },
                             "sourcedFrom": "ASC"
+                        }
+                    ]
+                }
+            }
+        }"#;
+
+        let reports: Reports = super::parse_reports(vec![report.to_string()]);
+        assert_eq!(reports.len(), 1);
+        assert_eq!(reports.get(0).unwrap().is_some(), true);
+    }
+
+    #[test]
+    fn it_can_parse_reports_with_scores() {
+        let report = r#"{
+            "nonAddressSpecificData": {
+                "scores": {
+                    "score": [
+                        {
+                            "positive": true,
+                            "scoreLabel": "RNOLF04",
+                            "sourcedFrom": "SCO",
+                            "value": 538
+                        },
+                        {
+                            "positive": true,
+                            "scoreLabel": "PSOLF01",
+                            "sourcedFrom": "SCO",
+                            "value": 956
                         }
                     ]
                 }

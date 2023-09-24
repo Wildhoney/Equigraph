@@ -26,7 +26,7 @@ struct Score {
     score_label: String,
     #[serde(alias = "sourcedFrom")]
     sourced_from: String,
-    value: u8,
+    value: u16,
 }
 
 #[derive(Debug, Deserialize)]
