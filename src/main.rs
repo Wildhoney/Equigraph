@@ -9,6 +9,7 @@ use actix_web::{
 use actix_web_lab::respond::Html;
 use juniper::http::{graphiql::graphiql_source, GraphQLRequest};
 
+mod parser;
 mod queries;
 mod schema;
 mod utils;

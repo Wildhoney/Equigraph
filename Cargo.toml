@@ -10,3 +10,5 @@ actix-web = "4.4.0"
 actix-web-lab = "0.19.1"
 juniper = "0.15.10"
 juniper-compose = "0.0.3"
+serde = { version = "1.0.188", features = ["derive"] }
+serde_json = "1.0.107"
