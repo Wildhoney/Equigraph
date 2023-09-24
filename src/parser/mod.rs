@@ -6,10 +6,7 @@ use serde_json;
 pub fn parse_reports(reports: Vec<String>) -> Reports {
     reports
         .iter()
-        .map(|report| {
-            let report: Option<Report> = serde_json::from_str(&report).ok();
-            report
-        })
+        .map(|report| -> Option<Report> { serde_json::from_str(&report).ok() })
         .filter(|report| report.is_some())
         .collect::<Vec<_>>()
 }
