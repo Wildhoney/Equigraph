@@ -1,3 +1,4 @@
+mod mocks;
 mod parser;
 mod queries;
 mod schema;
@@ -13,6 +14,9 @@ use actix_web::{
 };
 use actix_web_lab::respond::Html;
 use juniper::http::{graphiql::graphiql_source, GraphQLRequest};
+use mocks::get_report;
+use parser::parse_reports;
+use schema::Context;
 
 use crate::schema::{create_schema, Schema};
 
@@ -22,8 +26,11 @@ async fn graphql_playground() -> impl Responder {
 }
 
 #[route("/graphql", method = "GET", method = "POST")]
-async fn graphql(st: web::Data<Schema>, data: web::Json<GraphQLRequest>) -> impl Responder {
-    let report = data.execute(&st, &()).await;
+async fn graphql(schema: web::Data<Schema>, data: web::Json<GraphQLRequest>) -> impl Responder {
+    let context = Context {
+        reports: parse_reports(vec![get_report()]),
+    };
+    let report = data.execute(&schema, &context).await;
     HttpResponse::Ok().json(report)
 }
 

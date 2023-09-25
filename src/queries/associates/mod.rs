@@ -1,10 +1,13 @@
 pub mod types;
 
-use crate::utils::{DateObject, NameObject};
+use crate::{
+    schema::Context,
+    utils::{DateObject, NameObject},
+};
 
 pub struct AssociateObject {}
 
-#[juniper::graphql_object]
+#[juniper::graphql_object(context = Context)]
 impl AssociateObject {
     pub fn name(&self) -> NameObject {
         NameObject {

@@ -1,8 +1,13 @@
 pub mod types;
 
+use std::ops::Index;
+
 use juniper::{FieldResult, GraphQLEnum};
 
-use crate::utils::{Impact, Polarity, Since};
+use crate::{
+    schema::Context,
+    utils::{Impact, Polarity, Since},
+};
 
 pub struct ScoreRoot {
     pub kind: ScoreKind,
@@ -16,10 +21,18 @@ pub enum ScoreKind {
     PSOLF01,
 }
 
-#[juniper::graphql_object]
+#[juniper::graphql_object(context = Context)]
 impl ScoreRoot {
-    pub fn current(&self) -> i32 {
-        968
+    pub fn current(&self, context: &Context) -> Option<i32> {
+        let value = context
+            .reports
+            .get(0)?
+            .non_address_specific_data
+            .scores
+            .score
+            .get(0)?
+            .value;
+        Some(value as i32)
     }
 
     pub fn maximum(&self) -> i32 {
@@ -33,8 +46,7 @@ impl ScoreRoot {
         Ok(ChangeRoot {})
     }
 }
-
-#[juniper::graphql_object]
+#[juniper::graphql_object(context = Context)]
 impl ChangeRoot {
     pub fn delta(&self) -> i32 {
         125

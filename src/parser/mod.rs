@@ -8,65 +8,17 @@ pub fn parse_reports(reports: Vec<String>) -> Reports {
         .iter()
         .map(|report| -> Option<Report> { serde_json::from_str(&report).ok() })
         .filter(|report| report.is_some())
+        .map(|report| report.unwrap())
         .collect::<Vec<_>>()
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::parser::Reports;
+    use crate::{mocks::get_report, parser::Reports};
 
     #[test]
-    fn it_can_parse_reports_with_associates() {
-        let report = r#"{
-            "nonAddressSpecificData": {
-                "associates": {
-                    "associate": [
-                        {
-                            "name": {
-                                "title": "Mr",
-                                "forename": "Adam",
-                                "surname": "Timberlake"
-                            },
-                            "dob": {
-                                "day": 10,
-                                "month": 10,
-                                "year": 1985
-                            },
-                            "sourcedFrom": "Somewhere"
-                        }
-                    ]
-                }
-            }
-        }"#;
-
-        let reports: Reports = super::parse_reports(vec![report.to_string()]);
-        assert_eq!(reports.len(), 1);
-    }
-
-    #[test]
-    fn it_can_parse_reports_with_scores() {
-        let report = r#"{
-            "nonAddressSpecificData": {
-                "scores": {
-                    "score": [
-                        {
-                            "positive": true,
-                            "scoreLabel": "RNOLF04",
-                            "sourcedFrom": "Somewhere",
-                            "value": 520
-                        },
-                        {
-                            "positive": true,
-                            "scoreLabel": "PSOLF01",
-                            "sourcedFrom": "Somewhere",
-                            "value": 980
-                        }
-                    ]
-                }
-            }
-        }"#;
-
-        let reports: Reports = super::parse_reports(vec![report.to_string()]);
+    fn it_can_parse_a_single_report() {
+        let reports: Reports = super::parse_reports(vec![get_report()]);
         assert_eq!(reports.len(), 1);
     }
 }
