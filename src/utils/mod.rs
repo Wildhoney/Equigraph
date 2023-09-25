@@ -1,27 +1,27 @@
 use juniper::{GraphQLEnum, GraphQLObject};
 
-#[derive(GraphQLEnum)]
+#[derive(Debug, PartialEq, GraphQLEnum)]
 pub enum Polarity {
     Unchanged,
     Positive,
     Negative,
 }
 
-#[derive(GraphQLEnum)]
+#[derive(Debug, PartialEq, GraphQLEnum)]
 pub enum Impact {
     None,
     High,
     Low,
 }
 
-#[derive(GraphQLEnum)]
+#[derive(Debug, GraphQLEnum)]
 pub enum Since {
     Previous,
     #[graphql(name = "A_YEAR_AGO")]
     AYearAgo,
 }
 
-#[derive(GraphQLObject)]
+#[derive(Debug, GraphQLObject)]
 #[graphql(description = "")]
 pub struct DateObject {
     pub day: i32,
@@ -29,7 +29,7 @@ pub struct DateObject {
     pub year: i32,
 }
 
-#[derive(GraphQLObject)]
+#[derive(Debug, GraphQLObject)]
 #[graphql(description = "")]
 pub struct NameObject {
     pub title: String,

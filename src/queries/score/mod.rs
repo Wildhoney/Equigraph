@@ -9,7 +9,7 @@ use crate::{
     utils::{Impact, Polarity, Since},
 };
 
-use self::utils::get_delta;
+use self::utils::{get_delta, get_polarity};
 
 #[derive(Debug)]
 pub struct ScoreRoot<'a> {
@@ -64,15 +64,7 @@ impl ChangeRoot<'_> {
     }
 
     pub fn polarity(&self) -> Option<Polarity> {
-        match (self.report, self.parent_report) {
-            (Some(_), Some(_)) => match get_delta(&self.report, &self.parent_report) {
-                Some(delta) if delta < 0 => Some(Polarity::Negative),
-                Some(delta) if delta == 0 => Some(Polarity::Unchanged),
-                Some(delta) if delta > 0 => Some(Polarity::Positive),
-                _ => None,
-            },
-            _ => None,
-        }
+        get_polarity(&self.report, &self.parent_report)
     }
 
     pub fn score(&self, kind: ScoreKind) -> FieldResult<ScoreRoot> {

@@ -1,3 +1,5 @@
+use crate::parser::{parse_reports, types::Reports};
+
 pub fn get_latest_report() -> String {
     let report = r#"
     {
@@ -16346,4 +16348,8 @@ pub fn get_historical_report() -> String {
     
   "#;
     report.to_string()
+}
+
+pub fn get_parsed_reports() -> Reports {
+    parse_reports(vec![get_latest_report(), get_historical_report()])
 }
