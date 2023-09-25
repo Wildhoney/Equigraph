@@ -2,4 +2,4 @@
 
 ## Queries
 
-- [Score](tree/main/src/score)
+- [Score](https://github.com/Wildhoney/Equigraph/tree/main/src/queries/score)
