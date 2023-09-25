@@ -21,7 +21,8 @@ impl ScoreRoot<'_> {
                 .non_address_specific_data
                 .scores
                 .score
-                .get(0)?
+                .iter()
+                .find(|score| score.score_label == self.kind)?
                 .value as i32,
         )
     }

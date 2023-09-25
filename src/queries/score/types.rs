@@ -12,7 +12,7 @@ pub struct Scores {
 pub struct Score {
     pub positive: bool,
     #[serde(alias = "scoreLabel")]
-    pub score_label: String,
+    pub score_label: ScoreKind,
     #[serde(alias = "sourcedFrom")]
     pub sourced_from: String,
     pub value: u16,
@@ -29,7 +29,7 @@ pub struct ChangeRoot<'a> {
     pub parent_report: Option<&'a Report>,
 }
 
-#[derive(Debug, GraphQLEnum)]
+#[derive(Debug, PartialEq, Deserialize, GraphQLEnum)]
 pub enum ScoreKind {
     RNOLF04,
     PSOLF01,
