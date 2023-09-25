@@ -26,7 +26,7 @@ impl ScoreRoot {
     pub fn current(&self, context: &Context) -> Option<i32> {
         let value = context
             .reports
-            .get(0)?
+            .current
             .non_address_specific_data
             .scores
             .score

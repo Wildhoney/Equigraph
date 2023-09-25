@@ -27,11 +27,14 @@ async fn graphql_playground() -> impl Responder {
 
 #[route("/graphql", method = "GET", method = "POST")]
 async fn graphql(schema: web::Data<Schema>, data: web::Json<GraphQLRequest>) -> impl Responder {
-    let context = Context {
-        reports: parse_reports(vec![get_report()]),
-    };
-    let report = data.execute(&schema, &context).await;
-    HttpResponse::Ok().json(report)
+    match parse_reports(vec![get_report()]) {
+        Some(reports) => {
+            let context = Context { reports };
+            let report = data.execute(&schema, &context).await;
+            HttpResponse::Ok().json(report)
+        }
+        None => HttpResponse::InternalServerError().finish(),
+    }
 }
 
 #[actix_web::main]

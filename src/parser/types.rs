@@ -2,7 +2,11 @@ use serde::Deserialize;
 
 use crate::queries::{associates::types::Associates, score::types::Scores};
 
-pub type Reports = Vec<Report>;
+#[derive(Debug)]
+pub struct Reports {
+    pub current: Report,
+    pub historical: Vec<Report>,
+}
 
 #[derive(Debug, Deserialize)]
 pub struct Report {
