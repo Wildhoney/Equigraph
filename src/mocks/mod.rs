@@ -1,7 +1,6 @@
-pub fn get_current_report() -> String {
+pub fn get_latest_report() -> String {
     let report = r#"
     {
-        "clientRef": "4hH5tV2ckivhGQ+Rg24Ds9R9VPaBNvlcqX1crZ3CxT4=",
         "nonAddressSpecificData": {
           "associates": {
             "associate": [
@@ -8177,7 +8176,6 @@ pub fn get_current_report() -> String {
 pub fn get_historical_report() -> String {
     let report = r#"
   {
-      "clientRef": "4hH5tV2ckivhGQ+Rg24Ds9R9VPaBNvlcqX1crZ3CxT4=",
       "nonAddressSpecificData": {
         "associates": {
           "associate": [

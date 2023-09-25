@@ -14,7 +14,7 @@ use actix_web::{
 };
 use actix_web_lab::respond::Html;
 use juniper::http::{graphiql::graphiql_source, GraphQLRequest};
-use mocks::{get_current_report, get_historical_report};
+use mocks::{get_historical_report, get_latest_report};
 use parser::parse_reports;
 use schema::Context;
 
@@ -27,14 +27,10 @@ async fn graphql_playground() -> impl Responder {
 
 #[route("/graphql", method = "GET", method = "POST")]
 async fn graphql(schema: web::Data<Schema>, data: web::Json<GraphQLRequest>) -> impl Responder {
-    match parse_reports(vec![get_current_report(), get_historical_report()]) {
-        Some(reports) => {
-            let context = Context { reports };
-            let report = data.execute(&schema, &context).await;
-            HttpResponse::Ok().json(report)
-        }
-        None => HttpResponse::InternalServerError().finish(),
-    }
+    let reports = parse_reports(vec![get_latest_report(), get_historical_report()]);
+    let context = Context { reports };
+    let report = data.execute(&schema, &context).await;
+    HttpResponse::Ok().json(report)
 }
 
 #[actix_web::main]
