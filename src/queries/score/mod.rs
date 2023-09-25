@@ -1,32 +1,17 @@
 pub mod types;
-mod utils;
+pub mod utils;
 
-use juniper::{FieldResult, GraphQLEnum};
+use juniper::FieldResult;
 
 use crate::{
-    parser::types::Report,
     schema::Context,
     utils::{Impact, Polarity, Since},
 };
 
-use self::utils::{get_delta, get_polarity};
-
-#[derive(Debug)]
-pub struct ScoreRoot<'a> {
-    pub kind: ScoreKind,
-    pub report: Option<&'a Report>,
-}
-
-pub struct ChangeRoot<'a> {
-    pub report: Option<&'a Report>,
-    pub parent_report: Option<&'a Report>,
-}
-
-#[derive(Debug, GraphQLEnum)]
-pub enum ScoreKind {
-    RNOLF04,
-    PSOLF01,
-}
+use self::{
+    types::{ChangeRoot, ScoreKind, ScoreRoot},
+    utils::{get_delta, get_polarity},
+};
 
 #[juniper::graphql_object(context = Context)]
 impl ScoreRoot<'_> {

@@ -2,7 +2,7 @@ use juniper::{EmptyMutation, EmptySubscription, FieldResult, RootNode};
 
 use crate::{
     parser::types::Reports,
-    queries::score::{ScoreKind, ScoreRoot},
+    queries::score::types::{ScoreKind, ScoreRoot},
 };
 
 pub struct QueryRoot;
