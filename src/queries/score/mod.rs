@@ -16,12 +16,14 @@ use self::{
 #[juniper::graphql_object(context = Context)]
 impl ScoreRoot<'_> {
     pub fn current(&self) -> Option<i32> {
-        match self.report {
-            Some(report) => {
-                Some(report.non_address_specific_data.scores.score.get(0)?.value as i32)
-            }
-            None => None,
-        }
+        Some(
+            self.report?
+                .non_address_specific_data
+                .scores
+                .score
+                .get(0)?
+                .value as i32,
+        )
     }
 
     pub fn maximum(&self) -> i32 {
