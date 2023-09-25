@@ -17,8 +17,7 @@ pub enum Impact {
 #[derive(Debug, GraphQLEnum)]
 pub enum Since {
     Previous,
-    #[graphql(name = "A_YEAR_AGO")]
-    AYearAgo,
+    First,
 }
 
 #[derive(Debug, GraphQLObject)]

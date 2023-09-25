@@ -33,9 +33,12 @@ impl ScoreRoot<'_> {
         }
     }
 
-    pub fn change(&self, context: &Context, _since: Since) -> FieldResult<ChangeRoot> {
+    pub fn change(&self, context: &Context, since: Option<Since>) -> FieldResult<ChangeRoot> {
         Ok(ChangeRoot {
-            report: context.reports.get(1),
+            report: match since {
+                Some(Since::First) => context.reports.last(),
+                _ => context.reports.get(1),
+            },
             parent_report: self.report,
         })
     }
