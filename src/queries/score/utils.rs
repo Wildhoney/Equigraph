@@ -1,4 +1,7 @@
-use crate::{parser::types::Report, utils::Polarity};
+use crate::{
+    parser::types::Report,
+    utils::{Impact, Polarity},
+};
 
 pub fn get_delta(report: &Option<&Report>, parent_report: &Option<&Report>) -> Option<i32> {
     match (report, parent_report) {
@@ -20,9 +23,21 @@ pub fn get_delta(report: &Option<&Report>, parent_report: &Option<&Report>) -> O
 pub fn get_polarity(report: &Option<&Report>, parent_report: &Option<&Report>) -> Option<Polarity> {
     match (report, parent_report) {
         (Some(_), Some(_)) => match get_delta(report, parent_report) {
+            Some(delta) if delta > 0 => Some(Polarity::Positive),
             Some(delta) if delta < 0 => Some(Polarity::Negative),
             Some(delta) if delta == 0 => Some(Polarity::Unchanged),
-            Some(delta) if delta > 0 => Some(Polarity::Positive),
+            _ => None,
+        },
+        _ => None,
+    }
+}
+
+pub fn get_impact(report: &Option<&Report>, parent_report: &Option<&Report>) -> Option<Impact> {
+    match (report, parent_report) {
+        (Some(_), Some(_)) => match get_delta(report, parent_report) {
+            Some(delta) if delta < 200 => Some(Impact::Low),
+            Some(delta) if delta >= 200 => Some(Impact::High),
+            Some(delta) if delta == 0 => Some(Impact::None),
             _ => None,
         },
         _ => None,
@@ -33,7 +48,7 @@ pub fn get_polarity(report: &Option<&Report>, parent_report: &Option<&Report>) -
 mod tests {
     use crate::{
         mocks::get_parsed_reports,
-        queries::score::utils::{get_delta, get_polarity},
+        queries::score::utils::{get_delta, get_impact, get_polarity},
         utils::Polarity,
     };
 
@@ -51,6 +66,16 @@ mod tests {
         assert_eq!(
             get_polarity(&reports.get(1), &reports.get(0)),
             Some(Polarity::Positive)
+        );
+    }
+
+    #[test]
+    fn it_can_compute_score_impact() {
+        let reports = get_parsed_reports();
+
+        assert_eq!(
+            get_impact(&reports.get(1), &reports.get(0)),
+            Some(crate::utils::Impact::Low)
         );
     }
 }

@@ -10,7 +10,7 @@ use crate::{
 
 use self::{
     types::{ChangeRoot, ScoreKind, ScoreRoot},
-    utils::{get_delta, get_polarity},
+    utils::{get_delta, get_impact, get_polarity},
 };
 
 #[juniper::graphql_object(context = Context)]
@@ -40,14 +40,15 @@ impl ScoreRoot<'_> {
         })
     }
 }
+
 #[juniper::graphql_object(context = Context)]
 impl ChangeRoot<'_> {
     pub fn delta(&self) -> Option<i32> {
         get_delta(&self.report, &self.parent_report)
     }
 
-    pub fn impact(&self) -> Impact {
-        Impact::High
+    pub fn impact(&self) -> Option<Impact> {
+        get_impact(&self.report, &self.parent_report)
     }
 
     pub fn polarity(&self) -> Option<Polarity> {
