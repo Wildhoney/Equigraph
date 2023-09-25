@@ -19,7 +19,15 @@ pub fn create_schema() -> Schema {
 #[juniper::graphql_object(context = Context)]
 impl QueryRoot {
     fn score(kind: ScoreKind, context: &Context) -> FieldResult<ScoreRoot> {
-        Ok(ScoreRoot { kind })
+        let score = context
+            .reports
+            .current
+            .non_address_specific_data
+            .scores
+            .score
+            .get(0);
+
+        Ok(ScoreRoot { kind, score })
     }
     fn associates(context: &Context) -> FieldResult<Vec<AssociateObject>> {
         Ok(vec![AssociateObject {}])
