@@ -4,6 +4,7 @@ pub mod utils;
 use juniper::FieldResult;
 
 use crate::{
+    parser::utils::{backward_by, forward_by},
     schema::Context,
     utils::{Impact, Polarity, Since},
 };
@@ -26,12 +27,13 @@ impl ScoreRoot<'_> {
         }
     }
 
-    pub fn change(&self, context: &Context, since: Option<Since>) -> FieldResult<ChangeRoot> {
+    pub fn change(&self, context: &Context, since: Since) -> FieldResult<ChangeRoot> {
         Ok(ChangeRoot {
             kind: &self.kind,
             report: match since {
-                Some(Since::First) => context.reports.last(),
-                _ => context.reports.get(1),
+                Since::First => context.reports.last(),
+                Since::Previous => forward_by(1, self.report, &context.reports),
+                Since::Next => backward_by(1, self.report, &context.reports),
             },
             parent_report: self.report,
         })

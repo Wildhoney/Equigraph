@@ -17,6 +17,7 @@ pub enum Impact {
 #[derive(Debug, GraphQLEnum)]
 pub enum Since {
     Previous,
+    Next,
     First,
 }
 

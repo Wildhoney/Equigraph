@@ -1,4 +1,5 @@
 pub mod types;
+pub mod utils;
 
 use self::types::{Report, Reports};
 use serde_json;
@@ -14,11 +15,20 @@ pub fn parse_reports(reports: Vec<String>) -> Reports {
 
 #[cfg(test)]
 mod tests {
-    use crate::{mocks::get_latest_report, parser::Reports};
+    use crate::{
+        mocks::{get_latest_report, get_parsed_reports},
+        parser::Reports,
+    };
 
     #[test]
     fn it_can_parse_a_single_report() {
         let reports: Reports = super::parse_reports(vec![get_latest_report()]);
         assert_eq!(reports.len(), 1);
+    }
+
+    #[test]
+    fn it_can_parse_a_multiple_report() {
+        let reports: Reports = get_parsed_reports();
+        assert_eq!(reports.len(), 2);
     }
 }

@@ -3,12 +3,12 @@ use serde::Deserialize;
 
 use crate::parser::types::Report;
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, PartialEq, Deserialize)]
 pub struct Scores {
     pub score: Vec<Score>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, PartialEq, Deserialize)]
 pub struct Score {
     pub positive: bool,
     #[serde(alias = "scoreLabel")]
@@ -18,7 +18,7 @@ pub struct Score {
     pub value: u16,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct ScoreRoot<'a> {
     pub kind: ScoreKind,
     pub report: Option<&'a Report>,

@@ -8298,7 +8298,7 @@ pub fn get_historical_report() -> String {
               "positive": true,
               "scoreLabel": "RNOLF04",
               "sourcedFrom": "SCO",
-              "value": 518
+              "value": 508
             },
             {
               "positive": true,
