@@ -10,21 +10,13 @@ use crate::{
 
 use self::{
     types::{ChangeRoot, ScoreKind, ScoreRoot},
-    utils::{get_delta, get_impact, get_polarity},
+    utils::{get_delta, get_impact, get_polarity, get_score},
 };
 
 #[juniper::graphql_object(context = Context)]
 impl ScoreRoot<'_> {
     pub fn current(&self) -> Option<i32> {
-        Some(
-            self.report?
-                .non_address_specific_data
-                .scores
-                .score
-                .iter()
-                .find(|score| score.score_label == self.kind)?
-                .value as i32,
-        )
+        get_score(&self.kind, &self.report)
     }
 
     pub fn maximum(&self) -> i32 {
@@ -36,6 +28,7 @@ impl ScoreRoot<'_> {
 
     pub fn change(&self, context: &Context, since: Option<Since>) -> FieldResult<ChangeRoot> {
         Ok(ChangeRoot {
+            kind: &self.kind,
             report: match since {
                 Some(Since::First) => context.reports.last(),
                 _ => context.reports.get(1),
@@ -48,15 +41,15 @@ impl ScoreRoot<'_> {
 #[juniper::graphql_object(context = Context)]
 impl ChangeRoot<'_> {
     pub fn delta(&self) -> Option<i32> {
-        get_delta(&self.report, &self.parent_report)
+        get_delta(&self.kind, &self.report, &self.parent_report)
     }
 
     pub fn impact(&self) -> Option<Impact> {
-        get_impact(&self.report, &self.parent_report)
+        get_impact(&self.kind, &self.report, &self.parent_report)
     }
 
     pub fn polarity(&self) -> Option<Polarity> {
-        get_polarity(&self.report, &self.parent_report)
+        get_polarity(&self.kind, &self.report, &self.parent_report)
     }
 
     pub fn score(&self, kind: ScoreKind) -> FieldResult<ScoreRoot> {

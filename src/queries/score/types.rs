@@ -25,6 +25,7 @@ pub struct ScoreRoot<'a> {
 }
 
 pub struct ChangeRoot<'a> {
+    pub kind: &'a ScoreKind,
     pub report: Option<&'a Report>,
     pub parent_report: Option<&'a Report>,
 }
