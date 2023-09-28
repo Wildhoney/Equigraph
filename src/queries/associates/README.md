@@ -12,6 +12,13 @@
       day
       month
       year
+      # insight {
+      #   age
+      #   known_since
+      # }
+      # electoral_roll {
+        # ...
+      # }
     }
   }
 }
