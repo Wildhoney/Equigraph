@@ -2,7 +2,10 @@ use juniper::{EmptyMutation, EmptySubscription, FieldResult, RootNode};
 
 use crate::{
     parser::types::Reports,
-    queries::score::types::{ScoreKind, ScoreRoot},
+    queries::{
+        associates::types::AssociateObject,
+        score::types::{ScoreKind, ScoreRoot},
+    },
 };
 
 pub struct QueryRoot;
@@ -21,9 +24,22 @@ impl QueryRoot {
             report: context.reports.get(0),
         })
     }
-    // fn associates(context: &Context) -> FieldResult<Vec<AssociateObject>> {
-    //     Ok(vec![AssociateObject {}])
-    // }
+    fn associates(context: &Context) -> FieldResult<Vec<AssociateObject>> {
+        let associates = context.reports.get(0).map(|report| {
+            report
+                .non_address_specific_data
+                .associates
+                .associate
+                .iter()
+                .map(|associate| AssociateObject { person: &associate })
+                .collect::<Vec<_>>()
+        });
+
+        match associates {
+            Some(associates) => Ok(associates),
+            None => Ok(vec![]),
+        }
+    }
 }
 
 pub struct Context {

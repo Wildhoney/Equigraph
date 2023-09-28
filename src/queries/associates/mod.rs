@@ -5,23 +5,23 @@ use crate::{
     utils::{DateObject, NameObject},
 };
 
-pub struct AssociateObject {}
+use self::types::AssociateObject;
 
 #[juniper::graphql_object(context = Context)]
-impl AssociateObject {
+impl AssociateObject<'_> {
     pub fn name(&self) -> NameObject {
         NameObject {
-            title: "Mr".to_string(),
-            forename: "Adam".to_string(),
-            surname: "Timberlake".to_string(),
+            title: self.person.name.title.to_string(),
+            forename: self.person.name.forename.to_string(),
+            surname: self.person.name.surname.to_string(),
         }
     }
     #[graphql(name = "date_of_birth")]
     pub fn date_of_birth(&self) -> DateObject {
         DateObject {
-            day: 10,
-            month: 10,
-            year: 1985,
+            day: self.person.dob.day as i32,
+            month: self.person.dob.month as i32,
+            year: self.person.dob.year as i32,
         }
     }
 }

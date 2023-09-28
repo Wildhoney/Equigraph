@@ -1,16 +1,18 @@
 # Associate
 
 ```graphql
-associates {
+{
+  associates {
     name {
-        title
-        forename
-        surname
+      title
+      forename
+      surname
     }
     date_of_birth {
-        day
-        month
-        year
+      day
+      month
+      year
     }
+  }
 }
 ```
