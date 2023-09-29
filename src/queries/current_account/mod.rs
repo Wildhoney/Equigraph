@@ -7,17 +7,18 @@ use crate::{
 };
 
 use self::{
-    types::{CurrentAccountInsightRoot, CurrentAccountRoot, CurrentAccountsRoot},
+    types::{CurrentAccountInsightObject, CurrentAccountObject, CurrentAccountsObject},
     utils::get_accounts,
 };
 
 #[juniper::graphql_object(context = Context)]
-impl CurrentAccountsRoot<'_> {
-    pub fn list(&self) -> Vec<CurrentAccountRoot> {
+impl CurrentAccountsObject<'_> {
+    #[graphql(name = "current_account")]
+    pub fn current_account(&self) -> Vec<CurrentAccountObject> {
         match self.report {
             Some(report) => get_accounts(report)
                 .iter()
-                .map(|current_account| CurrentAccountRoot {
+                .map(|current_account| CurrentAccountObject {
                     account: &current_account,
                 })
                 .collect::<Vec<_>>(),
@@ -25,9 +26,9 @@ impl CurrentAccountsRoot<'_> {
         }
     }
 
-    pub fn insight(&self) -> Option<CurrentAccountInsightRoot> {
+    pub fn insight(&self) -> Option<CurrentAccountInsightObject> {
         match self.report {
-            Some(report) => Some(CurrentAccountInsightRoot {
+            Some(report) => Some(CurrentAccountInsightObject {
                 accounts: get_accounts(report),
             }),
             None => None,
@@ -36,7 +37,7 @@ impl CurrentAccountsRoot<'_> {
 }
 
 #[juniper::graphql_object(context = Context)]
-impl CurrentAccountRoot<'_> {
+impl CurrentAccountObject<'_> {
     #[graphql(name = "account_number")]
     pub fn account_number(&self) -> &String {
         &self.account.account_number
@@ -85,7 +86,7 @@ impl CurrentAccountRoot<'_> {
 }
 
 #[juniper::graphql_object(context = Context)]
-impl CurrentAccountInsightRoot<'_> {
+impl CurrentAccountInsightObject<'_> {
     pub fn count(&self) -> i32 {
         5
     }

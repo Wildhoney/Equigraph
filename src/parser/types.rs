@@ -1,67 +1,69 @@
 use serde::Deserialize;
 
 use crate::queries::{
-    associate::types::Associates, current_account::types::CurrentAccount, score::types::Scores,
+    associate::types::AssociatesField, current_account::types::CurrentAccountField,
+    score::types::ScoresField,
 };
 
 pub type Reports = Vec<Report>;
+pub type Report = ReportField;
 
 #[derive(Debug, PartialEq, Deserialize)]
-pub struct Report {
+pub struct ReportField {
     #[serde(alias = "nonAddressSpecificData")]
-    pub non_address_specific_data: NonAddressSpecificData,
+    pub non_address_specific_data: NonAddressSpecificDataFiel,
     #[serde(alias = "soleSearch")]
-    pub sole_search: SoleSearch,
+    pub sole_search: SoleSearchField,
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
-pub struct NonAddressSpecificData {
-    pub associates: Associates,
-    pub scores: Scores,
+pub struct NonAddressSpecificDataFiel {
+    pub associates: AssociatesField,
+    pub scores: ScoresField,
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
-pub struct Date {
+pub struct DateField {
     pub day: u8,
     pub month: u8,
     pub year: u16,
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
-pub struct Name {
+pub struct NameField {
     pub title: String,
     pub forename: String,
     pub surname: String,
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
-pub struct SoleSearch {
-    pub primary: Primary,
+pub struct SoleSearchField {
+    pub primary: PrimaryField,
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
-pub struct Primary {
+pub struct PrimaryField {
     #[serde(alias = "suppliedAddressData")]
-    pub supplied_address_data: Vec<SuppliedAddressData>,
+    pub supplied_address_data: Vec<SuppliedAddressDataField>,
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
-pub struct SuppliedAddressData {
+pub struct SuppliedAddressDataField {
     #[serde(alias = "matchedAddress")]
-    pub matched_address: MatchedAddress,
+    pub matched_address: MatchedAddressField,
     #[serde(alias = "addressSpecificData")]
-    pub address_specific_data: AddressSpecificData,
+    pub address_specific_data: AddressSpecificDataField,
     #[serde(alias = "noticeOfCorrectionOrDisputePresent")]
     pub notice_of_correction_or_dispute_present: bool,
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
-pub struct MatchedAddress {
-    address: Address,
+pub struct MatchedAddressField {
+    address: AddressField,
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
-pub struct Address {
+pub struct AddressField {
     #[serde(alias = "addressID")]
     address_id: String,
     county: String,
@@ -73,13 +75,13 @@ pub struct Address {
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
-pub struct AddressSpecificData {
+pub struct AddressSpecificDataField {
     #[serde(alias = "insightData")]
-    pub insight_data: InsightData,
+    pub insight_data: InsightDataField,
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
-pub struct InsightData {
+pub struct InsightDataField {
     #[serde(alias = "currentAccount")]
-    pub current_account: Vec<CurrentAccount>,
+    pub current_account: Vec<CurrentAccountField>,
 }

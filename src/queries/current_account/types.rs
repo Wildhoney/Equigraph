@@ -3,22 +3,22 @@ use serde::Deserialize;
 use crate::{parser::types::Report, utils::FrequencyKind};
 
 #[derive(Debug, PartialEq)]
-pub struct CurrentAccountsRoot<'a> {
+pub struct CurrentAccountsObject<'a> {
     pub report: Option<&'a Report>,
 }
 
 #[derive(Debug, PartialEq)]
-pub struct CurrentAccountRoot<'a> {
-    pub account: &'a CurrentAccount,
+pub struct CurrentAccountObject<'a> {
+    pub account: &'a CurrentAccountField,
 }
 
 #[derive(Debug, PartialEq)]
-pub struct CurrentAccountInsightRoot<'a> {
-    pub accounts: Vec<&'a CurrentAccount>,
+pub struct CurrentAccountInsightObject<'a> {
+    pub accounts: Vec<&'a CurrentAccountField>,
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
-pub struct CurrentAccount {
+pub struct CurrentAccountField {
     #[serde(alias = "accountNumber")]
     pub account_number: String,
     #[serde(alias = "currentBalance")]

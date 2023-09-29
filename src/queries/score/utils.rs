@@ -3,9 +3,9 @@ use crate::{
     utils::{Impact, Polarity, Sentiment},
 };
 
-use super::types::ScoreKind;
+use super::types::ScoreField;
 
-pub fn get_score(kind: &ScoreKind, report: &Option<&Report>) -> Option<i32> {
+pub fn get_score(kind: &ScoreField, report: &Option<&Report>) -> Option<i32> {
     match report {
         Some(report) => {
             let score = report
@@ -22,7 +22,7 @@ pub fn get_score(kind: &ScoreKind, report: &Option<&Report>) -> Option<i32> {
 }
 
 pub fn get_delta(
-    kind: &ScoreKind,
+    kind: &ScoreField,
     report: &Option<&Report>,
     parent_report: &Option<&Report>,
 ) -> Option<i32> {
@@ -33,7 +33,7 @@ pub fn get_delta(
 }
 
 pub fn get_polarity(
-    kind: &ScoreKind,
+    kind: &ScoreField,
     report: &Option<&Report>,
     parent_report: &Option<&Report>,
 ) -> Option<Polarity> {
@@ -46,7 +46,7 @@ pub fn get_polarity(
 }
 
 pub fn get_impact(
-    kind: &ScoreKind,
+    kind: &ScoreField,
     report: &Option<&Report>,
     parent_report: &Option<&Report>,
 ) -> Option<Impact> {
@@ -61,14 +61,14 @@ pub fn get_impact(
     }
 }
 
-pub fn get_maximum_score(kind: &ScoreKind) -> i32 {
+pub fn get_maximum_score(kind: &ScoreField) -> i32 {
     match kind {
-        ScoreKind::RNOLF04 => 700,
-        ScoreKind::PSOLF01 => 1_000,
+        ScoreField::RNOLF04 => 700,
+        ScoreField::PSOLF01 => 1_000,
     }
 }
 
-pub fn get_sentiment(kind: &ScoreKind, report: &Option<&Report>) -> Option<Sentiment> {
+pub fn get_sentiment(kind: &ScoreField, report: &Option<&Report>) -> Option<Sentiment> {
     let score = get_score(kind, report);
     let maximum_score = get_maximum_score(kind);
 
@@ -92,7 +92,7 @@ mod tests {
     use crate::{
         mocks::get_parsed_reports,
         queries::score::{
-            types::ScoreKind,
+            types::ScoreField,
             utils::{get_delta, get_impact, get_polarity, get_sentiment},
         },
         utils::Polarity,
@@ -103,7 +103,7 @@ mod tests {
         let reports = get_parsed_reports();
 
         assert_eq!(
-            get_delta(&ScoreKind::PSOLF01, &reports.get(1), &reports.get(0)),
+            get_delta(&ScoreField::PSOLF01, &reports.get(1), &reports.get(0)),
             Some(20)
         );
     }
@@ -113,7 +113,7 @@ mod tests {
         let reports = get_parsed_reports();
 
         assert_eq!(
-            get_polarity(&ScoreKind::PSOLF01, &reports.get(1), &reports.get(0)),
+            get_polarity(&ScoreField::PSOLF01, &reports.get(1), &reports.get(0)),
             Some(Polarity::Positive)
         );
     }
@@ -123,7 +123,7 @@ mod tests {
         let reports = get_parsed_reports();
 
         assert_eq!(
-            get_impact(&ScoreKind::PSOLF01, &reports.get(1), &reports.get(0)),
+            get_impact(&ScoreField::PSOLF01, &reports.get(1), &reports.get(0)),
             Some(crate::utils::Impact::Low)
         );
     }
@@ -133,7 +133,7 @@ mod tests {
         let reports = get_parsed_reports();
 
         assert_eq!(
-            get_sentiment(&ScoreKind::PSOLF01, &reports.get(0)),
+            get_sentiment(&ScoreField::PSOLF01, &reports.get(0)),
             Some(crate::utils::Sentiment::High)
         );
     }

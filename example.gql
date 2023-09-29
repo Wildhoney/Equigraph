@@ -1,114 +1,131 @@
 {
-  report(id: "abcef", version: 1.0) {
-    score(type: PSOLF01) {
-      value
-      maximum
-      sentiment
-      is_stable
-
-      change(since: previous) {
-        polarity
-        amount
-        difference
-
-        score(type: PSOLF01) {
-          value
-          maximum
-          sentiment
-          is_stable
-        }
-      }
-
-      change(since: "2022-01-01") {
-        polarity
-        amount
-        difference
-      }
-
-      change(since: a_year_ago) {
-        polarity
-        amount
-        difference
-      }
+  current_accounts {
+    insight {
+      count
     }
 
-    associates {
-      name {
-        title
-        forename
-        surname
-      }
+    change(since: PREVIOUS) {
 
-      date_of_birth {
-        day
-        month
-        year
-      }
-
-      change(since: previous) {
-        difference
-
-        name {
-          title
-          forename
-          surname
-        }
-      }
     }
 
-    electoral_roll {
-      registered_period {
-        year_start
-        year_end
-      }
-    }
-
-    credit_cards(is_active: true) {
+    current_account {
       account_number
-      company_name
-
-      insights {
-        credit_utilisation {
-          polarity
-          impact
-        }
-      }
-
-      change(since: previous) {
-        difference
-      }
-
-      current_balance {
-        amount
-        currency
-      }
-
-      payment_history(timeframe: last) {
-        age_in_months
-        is_promotional_rate
-
-        account_balance {
-          amount
-          currency
-        }
-
-        credit_limit {
-          amount
-          currency
-        }
-      }
-    }
-
-    current_accounts {
-      _
-    }
-
-    secured_loans {
-      _
-    }
-
-    unsecured_loans {
-      _
     }
   }
 }
+
+
+# {
+#   report(id: "abcef", version: 1.0) {
+#     score(type: PSOLF01) {
+#       value
+#       maximum
+#       sentiment
+#       is_stable
+
+#       change(since: previous) {
+#         polarity
+#         amount
+#         difference
+
+#         score(type: PSOLF01) {
+#           value
+#           maximum
+#           sentiment
+#           is_stable
+#         }
+#       }
+
+#       change(since: "2022-01-01") {
+#         polarity
+#         amount
+#         difference
+#       }
+
+#       change(since: a_year_ago) {
+#         polarity
+#         amount
+#         difference
+#       }
+#     }
+
+#     associates {
+#       name {
+#         title
+#         forename
+#         surname
+#       }
+
+#       date_of_birth {
+#         day
+#         month
+#         year
+#       }
+
+#       change(since: previous) {
+#         difference
+
+#         name {
+#           title
+#           forename
+#           surname
+#         }
+#       }
+#     }
+
+#     electoral_roll {
+#       registered_period {
+#         year_start
+#         year_end
+#       }
+#     }
+
+#     credit_cards(is_active: true) {
+#       account_number
+#       company_name
+
+#       insights {
+#         credit_utilisation {
+#           polarity
+#           impact
+#         }
+#       }
+
+#       change(since: previous) {
+#         difference
+#       }
+
+#       current_balance {
+#         amount
+#         currency
+#       }
+
+#       payment_history(timeframe: last) {
+#         age_in_months
+#         is_promotional_rate
+
+#         account_balance {
+#           amount
+#           currency
+#         }
+
+#         credit_limit {
+#           amount
+#           currency
+#         }
+#       }
+#     }
+
+#     current_accounts {
+#       _
+#     }
+
+#     secured_loans {
+#       _
+#     }
+
+#     unsecured_loans {
+#       _
+#     }
+#   }
+# }

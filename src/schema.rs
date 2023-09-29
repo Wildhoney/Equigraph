@@ -4,8 +4,8 @@ use crate::{
     parser::types::Reports,
     queries::{
         associate::types::AssociateObject,
-        current_account::types::CurrentAccountsRoot,
-        score::types::{ScoreKind, ScoreRoot},
+        current_account::types::CurrentAccountsObject,
+        score::types::{ScoreField, ScoreObject},
     },
 };
 
@@ -19,8 +19,8 @@ pub fn create_schema() -> Schema {
 
 #[juniper::graphql_object(context = Context)]
 impl QueryRoot {
-    fn score(kind: ScoreKind, context: &Context) -> FieldResult<ScoreRoot> {
-        Ok(ScoreRoot {
+    fn score(kind: ScoreField, context: &Context) -> FieldResult<ScoreObject> {
+        Ok(ScoreObject {
             kind,
             report: context.reports.get(0),
         })
@@ -42,8 +42,8 @@ impl QueryRoot {
         }
     }
     #[graphql(name = "current_accounts")]
-    fn current_accounts(context: &Context) -> FieldResult<CurrentAccountsRoot> {
-        Ok(CurrentAccountsRoot {
+    fn current_accounts(context: &Context) -> FieldResult<CurrentAccountsObject> {
+        Ok(CurrentAccountsObject {
             report: context.reports.get(0),
         })
     }
