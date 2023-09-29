@@ -6,12 +6,12 @@ use juniper::FieldResult;
 use crate::{
     parser::utils::{backward_by, forward_by},
     schema::Context,
-    utils::{Impact, Polarity, Since},
+    utils::{Impact, Polarity, Sentiment, Since},
 };
 
 use self::{
-    types::{ChangeRoot, ScoreKind, ScoreRoot},
-    utils::{get_delta, get_impact, get_polarity, get_score},
+    types::{ChangeRoot, InsightRoot, ScoreKind, ScoreRoot},
+    utils::{get_delta, get_impact, get_maximum_score, get_polarity, get_score, get_sentiment},
 };
 
 #[juniper::graphql_object(context = Context)]
@@ -21,10 +21,7 @@ impl ScoreRoot<'_> {
     }
 
     pub fn maximum(&self) -> i32 {
-        match self.kind {
-            ScoreKind::RNOLF04 => 700,
-            ScoreKind::PSOLF01 => 1_000,
-        }
+        get_maximum_score(&self.kind)
     }
 
     pub fn change(&self, context: &Context, since: Since) -> FieldResult<ChangeRoot> {
@@ -36,6 +33,13 @@ impl ScoreRoot<'_> {
                 Since::Next => backward_by(1, self.report, &context.reports),
             },
             parent_report: self.report,
+        })
+    }
+
+    pub fn insight(&self) -> FieldResult<InsightRoot> {
+        Ok(InsightRoot {
+            kind: &self.kind,
+            report: self.report,
         })
     }
 }
@@ -59,5 +63,12 @@ impl ChangeRoot<'_> {
             kind,
             report: self.report,
         })
+    }
+}
+
+#[juniper::graphql_object(context = Context)]
+impl InsightRoot<'_> {
+    pub fn sentiment(&self) -> Option<Sentiment> {
+        get_sentiment(&self.kind, &self.report)
     }
 }

@@ -20,6 +20,9 @@
       polarity
       impact
     }
+    insight {
+      sentiment
+    }
   }
 }
 ```

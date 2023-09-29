@@ -1,6 +1,6 @@
 use crate::{
     parser::types::Report,
-    utils::{Impact, Polarity},
+    utils::{Impact, Polarity, Sentiment},
 };
 
 use super::types::ScoreKind;
@@ -61,13 +61,39 @@ pub fn get_impact(
     }
 }
 
+pub fn get_maximum_score(kind: &ScoreKind) -> i32 {
+    match kind {
+        ScoreKind::RNOLF04 => 700,
+        ScoreKind::PSOLF01 => 1_000,
+    }
+}
+
+pub fn get_sentiment(kind: &ScoreKind, report: &Option<&Report>) -> Option<Sentiment> {
+    let score = get_score(kind, report);
+    let maximum_score = get_maximum_score(kind);
+
+    match score {
+        Some(score) => {
+            let percentage = (score as f64) / (maximum_score as f64) * 100.0;
+
+            match percentage {
+                percentage if percentage < 25.0 => Some(Sentiment::Low),
+                percentage if percentage >= 25.0 && percentage < 75.0 => Some(Sentiment::Medium),
+                percentage if percentage >= 75.0 => Some(Sentiment::High),
+                _ => None,
+            }
+        }
+        _ => None,
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::{
         mocks::get_parsed_reports,
         queries::score::{
             types::ScoreKind,
-            utils::{get_delta, get_impact, get_polarity},
+            utils::{get_delta, get_impact, get_polarity, get_sentiment},
         },
         utils::Polarity,
     };
@@ -99,6 +125,16 @@ mod tests {
         assert_eq!(
             get_impact(&ScoreKind::PSOLF01, &reports.get(1), &reports.get(0)),
             Some(crate::utils::Impact::Low)
+        );
+    }
+
+    #[test]
+    fn it_can_compute_score_sentiment() {
+        let reports = get_parsed_reports();
+
+        assert_eq!(
+            get_sentiment(&ScoreKind::PSOLF01, &reports.get(0)),
+            Some(crate::utils::Sentiment::High)
         );
     }
 }

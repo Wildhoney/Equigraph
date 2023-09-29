@@ -36,3 +36,10 @@ pub struct NameObject {
     pub forename: String,
     pub surname: String,
 }
+
+#[derive(Debug, PartialEq, GraphQLEnum)]
+pub enum Sentiment {
+    High,
+    Medium,
+    Low,
+}

@@ -35,3 +35,9 @@ pub enum ScoreKind {
     RNOLF04,
     PSOLF01,
 }
+
+#[derive(Debug, PartialEq)]
+pub struct InsightRoot<'a> {
+    pub kind: &'a ScoreKind,
+    pub report: Option<&'a Report>,
+}
