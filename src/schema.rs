@@ -3,7 +3,8 @@ use juniper::{EmptyMutation, EmptySubscription, FieldResult, RootNode};
 use crate::{
     parser::types::Reports,
     queries::{
-        associates::types::AssociateObject,
+        associate::types::AssociateObject,
+        current_account::types::CurrentAccountsRoot,
         score::types::{ScoreKind, ScoreRoot},
     },
 };
@@ -39,6 +40,12 @@ impl QueryRoot {
             Some(associates) => Ok(associates),
             None => Ok(vec![]),
         }
+    }
+    #[graphql(name = "current_accounts")]
+    fn current_accounts(context: &Context) -> FieldResult<CurrentAccountsRoot> {
+        Ok(CurrentAccountsRoot {
+            report: context.reports.get(0),
+        })
     }
 }
 

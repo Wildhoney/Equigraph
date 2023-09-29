@@ -10,7 +10,7 @@ use crate::{
 };
 
 use self::{
-    types::{ChangeRoot, InsightRoot, ScoreKind, ScoreRoot},
+    types::{ScoreChangeRoot, ScoreInsightRoot, ScoreKind, ScoreRoot},
     utils::{get_delta, get_impact, get_maximum_score, get_polarity, get_score, get_sentiment},
 };
 
@@ -24,8 +24,8 @@ impl ScoreRoot<'_> {
         get_maximum_score(&self.kind)
     }
 
-    pub fn change(&self, context: &Context, since: Since) -> FieldResult<ChangeRoot> {
-        Ok(ChangeRoot {
+    pub fn change(&self, context: &Context, since: Since) -> FieldResult<ScoreChangeRoot> {
+        Ok(ScoreChangeRoot {
             kind: &self.kind,
             report: match since {
                 Since::First => context.reports.last(),
@@ -36,8 +36,8 @@ impl ScoreRoot<'_> {
         })
     }
 
-    pub fn insight(&self) -> FieldResult<InsightRoot> {
-        Ok(InsightRoot {
+    pub fn insight(&self) -> FieldResult<ScoreInsightRoot> {
+        Ok(ScoreInsightRoot {
             kind: &self.kind,
             report: self.report,
         })
@@ -45,7 +45,7 @@ impl ScoreRoot<'_> {
 }
 
 #[juniper::graphql_object(context = Context)]
-impl ChangeRoot<'_> {
+impl ScoreChangeRoot<'_> {
     pub fn delta(&self) -> Option<i32> {
         get_delta(&self.kind, &self.report, &self.parent_report)
     }
@@ -67,7 +67,7 @@ impl ChangeRoot<'_> {
 }
 
 #[juniper::graphql_object(context = Context)]
-impl InsightRoot<'_> {
+impl ScoreInsightRoot<'_> {
     pub fn sentiment(&self) -> Option<Sentiment> {
         get_sentiment(&self.kind, &self.report)
     }

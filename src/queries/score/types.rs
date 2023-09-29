@@ -24,7 +24,7 @@ pub struct ScoreRoot<'a> {
     pub report: Option<&'a Report>,
 }
 
-pub struct ChangeRoot<'a> {
+pub struct ScoreChangeRoot<'a> {
     pub kind: &'a ScoreKind,
     pub report: Option<&'a Report>,
     pub parent_report: Option<&'a Report>,
@@ -37,7 +37,7 @@ pub enum ScoreKind {
 }
 
 #[derive(Debug, PartialEq)]
-pub struct InsightRoot<'a> {
+pub struct ScoreInsightRoot<'a> {
     pub kind: &'a ScoreKind,
     pub report: Option<&'a Report>,
 }
