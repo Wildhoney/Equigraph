@@ -17,7 +17,7 @@
       #   known_since
       # }
       # electoral_roll {
-        # ...
+      # ...
       # }
     }
   }
