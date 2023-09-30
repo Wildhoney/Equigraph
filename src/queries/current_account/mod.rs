@@ -2,13 +2,16 @@ pub mod types;
 mod utils;
 
 use crate::{
-    fields::{self},
+    fields,
     schema::Context,
-    utils::BalanceObject,
+    utils::{BalanceObject, Select},
 };
 
 use self::{
-    types::{Company, CurrentAccountInsightObject, CurrentAccountObject, CurrentAccountsObject},
+    types::{
+        Company, CurrentAccountInsightObject, CurrentAccountObject, CurrentAccountsObject,
+        PaymentHistory,
+    },
     utils::get_accounts,
 };
 
@@ -86,11 +89,43 @@ impl CurrentAccountObject<'_> {
     pub fn payment_frequency(&self) -> &fields::PaymentFrequency {
         &self.account.payment_frequency
     }
+
+    #[graphql(name = "payment_history")]
+    pub fn payment_history(&self, select: Option<Select>) -> Vec<PaymentHistory> {
+        let payment_history = self
+            .account
+            .payment_history
+            .iter()
+            .map(|payment_history| PaymentHistory {
+                balance: &payment_history.account_balance,
+                age_in_months: payment_history.age_in_months,
+                payment_status: &payment_history.payment_status,
+            })
+            .collect::<Vec<_>>();
+
+        let mut payment_history = payment_history.into_iter();
+
+        match select {
+            Some(Select::Latest) => match payment_history.nth(0) {
+                Some(payment_history) => vec![payment_history],
+                _ => vec![],
+            },
+            Some(Select::Oldest) => match payment_history.last() {
+                Some(payment_history) => vec![payment_history],
+                _ => vec![],
+            },
+            Some(Select::Polar) => match [payment_history.nth(0), payment_history.last()] {
+                [Some(first), Some(last)] => vec![first, last],
+                _ => vec![],
+            },
+            _ => payment_history.collect::<Vec<_>>(),
+        }
+    }
 }
 
 #[juniper::graphql_object(context = Context)]
 impl CurrentAccountInsightObject<'_> {
     pub fn count(&self) -> i32 {
-        5
+        self.accounts.len() as i32
     }
 }

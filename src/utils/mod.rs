@@ -50,3 +50,11 @@ pub struct BalanceObject {
     pub amount: i32,
     pub currency: String,
 }
+
+#[derive(Debug, PartialEq, GraphQLEnum, Clone)]
+pub enum Select {
+    All,
+    Latest,
+    Oldest,
+    Polar,
+}

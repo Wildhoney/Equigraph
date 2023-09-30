@@ -29,13 +29,13 @@ pub struct Payment<'a> {
     pub frequency: &'a PaymentFrequency,
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Debug, PartialEq, Deserialize, GraphQLObject)]
 pub struct Balance {
     #[serde(alias = "balanceAmount")]
     pub balance_amount: Amount,
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Debug, PartialEq, Deserialize, GraphQLObject)]
 pub struct Amount {
     pub amount: i32,
     pub currency: String,
