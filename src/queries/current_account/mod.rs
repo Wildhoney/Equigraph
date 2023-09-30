@@ -7,7 +7,7 @@ use crate::{
 };
 
 use self::{
-    types::{CurrentAccountInsightObject, CurrentAccountObject, CurrentAccountsObject},
+    types::{Company, CurrentAccountInsightObject, CurrentAccountObject, CurrentAccountsObject},
     utils::get_accounts,
 };
 
@@ -43,9 +43,11 @@ impl CurrentAccountObject<'_> {
         &self.account.account_number
     }
 
-    #[graphql(name = "company_name")]
-    pub fn company_name(&self) -> &String {
-        &self.account.company_name
+    pub fn company(&self) -> Company {
+        Company {
+            kind: &self.account.company_class,
+            name: &self.account.company_name,
+        }
     }
 
     #[graphql(name = "has_overdraft")]

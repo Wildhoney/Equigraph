@@ -45,6 +45,14 @@ pub enum Sentiment {
     Low,
 }
 
+#[derive(Debug, PartialEq, Deserialize, GraphQLEnum)]
+pub enum PaymentStatusKind {
+    #[serde(alias = "ZERO")]
+    Zero,
+    S,
+    U,
+}
+
 #[derive(Debug, GraphQLObject)]
 #[graphql(description = "")]
 pub struct BalanceObject {
@@ -58,4 +66,10 @@ pub enum FrequencyKind {
     Monthly,
     #[serde(alias = "PERIODICALLY")]
     Periodically,
+}
+
+#[derive(Debug, PartialEq, Deserialize, GraphQLEnum, Clone)]
+pub enum CompanyKind {
+    #[serde(alias = "BK")]
+    Bank,
 }
