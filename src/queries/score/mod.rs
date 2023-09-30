@@ -4,13 +4,14 @@ pub mod utils;
 use juniper::FieldResult;
 
 use crate::{
+    fields,
     parser::utils::{backward_by, forward_by},
     schema::Context,
     utils::{Impact, Polarity, Sentiment, Since},
 };
 
 use self::{
-    types::{ScoreChangeObject, ScoreField, ScoreInsightObject, ScoreObject},
+    types::{ScoreChangeObject, ScoreInsightObject, ScoreObject},
     utils::{get_delta, get_impact, get_maximum_score, get_polarity, get_score, get_sentiment},
 };
 
@@ -58,7 +59,7 @@ impl ScoreChangeObject<'_> {
         get_polarity(&self.kind, &self.report, &self.parent_report)
     }
 
-    pub fn score(&self, kind: ScoreField) -> FieldResult<ScoreObject> {
+    pub fn score(&self, kind: fields::score::ScoreLabel) -> FieldResult<ScoreObject> {
         Ok(ScoreObject {
             kind,
             report: self.report,

@@ -1,5 +1,4 @@
 use juniper::{GraphQLEnum, GraphQLObject};
-use serde::Deserialize;
 
 #[derive(Debug, PartialEq, GraphQLEnum)]
 pub enum Polarity {
@@ -45,31 +44,9 @@ pub enum Sentiment {
     Low,
 }
 
-#[derive(Debug, PartialEq, Deserialize, GraphQLEnum)]
-pub enum PaymentStatusKind {
-    #[serde(alias = "ZERO")]
-    Zero,
-    S,
-    U,
-}
-
 #[derive(Debug, GraphQLObject)]
 #[graphql(description = "")]
 pub struct BalanceObject {
     pub amount: i32,
     pub currency: String,
-}
-
-#[derive(Debug, PartialEq, Deserialize, GraphQLEnum)]
-pub enum FrequencyKind {
-    #[serde(alias = "MONTHLY")]
-    Monthly,
-    #[serde(alias = "PERIODICALLY")]
-    Periodically,
-}
-
-#[derive(Debug, PartialEq, Deserialize, GraphQLEnum, Clone)]
-pub enum CompanyKind {
-    #[serde(alias = "BK")]
-    Bank,
 }

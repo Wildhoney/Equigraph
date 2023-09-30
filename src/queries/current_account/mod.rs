@@ -2,8 +2,9 @@ pub mod types;
 mod utils;
 
 use crate::{
+    fields::{self},
     schema::Context,
-    utils::{BalanceObject, FrequencyKind},
+    utils::BalanceObject,
 };
 
 use self::{
@@ -82,7 +83,7 @@ impl CurrentAccountObject<'_> {
     }
 
     #[graphql(name = "payment_frequency")]
-    pub fn payment_frequency(&self) -> &FrequencyKind {
+    pub fn payment_frequency(&self) -> &fields::PaymentFrequency {
         &self.account.payment_frequency
     }
 }
