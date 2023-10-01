@@ -1,5 +1,28 @@
 use juniper::{GraphQLEnum, GraphQLObject};
 
+#[derive(Debug, GraphQLObject)]
+#[graphql(description = "")]
+pub struct Date {
+    pub day: i32,
+    pub month: i32,
+    pub year: i32,
+}
+
+#[derive(Debug, GraphQLObject)]
+#[graphql(description = "")]
+pub struct Name {
+    pub title: String,
+    pub forename: String,
+    pub surname: String,
+}
+
+#[derive(Debug, PartialEq, GraphQLEnum)]
+pub enum Sentiment {
+    High,
+    Medium,
+    Low,
+}
+
 #[derive(Debug, PartialEq, GraphQLEnum)]
 pub enum Polarity {
     Unchanged,
@@ -14,47 +37,9 @@ pub enum Impact {
     Low,
 }
 
-#[derive(Debug, GraphQLEnum)]
-pub enum Since {
-    Previous,
-    Next,
-    First,
-}
-
 #[derive(Debug, GraphQLObject)]
 #[graphql(description = "")]
-pub struct DateObject {
-    pub day: i32,
-    pub month: i32,
-    pub year: i32,
-}
-
-#[derive(Debug, GraphQLObject)]
-#[graphql(description = "")]
-pub struct NameObject {
-    pub title: String,
-    pub forename: String,
-    pub surname: String,
-}
-
-#[derive(Debug, PartialEq, GraphQLEnum)]
-pub enum Sentiment {
-    High,
-    Medium,
-    Low,
-}
-
-#[derive(Debug, GraphQLObject)]
-#[graphql(description = "")]
-pub struct BalanceObject {
+pub struct Balance {
     pub amount: i32,
     pub currency: String,
-}
-
-#[derive(Debug, PartialEq, GraphQLEnum, Clone)]
-pub enum Select {
-    All,
-    Latest,
-    Oldest,
-    Polar,
 }

@@ -1,8 +1,4 @@
-use crate::{
-    fields,
-    parser::types::Report,
-    utils::{Impact, Polarity, Sentiment},
-};
+use crate::{fields, objects, parser::types::Report};
 
 pub fn get_score(kind: &fields::score::ScoreLabel, report: &Option<&Report>) -> Option<i32> {
     match report {
@@ -35,11 +31,11 @@ pub fn get_polarity(
     kind: &fields::score::ScoreLabel,
     report: &Option<&Report>,
     parent_report: &Option<&Report>,
-) -> Option<Polarity> {
+) -> Option<objects::output::Polarity> {
     match get_delta(kind, report, parent_report) {
-        Some(delta) if delta > 0 => Some(Polarity::Positive),
-        Some(delta) if delta < 0 => Some(Polarity::Negative),
-        Some(delta) if delta == 0 => Some(Polarity::Unchanged),
+        Some(delta) if delta > 0 => Some(objects::output::Polarity::Positive),
+        Some(delta) if delta < 0 => Some(objects::output::Polarity::Negative),
+        Some(delta) if delta == 0 => Some(objects::output::Polarity::Unchanged),
         _ => None,
     }
 }
@@ -48,12 +44,12 @@ pub fn get_impact(
     kind: &fields::score::ScoreLabel,
     report: &Option<&Report>,
     parent_report: &Option<&Report>,
-) -> Option<Impact> {
+) -> Option<objects::output::Impact> {
     match (report, parent_report) {
         (Some(_), Some(_)) => match get_delta(kind, report, parent_report) {
-            Some(delta) if delta < 200 => Some(Impact::Low),
-            Some(delta) if delta >= 200 => Some(Impact::High),
-            Some(delta) if delta == 0 => Some(Impact::None),
+            Some(delta) if delta < 200 => Some(objects::output::Impact::Low),
+            Some(delta) if delta >= 200 => Some(objects::output::Impact::High),
+            Some(delta) if delta == 0 => Some(objects::output::Impact::None),
             _ => None,
         },
         _ => None,
@@ -70,7 +66,7 @@ pub fn get_maximum_score(kind: &fields::score::ScoreLabel) -> i32 {
 pub fn get_sentiment(
     kind: &fields::score::ScoreLabel,
     report: &Option<&Report>,
-) -> Option<Sentiment> {
+) -> Option<objects::output::Sentiment> {
     let score = get_score(kind, report);
     let maximum_score = get_maximum_score(kind);
 
@@ -79,9 +75,11 @@ pub fn get_sentiment(
             let percentage = (score as f64) / (maximum_score as f64) * 100.0;
 
             match percentage {
-                percentage if percentage < 25.0 => Some(Sentiment::Low),
-                percentage if percentage >= 25.0 && percentage < 75.0 => Some(Sentiment::Medium),
-                percentage if percentage >= 75.0 => Some(Sentiment::High),
+                percentage if percentage < 25.0 => Some(objects::output::Sentiment::Low),
+                percentage if percentage >= 25.0 && percentage < 75.0 => {
+                    Some(objects::output::Sentiment::Medium)
+                }
+                percentage if percentage >= 75.0 => Some(objects::output::Sentiment::High),
                 _ => None,
             }
         }
@@ -94,8 +92,8 @@ mod tests {
     use crate::{
         fields::score::ScoreLabel,
         mocks::get_parsed_reports,
+        objects,
         queries::score::utils::{get_delta, get_impact, get_polarity, get_sentiment},
-        utils::Polarity,
     };
 
     #[test]
@@ -114,7 +112,7 @@ mod tests {
 
         assert_eq!(
             get_polarity(&ScoreLabel::PSOLF01, &reports.get(1), &reports.get(0)),
-            Some(Polarity::Positive)
+            Some(objects::output::Polarity::Positive)
         );
     }
 
@@ -124,7 +122,7 @@ mod tests {
 
         assert_eq!(
             get_impact(&ScoreLabel::PSOLF01, &reports.get(1), &reports.get(0)),
-            Some(crate::utils::Impact::Low)
+            Some(objects::output::Impact::Low)
         );
     }
 
@@ -134,7 +132,7 @@ mod tests {
 
         assert_eq!(
             get_sentiment(&ScoreLabel::PSOLF01, &reports.get(0)),
-            Some(crate::utils::Sentiment::High)
+            Some(objects::output::Sentiment::High)
         );
     }
 }

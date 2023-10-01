@@ -4,10 +4,9 @@ pub mod utils;
 use juniper::FieldResult;
 
 use crate::{
-    fields,
+    fields, objects,
     parser::utils::{backward_by, forward_by},
     schema::Context,
-    utils::{Impact, Polarity, Sentiment, Since},
 };
 
 use self::{
@@ -25,13 +24,17 @@ impl ScoreObject<'_> {
         get_maximum_score(&self.kind)
     }
 
-    pub fn change(&self, context: &Context, since: Since) -> FieldResult<ScoreChangeObject> {
+    pub fn change(
+        &self,
+        context: &Context,
+        since: objects::input::Since,
+    ) -> FieldResult<ScoreChangeObject> {
         Ok(ScoreChangeObject {
             kind: &self.kind,
             report: match since {
-                Since::First => context.reports.last(),
-                Since::Previous => forward_by(1, self.report, &context.reports),
-                Since::Next => backward_by(1, self.report, &context.reports),
+                objects::input::Since::First => context.reports.last(),
+                objects::input::Since::Previous => forward_by(1, self.report, &context.reports),
+                objects::input::Since::Next => backward_by(1, self.report, &context.reports),
             },
             parent_report: self.report,
         })
@@ -51,11 +54,11 @@ impl ScoreChangeObject<'_> {
         get_delta(&self.kind, &self.report, &self.parent_report)
     }
 
-    pub fn impact(&self) -> Option<Impact> {
+    pub fn impact(&self) -> Option<objects::output::Impact> {
         get_impact(&self.kind, &self.report, &self.parent_report)
     }
 
-    pub fn polarity(&self) -> Option<Polarity> {
+    pub fn polarity(&self) -> Option<objects::output::Polarity> {
         get_polarity(&self.kind, &self.report, &self.parent_report)
     }
 
@@ -69,7 +72,7 @@ impl ScoreChangeObject<'_> {
 
 #[juniper::graphql_object(context = Context)]
 impl ScoreInsightObject<'_> {
-    pub fn sentiment(&self) -> Option<Sentiment> {
+    pub fn sentiment(&self) -> Option<objects::output::Sentiment> {
         get_sentiment(&self.kind, &self.report)
     }
 }

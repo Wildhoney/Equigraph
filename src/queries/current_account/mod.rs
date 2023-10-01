@@ -1,11 +1,7 @@
 pub mod types;
 mod utils;
 
-use crate::{
-    fields,
-    schema::Context,
-    utils::{BalanceObject, Select},
-};
+use crate::{fields, objects, schema::Context};
 
 use self::{
     types::{
@@ -60,8 +56,8 @@ impl CurrentAccountObject<'_> {
     }
 
     #[graphql(name = "current_balance")]
-    pub fn current_balance(&self) -> BalanceObject {
-        BalanceObject {
+    pub fn current_balance(&self) -> objects::output::Balance {
+        objects::output::Balance {
             amount: self.account.current_balance.balance_amount.amount,
             currency: self
                 .account
@@ -73,8 +69,8 @@ impl CurrentAccountObject<'_> {
     }
 
     #[graphql(name = "default_balance")]
-    pub fn default_balance(&self) -> BalanceObject {
-        BalanceObject {
+    pub fn default_balance(&self) -> objects::output::Balance {
+        objects::output::Balance {
             amount: self.account.default_balance.balance_amount.amount,
             currency: self
                 .account
@@ -91,7 +87,7 @@ impl CurrentAccountObject<'_> {
     }
 
     #[graphql(name = "payment_history")]
-    pub fn payment_history(&self, select: Option<Select>) -> Vec<PaymentHistory> {
+    pub fn payment_history(&self, select: Option<objects::input::Select>) -> Vec<PaymentHistory> {
         let payment_history = self
             .account
             .payment_history
@@ -106,18 +102,20 @@ impl CurrentAccountObject<'_> {
         let mut payment_history = payment_history.into_iter();
 
         match select {
-            Some(Select::Latest) => match payment_history.nth(0) {
+            Some(objects::input::Select::Latest) => match payment_history.nth(0) {
                 Some(payment_history) => vec![payment_history],
                 _ => vec![],
             },
-            Some(Select::Oldest) => match payment_history.last() {
+            Some(objects::input::Select::Oldest) => match payment_history.last() {
                 Some(payment_history) => vec![payment_history],
                 _ => vec![],
             },
-            Some(Select::Polar) => match [payment_history.nth(0), payment_history.last()] {
-                [Some(first), Some(last)] => vec![first, last],
-                _ => vec![],
-            },
+            Some(objects::input::Select::Polar) => {
+                match [payment_history.nth(0), payment_history.last()] {
+                    [Some(first), Some(last)] => vec![first, last],
+                    _ => vec![],
+                }
+            }
             _ => payment_history.collect::<Vec<_>>(),
         }
     }

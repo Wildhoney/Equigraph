@@ -1,9 +1,9 @@
 mod fields;
 mod mocks;
+mod objects;
 mod parser;
 mod queries;
 mod schema;
-mod utils;
 
 use std::{io, sync::Arc};
 
