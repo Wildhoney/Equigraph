@@ -1,14 +1,22 @@
 pub mod types;
 mod utils;
 
-use crate::{fields, objects, schema::Context};
+use crate::{
+    fields,
+    objects::{
+        self,
+        input::Since,
+        output::{Impact, Polarity},
+    },
+    schema::Context,
+};
 
 use self::{
     types::{
-        Company, CurrentAccountInsightObject, CurrentAccountObject, CurrentAccountsObject,
-        PaymentHistory,
+        Company, CurrentAccountChangeObject, CurrentAccountInsightObject, CurrentAccountObject,
+        CurrentAccountsObject, PaymentHistory,
     },
-    utils::get_accounts,
+    utils::{get_accounts, get_delta, get_payment_history},
 };
 
 #[juniper::graphql_object(context = Context)]
@@ -88,18 +96,7 @@ impl CurrentAccountObject<'_> {
 
     #[graphql(name = "payment_history")]
     pub fn payment_history(&self, select: Option<objects::input::Select>) -> Vec<PaymentHistory> {
-        let payment_history = self
-            .account
-            .payment_history
-            .iter()
-            .map(|payment_history| PaymentHistory {
-                balance: &payment_history.account_balance,
-                age_in_months: payment_history.age_in_months,
-                payment_status: &payment_history.payment_status,
-            })
-            .collect::<Vec<_>>();
-
-        let mut payment_history = payment_history.into_iter();
+        let mut payment_history = get_payment_history(&self.account.payment_history).into_iter();
 
         match select {
             Some(objects::input::Select::Latest) => match payment_history.nth(0) {
@@ -119,11 +116,65 @@ impl CurrentAccountObject<'_> {
             _ => payment_history.collect::<Vec<_>>(),
         }
     }
+
+    pub fn change(&self, since: Since) -> CurrentAccountChangeObject {
+        CurrentAccountChangeObject {
+            current_index: 0,
+            since: since.to_owned(),
+            account: &self.account,
+        }
+    }
 }
 
 #[juniper::graphql_object(context = Context)]
 impl CurrentAccountInsightObject<'_> {
     pub fn count(&self) -> i32 {
         self.accounts.len() as i32
+    }
+}
+
+#[juniper::graphql_object(context = Context)]
+impl CurrentAccountChangeObject<'_> {
+    pub fn delta(&self) -> Option<i32> {
+        get_delta(
+            self.current_index,
+            &self.since,
+            &self.account.payment_history,
+        )
+    }
+
+    pub fn impact(&self) -> Option<Impact> {
+        let delta = get_delta(
+            self.current_index,
+            &self.since,
+            &self.account.payment_history,
+        );
+
+        match delta {
+            Some(delta) => match delta {
+                delta if delta > 1_000 => Some(Impact::High),
+                delta if delta > 500 => Some(Impact::Low),
+                _ => Some(Impact::None),
+            },
+            _ => None,
+        }
+    }
+
+    pub fn polarity(&self) -> Option<Polarity> {
+        let delta = get_delta(
+            self.current_index,
+            &self.since,
+            &self.account.payment_history,
+        );
+
+        match delta {
+            Some(delta) => match delta {
+                delta if delta == 0 => Some(Polarity::Unchanged),
+                delta if delta > 0 => Some(Polarity::Negative),
+                delta if delta < 500 => Some(Polarity::Positive),
+                _ => Some(Polarity::Unchanged),
+            },
+            _ => None,
+        }
     }
 }

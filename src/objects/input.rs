@@ -8,7 +8,7 @@ pub enum Select {
     Polar,
 }
 
-#[derive(Debug, GraphQLEnum)]
+#[derive(Debug, Clone, PartialEq, GraphQLEnum)]
 pub enum Since {
     Previous,
     Next,
