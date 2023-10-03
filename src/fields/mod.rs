@@ -93,12 +93,6 @@ pub enum PaymentFrequency {
     Periodically,
 }
 
-#[derive(Debug, PartialEq, Deserialize, GraphQLEnum, Clone)]
-pub enum CompanyClass {
-    #[serde(alias = "BK")]
-    Bank,
-}
-
 #[derive(Debug, PartialEq, Deserialize, GraphQLEnum)]
 pub enum PaymentStatus {
     #[serde(alias = "ZERO")]

@@ -13,7 +13,7 @@ use crate::{
 
 use self::{
     types::{
-        Company, CurrentAccountChangeObject, CurrentAccountInsightObject, CurrentAccountObject,
+        CurrentAccountChangeObject, CurrentAccountInsightObject, CurrentAccountObject,
         CurrentAccountPaymentHistoryObject, CurrentAccountsObject,
     },
     utils::{get_accounts, get_delta},
@@ -51,8 +51,8 @@ impl CurrentAccountObject<'_> {
         &self.account.account_number
     }
 
-    pub fn company(&self) -> Company {
-        Company {
+    pub fn company(&self) -> objects::output::Company {
+        objects::output::Company {
             kind: &self.account.company_class,
             name: &self.account.company_name,
         }

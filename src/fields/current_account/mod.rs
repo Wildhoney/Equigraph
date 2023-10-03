@@ -1,7 +1,9 @@
 use juniper::GraphQLObject;
 use serde::Deserialize;
 
-use super::{CompanyClass, PaymentFrequency, PaymentStatus};
+use crate::objects;
+
+use super::{PaymentFrequency, PaymentStatus};
 
 #[derive(Debug, PartialEq, Deserialize)]
 pub struct CurrentAccount {
@@ -17,7 +19,7 @@ pub struct CurrentAccount {
     #[serde(alias = "companyName")]
     pub company_name: String,
     #[serde(alias = "companyClass")]
-    pub company_class: CompanyClass,
+    pub company_class: objects::output::CompanyClass,
     #[serde(alias = "paymentHistory")]
     pub payment_history: Vec<PaymentHistory>,
 }

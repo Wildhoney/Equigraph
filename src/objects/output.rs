@@ -1,4 +1,5 @@
 use juniper::{GraphQLEnum, GraphQLObject};
+use serde::Deserialize;
 
 #[derive(Debug, GraphQLObject)]
 #[graphql(description = "")]
@@ -42,4 +43,17 @@ pub enum Impact {
 pub struct Balance {
     pub amount: i32,
     pub currency: String,
+}
+
+#[derive(Debug, PartialEq, Deserialize, GraphQLEnum, Clone)]
+pub enum CompanyClass {
+    #[serde(alias = "BK")]
+    Bank,
+}
+
+#[derive(Debug, GraphQLObject)]
+#[graphql(description = "")]
+pub struct Company<'a> {
+    pub kind: &'a CompanyClass,
+    pub name: &'a String,
 }
