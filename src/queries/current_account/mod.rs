@@ -16,7 +16,7 @@ use self::{
         CurrentAccountChangeObject, CurrentAccountInsightObject, CurrentAccountObject,
         CurrentAccountPaymentHistoryObject, CurrentAccountsObject,
     },
-    utils::{get_accounts, get_delta},
+    utils::{get_accounts, get_delta, get_impact, get_polarity},
 };
 
 #[juniper::graphql_object(context = Context)]
@@ -144,30 +144,11 @@ impl CurrentAccountChangeObject<'_> {
     }
 
     pub fn impact(&self) -> Option<Impact> {
-        let delta = get_delta(&self.since, &self.account, &self.payment_history);
-
-        match delta {
-            Some(delta) => match delta {
-                delta if delta > 1_000 => Some(Impact::High),
-                delta if delta > 500 => Some(Impact::Low),
-                _ => Some(Impact::None),
-            },
-            _ => None,
-        }
+        get_impact(&self.since, &self.account, &self.payment_history)
     }
 
     pub fn polarity(&self) -> Option<Polarity> {
-        let delta = get_delta(&self.since, &self.account, &self.payment_history);
-
-        match delta {
-            Some(delta) => match delta {
-                delta if delta == 0 => Some(Polarity::Unchanged),
-                delta if delta > 0 => Some(Polarity::Negative),
-                delta if delta < 500 => Some(Polarity::Positive),
-                _ => Some(Polarity::Unchanged),
-            },
-            _ => None,
-        }
+        get_polarity(&self.since, &self.account, &self.payment_history)
     }
 }
 
