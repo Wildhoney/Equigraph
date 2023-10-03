@@ -1,4 +1,8 @@
-use crate::{fields, objects, schema::Context};
+use crate::{
+    fields::{self},
+    objects,
+    schema::Context,
+};
 
 use super::changes::CurrentAccountChanges;
 
@@ -14,6 +18,11 @@ impl CurrentAccountPaymentHistory<'_> {
     #[graphql(name = "age_in_months")]
     pub fn age_in_months(&self) -> i32 {
         self.payment_history.age_in_months
+    }
+
+    #[graphql(name = "payment_status")]
+    pub fn payment_status(&self) -> &fields::PaymentStatus {
+        &self.payment_history.payment_status
     }
 
     #[graphql(name = "account_balance")]
