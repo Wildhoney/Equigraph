@@ -1,6 +1,8 @@
-use crate::{fields, objects, parser::types::Report};
+use crate::{objects, parser::types::Report};
 
-pub fn get_score(kind: &fields::score::ScoreLabel, report: &Option<&Report>) -> Option<i32> {
+use super::fields;
+
+pub fn get_score(kind: &fields::ScoreLabel, report: &Option<&Report>) -> Option<i32> {
     match report {
         Some(report) => {
             let score = report
@@ -17,7 +19,7 @@ pub fn get_score(kind: &fields::score::ScoreLabel, report: &Option<&Report>) -> 
 }
 
 pub fn get_delta(
-    kind: &fields::score::ScoreLabel,
+    kind: &fields::ScoreLabel,
     report: &Option<&Report>,
     parent_report: &Option<&Report>,
 ) -> Option<i32> {
@@ -28,7 +30,7 @@ pub fn get_delta(
 }
 
 pub fn get_polarity(
-    kind: &fields::score::ScoreLabel,
+    kind: &fields::ScoreLabel,
     report: &Option<&Report>,
     parent_report: &Option<&Report>,
 ) -> Option<objects::output::Polarity> {
@@ -41,7 +43,7 @@ pub fn get_polarity(
 }
 
 pub fn get_impact(
-    kind: &fields::score::ScoreLabel,
+    kind: &fields::ScoreLabel,
     report: &Option<&Report>,
     parent_report: &Option<&Report>,
 ) -> Option<objects::output::Impact> {
@@ -56,15 +58,15 @@ pub fn get_impact(
     }
 }
 
-pub fn get_maximum_score(kind: &fields::score::ScoreLabel) -> i32 {
+pub fn get_maximum_score(kind: &fields::ScoreLabel) -> i32 {
     match kind {
-        fields::score::ScoreLabel::RNOLF04 => 700,
-        fields::score::ScoreLabel::PSOLF01 => 1_000,
+        fields::ScoreLabel::RNOLF04 => 700,
+        fields::ScoreLabel::PSOLF01 => 1_000,
     }
 }
 
 pub fn get_sentiment(
-    kind: &fields::score::ScoreLabel,
+    kind: &fields::ScoreLabel,
     report: &Option<&Report>,
 ) -> Option<objects::output::Sentiment> {
     let score = get_score(kind, report);
@@ -90,10 +92,12 @@ pub fn get_sentiment(
 #[cfg(test)]
 mod tests {
     use crate::{
-        fields::score::ScoreLabel,
         mocks::get_parsed_reports,
         objects,
-        queries::score::utils::{get_delta, get_impact, get_polarity, get_sentiment},
+        queries::score::{
+            fields::ScoreLabel,
+            utils::{get_delta, get_impact, get_polarity, get_sentiment},
+        },
     };
 
     #[test]

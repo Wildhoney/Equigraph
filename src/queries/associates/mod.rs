@@ -1,4 +1,6 @@
-use crate::{fields, objects, schema::Context};
+pub mod fields;
+
+use crate::{objects, schema::Context};
 use juniper::FieldResult;
 
 pub fn fetch(context: &Context) -> FieldResult<Vec<Associates>> {
@@ -19,7 +21,7 @@ pub fn fetch(context: &Context) -> FieldResult<Vec<Associates>> {
 }
 
 pub struct Associates<'a> {
-    pub person: &'a fields::associate::Associate,
+    pub person: &'a fields::Associate,
 }
 
 #[juniper::graphql_object(context = Context)]

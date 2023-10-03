@@ -1,11 +1,11 @@
-pub mod associate;
 pub mod current_account;
-pub mod score;
 
 use juniper::GraphQLEnum;
 use serde::Deserialize;
 
-use self::{associate::Associates, current_account::CurrentAccount, score::Scores};
+use crate::queries;
+
+use self::current_account::CurrentAccount;
 
 #[derive(Debug, PartialEq, Deserialize)]
 pub struct Report {
@@ -17,8 +17,8 @@ pub struct Report {
 
 #[derive(Debug, PartialEq, Deserialize)]
 pub struct NonAddressSpecificData {
-    pub associates: Associates,
-    pub scores: Scores,
+    pub associates: queries::associates::fields::Associates,
+    pub scores: queries::score::fields::Scores,
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
