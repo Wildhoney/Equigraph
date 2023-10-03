@@ -14,9 +14,9 @@ use crate::{
 use self::{
     types::{
         Company, CurrentAccountChangeObject, CurrentAccountInsightObject, CurrentAccountObject,
-        CurrentAccountsObject, PaymentHistory,
+        CurrentAccountPaymentHistoryObject, CurrentAccountsObject,
     },
-    utils::{get_accounts, get_delta, get_payment_history},
+    utils::{get_accounts, get_delta},
 };
 
 #[juniper::graphql_object(context = Context)]
@@ -95,34 +95,38 @@ impl CurrentAccountObject<'_> {
     }
 
     #[graphql(name = "payment_history")]
-    pub fn payment_history(&self, select: Option<objects::input::Select>) -> Vec<PaymentHistory> {
-        let mut payment_history = get_payment_history(&self.account.payment_history).into_iter();
+    pub fn payment_history(
+        &self,
+        select: Option<objects::input::Select>,
+    ) -> Vec<CurrentAccountPaymentHistoryObject> {
+        let mut payment_histories = self.account.payment_history.iter();
 
-        match select {
-            Some(objects::input::Select::Latest) => match payment_history.nth(0) {
+        let payment_history = match select {
+            Some(objects::input::Select::Latest) => match payment_histories.nth(0) {
                 Some(payment_history) => vec![payment_history],
                 _ => vec![],
             },
-            Some(objects::input::Select::Oldest) => match payment_history.last() {
+            Some(objects::input::Select::Oldest) => match payment_histories.last() {
                 Some(payment_history) => vec![payment_history],
                 _ => vec![],
             },
             Some(objects::input::Select::Polar) => {
-                match [payment_history.nth(0), payment_history.last()] {
+                match [payment_histories.nth(0), payment_histories.last()] {
                     [Some(first), Some(last)] => vec![first, last],
                     _ => vec![],
                 }
             }
-            _ => payment_history.collect::<Vec<_>>(),
-        }
-    }
+            _ => payment_histories.collect::<Vec<_>>(),
+        };
 
-    pub fn change(&self, since: Since) -> CurrentAccountChangeObject {
-        CurrentAccountChangeObject {
-            current_index: 0,
-            since: since.to_owned(),
-            account: &self.account,
-        }
+        payment_history
+            .iter()
+            .map(|payment_history| CurrentAccountPaymentHistoryObject {
+                select: select.to_owned(),
+                account: &self.account,
+                payment_history: payment_history,
+            })
+            .collect::<Vec<_>>()
     }
 }
 
@@ -136,19 +140,11 @@ impl CurrentAccountInsightObject<'_> {
 #[juniper::graphql_object(context = Context)]
 impl CurrentAccountChangeObject<'_> {
     pub fn delta(&self) -> Option<i32> {
-        get_delta(
-            self.current_index,
-            &self.since,
-            &self.account.payment_history,
-        )
+        get_delta(&self.since, &self.account, &self.payment_history)
     }
 
     pub fn impact(&self) -> Option<Impact> {
-        let delta = get_delta(
-            self.current_index,
-            &self.since,
-            &self.account.payment_history,
-        );
+        let delta = get_delta(&self.since, &self.account, &self.payment_history);
 
         match delta {
             Some(delta) => match delta {
@@ -161,11 +157,7 @@ impl CurrentAccountChangeObject<'_> {
     }
 
     pub fn polarity(&self) -> Option<Polarity> {
-        let delta = get_delta(
-            self.current_index,
-            &self.since,
-            &self.account.payment_history,
-        );
+        let delta = get_delta(&self.since, &self.account, &self.payment_history);
 
         match delta {
             Some(delta) => match delta {
@@ -175,6 +167,35 @@ impl CurrentAccountChangeObject<'_> {
                 _ => Some(Polarity::Unchanged),
             },
             _ => None,
+        }
+    }
+}
+
+#[juniper::graphql_object(context = Context)]
+impl CurrentAccountPaymentHistoryObject<'_> {
+    #[graphql(name = "age_in_months")]
+    pub fn age_in_months(&self) -> i32 {
+        self.payment_history.age_in_months
+    }
+
+    #[graphql(name = "account_balance")]
+    pub fn account_balance(&self) -> objects::output::Balance {
+        objects::output::Balance {
+            amount: self.payment_history.account_balance.balance_amount.amount,
+            currency: self
+                .payment_history
+                .account_balance
+                .balance_amount
+                .currency
+                .to_string(),
+        }
+    }
+
+    pub fn change(&self, since: Since) -> CurrentAccountChangeObject {
+        CurrentAccountChangeObject {
+            since: since.to_owned(),
+            account: &self.account,
+            payment_history: &self.payment_history,
         }
     }
 }

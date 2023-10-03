@@ -6,19 +6,23 @@
     insight {
       count
     }
-    list {
-      company_name
+    current_account {
+      company {
+        name
+      }
       account_number
-      has_overdraft
-      current_balance {
-        amount
-        currency
+      payment_history(select: LATEST) {
+        age_in_months
+        account_balance {
+          amount
+          currency
+        }
+        change(since: PREVIOUS) {
+          delta
+          impact
+          polarity
+        }
       }
-      default_balance {
-        amount
-        currency
-      }
-      payment_frequency
     }
   }
 }

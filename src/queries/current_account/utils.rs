@@ -4,8 +4,6 @@ use crate::{
     parser::types::Report,
 };
 
-use super::types::PaymentHistory;
-
 pub fn get_accounts(report: &Report) -> Vec<&fields::current_account::CurrentAccount> {
     report
         .sole_search
@@ -23,39 +21,30 @@ pub fn get_accounts(report: &Report) -> Vec<&fields::current_account::CurrentAcc
         .collect::<Vec<_>>()
 }
 
-pub fn get_payment_history<'a>(
-    payment_history: &'a Vec<fields::current_account::PaymentHistory>,
-) -> Vec<PaymentHistory> {
-    payment_history
-        .into_iter()
-        .map(|payment_history| PaymentHistory {
-            balance: &payment_history.account_balance,
-            age_in_months: payment_history.age_in_months,
-            payment_status: &payment_history.payment_status,
-        })
-        .collect::<Vec<_>>()
-}
-
 pub fn get_delta<'a>(
-    current_index: i32,
     since: &'a Since,
-    payment_history: &'a Vec<fields::current_account::PaymentHistory>,
+    account: &'a fields::current_account::CurrentAccount,
+    payment_history: &'a fields::current_account::PaymentHistory,
 ) -> Option<i32> {
-    let mut payment_history = get_payment_history(payment_history).into_iter();
+    let current_index = account
+        .payment_history
+        .iter()
+        .position(|x| x == payment_history)?;
+    let mut payment_histories = account.payment_history.iter();
 
-    let current_amount = payment_history
+    let current_amount = payment_histories
         .nth(current_index as usize)?
-        .balance
+        .account_balance
         .balance_amount
         .amount;
 
     match since {
-        Since::First => match payment_history.last() {
-            Some(last) => Some(current_amount - last.balance.balance_amount.amount),
+        Since::First => match payment_histories.last() {
+            Some(last) => Some(current_amount - last.account_balance.balance_amount.amount),
             _ => None,
         },
-        Since::Previous => match payment_history.nth(current_index as usize + 1) {
-            Some(previous) => Some(current_amount - previous.balance.balance_amount.amount),
+        Since::Previous => match payment_histories.nth(current_index as usize + 1) {
+            Some(previous) => Some(current_amount - previous.account_balance.balance_amount.amount),
             _ => None,
         },
         Since::Next => {
@@ -63,8 +52,8 @@ pub fn get_delta<'a>(
                 return None;
             }
 
-            match payment_history.nth(current_index as usize - 1) {
-                Some(next) => Some(current_amount - next.balance.balance_amount.amount),
+            match payment_histories.nth(current_index as usize - 1) {
+                Some(next) => Some(current_amount - next.account_balance.balance_amount.amount),
                 _ => None,
             }
         }
