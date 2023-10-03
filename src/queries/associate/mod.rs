@@ -8,9 +8,9 @@ use self::types::AssociateObject;
 impl AssociateObject<'_> {
     pub fn name(&self) -> objects::output::Name {
         objects::output::Name {
-            title: self.person.name.title.to_string(),
-            forename: self.person.name.forename.to_string(),
-            surname: self.person.name.surname.to_string(),
+            title: &self.person.name.title,
+            forename: &self.person.name.forename,
+            surname: &self.person.name.surname,
         }
     }
     #[graphql(name = "date_of_birth")]

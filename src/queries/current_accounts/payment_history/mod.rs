@@ -29,12 +29,7 @@ impl CurrentAccountPaymentHistory<'_> {
     pub fn account_balance(&self) -> objects::output::Balance {
         objects::output::Balance {
             amount: self.payment_history.account_balance.balance_amount.amount,
-            currency: self
-                .payment_history
-                .account_balance
-                .balance_amount
-                .currency
-                .to_string(),
+            currency: &self.payment_history.account_balance.balance_amount.currency,
         }
     }
 

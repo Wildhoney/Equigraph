@@ -30,12 +30,7 @@ impl CurrentAccount<'_> {
     pub fn current_balance(&self) -> objects::output::Balance {
         objects::output::Balance {
             amount: self.account.current_balance.balance_amount.amount,
-            currency: self
-                .account
-                .current_balance
-                .balance_amount
-                .currency
-                .to_string(),
+            currency: &self.account.current_balance.balance_amount.currency,
         }
     }
 
@@ -43,12 +38,7 @@ impl CurrentAccount<'_> {
     pub fn default_balance(&self) -> objects::output::Balance {
         objects::output::Balance {
             amount: self.account.default_balance.balance_amount.amount,
-            currency: self
-                .account
-                .default_balance
-                .balance_amount
-                .currency
-                .to_string(),
+            currency: &self.account.default_balance.balance_amount.currency,
         }
     }
 
@@ -56,12 +46,7 @@ impl CurrentAccount<'_> {
     pub fn start_balance(&self) -> objects::output::Balance {
         objects::output::Balance {
             amount: self.account.start_balance.balance_amount.amount,
-            currency: self
-                .account
-                .start_balance
-                .balance_amount
-                .currency
-                .to_string(),
+            currency: &self.account.start_balance.balance_amount.currency,
         }
     }
 

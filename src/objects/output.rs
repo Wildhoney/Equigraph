@@ -11,10 +11,10 @@ pub struct Date {
 
 #[derive(Debug, GraphQLObject)]
 #[graphql(description = "")]
-pub struct Name {
-    pub title: String,
-    pub forename: String,
-    pub surname: String,
+pub struct Name<'a> {
+    pub title: &'a str,
+    pub forename: &'a str,
+    pub surname: &'a str,
 }
 
 #[derive(Debug, PartialEq, GraphQLEnum)]
@@ -40,9 +40,9 @@ pub enum Impact {
 
 #[derive(Debug, GraphQLObject)]
 #[graphql(description = "")]
-pub struct Balance {
+pub struct Balance<'a> {
     pub amount: i32,
-    pub currency: String,
+    pub currency: &'a str,
 }
 
 #[derive(Debug, PartialEq, Deserialize, GraphQLEnum, Clone)]
