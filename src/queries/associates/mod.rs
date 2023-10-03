@@ -1,11 +1,11 @@
-pub mod types;
+use crate::{fields, objects, schema::Context};
 
-use crate::{objects, schema::Context};
-
-use self::types::AssociateObject;
+pub struct Associates<'a> {
+    pub person: &'a fields::associate::Associate,
+}
 
 #[juniper::graphql_object(context = Context)]
-impl AssociateObject<'_> {
+impl Associates<'_> {
     pub fn name(&self) -> objects::output::Name {
         objects::output::Name {
             title: &self.person.name.title,

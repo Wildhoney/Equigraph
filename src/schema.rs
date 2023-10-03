@@ -4,8 +4,7 @@ use crate::{
     fields,
     parser::types::Reports,
     queries::{
-        associate::types::AssociateObject, current_accounts::CurrentAccounts,
-        score::types::ScoreObject,
+        associates::Associates, current_accounts::CurrentAccounts, score::types::ScoreObject,
     },
 };
 
@@ -25,14 +24,14 @@ impl QueryRoot {
             report: context.reports.get(0),
         })
     }
-    fn associates(context: &Context) -> FieldResult<Vec<AssociateObject>> {
+    fn associates(context: &Context) -> FieldResult<Vec<Associates>> {
         let associates = context.reports.get(0).map(|report| {
             report
                 .non_address_specific_data
                 .associates
                 .associate
                 .iter()
-                .map(|associate| AssociateObject { person: &associate })
+                .map(|associate| Associates { person: &associate })
                 .collect::<Vec<_>>()
         });
 
