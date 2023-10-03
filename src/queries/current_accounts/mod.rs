@@ -4,11 +4,17 @@ mod insights;
 mod payment_history;
 mod utils;
 
-use crate::{fields::Report, schema::Context};
-
 use self::{
     current_account::CurrentAccount, insights::CurrentAccountInsights, utils::get_accounts,
 };
+use crate::{fields::Report, schema::Context};
+use juniper::FieldResult;
+
+pub fn fetch(context: &Context) -> FieldResult<CurrentAccounts> {
+    Ok(CurrentAccounts {
+        report: context.reports.get(0),
+    })
+}
 
 #[derive(Debug, PartialEq)]
 pub struct CurrentAccounts<'a> {

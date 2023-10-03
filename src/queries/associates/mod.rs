@@ -1,4 +1,22 @@
 use crate::{fields, objects, schema::Context};
+use juniper::FieldResult;
+
+pub fn fetch(context: &Context) -> FieldResult<Vec<Associates>> {
+    let associates = context.reports.get(0).map(|report| {
+        report
+            .non_address_specific_data
+            .associates
+            .associate
+            .iter()
+            .map(|associate| Associates { person: &associate })
+            .collect::<Vec<_>>()
+    });
+
+    match associates {
+        Some(associates) => Ok(associates),
+        None => Ok(vec![]),
+    }
+}
 
 pub struct Associates<'a> {
     pub person: &'a fields::associate::Associate,

@@ -1,12 +1,13 @@
-use juniper::{EmptyMutation, EmptySubscription, FieldResult, RootNode};
-
 use crate::{
     fields,
     parser::types::Reports,
     queries::{
-        associates::Associates, current_accounts::CurrentAccounts, score::types::ScoreObject,
+        associates::{self, Associates},
+        current_accounts::{self, CurrentAccounts},
+        score::{self, types::ScoreObject},
     },
 };
+use juniper::{EmptyMutation, EmptySubscription, FieldResult, RootNode};
 
 pub struct QueryRoot;
 
@@ -19,32 +20,14 @@ pub fn create_schema() -> Schema {
 #[juniper::graphql_object(context = Context)]
 impl QueryRoot {
     fn score(kind: fields::score::ScoreLabel, context: &Context) -> FieldResult<ScoreObject> {
-        Ok(ScoreObject {
-            kind,
-            report: context.reports.get(0),
-        })
+        score::fetch(kind, context)
     }
     fn associates(context: &Context) -> FieldResult<Vec<Associates>> {
-        let associates = context.reports.get(0).map(|report| {
-            report
-                .non_address_specific_data
-                .associates
-                .associate
-                .iter()
-                .map(|associate| Associates { person: &associate })
-                .collect::<Vec<_>>()
-        });
-
-        match associates {
-            Some(associates) => Ok(associates),
-            None => Ok(vec![]),
-        }
+        associates::fetch(context)
     }
     #[graphql(name = "current_accounts")]
     fn current_accounts(context: &Context) -> FieldResult<CurrentAccounts> {
-        Ok(CurrentAccounts {
-            report: context.reports.get(0),
-        })
+        current_accounts::fetch(context)
     }
 }
 

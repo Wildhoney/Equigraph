@@ -1,18 +1,23 @@
 pub mod types;
 pub mod utils;
 
-use juniper::FieldResult;
-
+use self::{
+    types::{ScoreChangeObject, ScoreInsightObject, ScoreObject},
+    utils::{get_delta, get_impact, get_maximum_score, get_polarity, get_score, get_sentiment},
+};
 use crate::{
     fields, objects,
     parser::utils::{backward_by, forward_by},
     schema::Context,
 };
+use juniper::FieldResult;
 
-use self::{
-    types::{ScoreChangeObject, ScoreInsightObject, ScoreObject},
-    utils::{get_delta, get_impact, get_maximum_score, get_polarity, get_score, get_sentiment},
-};
+pub fn fetch(kind: fields::score::ScoreLabel, context: &Context) -> FieldResult<ScoreObject> {
+    Ok(ScoreObject {
+        kind,
+        report: context.reports.get(0),
+    })
+}
 
 #[juniper::graphql_object(context = Context)]
 impl ScoreObject<'_> {
