@@ -24,7 +24,7 @@ impl ScoreObject<'_> {
         get_maximum_score(&self.kind)
     }
 
-    pub fn change(
+    pub fn changes(
         &self,
         context: &Context,
         since: objects::input::Since,
@@ -40,7 +40,7 @@ impl ScoreObject<'_> {
         })
     }
 
-    pub fn insight(&self) -> FieldResult<ScoreInsightObject> {
+    pub fn insights(&self) -> FieldResult<ScoreInsightObject> {
         Ok(ScoreInsightObject {
             kind: &self.kind,
             report: self.report,

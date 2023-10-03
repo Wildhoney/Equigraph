@@ -13,6 +13,8 @@ pub struct CurrentAccount {
     pub current_balance: Balance,
     #[serde(alias = "defaultBalance")]
     pub default_balance: Balance,
+    #[serde(alias = "startBalance")]
+    pub start_balance: Balance,
     pub overdraft: bool,
     #[serde(alias = "paymentFrequency")]
     pub payment_frequency: PaymentFrequency,

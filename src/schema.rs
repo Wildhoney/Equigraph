@@ -4,7 +4,7 @@ use crate::{
     fields,
     parser::types::Reports,
     queries::{
-        associate::types::AssociateObject, current_account::types::CurrentAccountsObject,
+        associate::types::AssociateObject, current_accounts::CurrentAccounts,
         score::types::ScoreObject,
     },
 };
@@ -42,8 +42,8 @@ impl QueryRoot {
         }
     }
     #[graphql(name = "current_accounts")]
-    fn current_accounts(context: &Context) -> FieldResult<CurrentAccountsObject> {
-        Ok(CurrentAccountsObject {
+    fn current_accounts(context: &Context) -> FieldResult<CurrentAccounts> {
+        Ok(CurrentAccounts {
             report: context.reports.get(0),
         })
     }

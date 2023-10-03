@@ -3,7 +3,7 @@
 ```graphql
 {
   current_accounts {
-    insight {
+    insights {
       count
     }
     current_account {
@@ -17,7 +17,7 @@
           amount
           currency
         }
-        change(since: PREVIOUS) {
+        changes(since: PREVIOUS) {
           delta
           impact
           polarity
