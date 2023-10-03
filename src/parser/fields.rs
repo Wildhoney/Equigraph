@@ -1,11 +1,7 @@
-pub mod current_account;
-
 use juniper::GraphQLEnum;
 use serde::Deserialize;
 
-use crate::queries;
-
-use self::current_account::CurrentAccount;
+use crate::queries::{self};
 
 #[derive(Debug, PartialEq, Deserialize)]
 pub struct Report {
@@ -68,7 +64,7 @@ pub struct AddressSpecificData {
 #[derive(Debug, PartialEq, Deserialize)]
 pub struct InsightData {
     #[serde(alias = "currentAccount")]
-    pub current_account: Vec<CurrentAccount>,
+    pub current_account: Vec<queries::current_accounts::fields::CurrentAccount>,
 }
 
 #[derive(Debug, PartialEq, Deserialize)]

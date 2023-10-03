@@ -1,5 +1,6 @@
-use crate::fields;
 use serde::Deserialize;
+
+use crate::parser::fields;
 
 #[derive(Debug, PartialEq, Deserialize)]
 pub struct Associates {

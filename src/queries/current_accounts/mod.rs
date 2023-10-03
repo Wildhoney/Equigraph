@@ -1,5 +1,6 @@
 mod changes;
 mod current_account;
+pub mod fields;
 mod insights;
 mod payment_history;
 mod utils;
@@ -7,7 +8,7 @@ mod utils;
 use self::{
     current_account::CurrentAccount, insights::CurrentAccountInsights, utils::get_accounts,
 };
-use crate::{fields::Report, schema::Context};
+use crate::{parser::fields::Report, schema::Context};
 use juniper::FieldResult;
 
 pub fn fetch(context: &Context) -> FieldResult<CurrentAccounts> {

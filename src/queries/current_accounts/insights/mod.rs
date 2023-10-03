@@ -1,8 +1,10 @@
-use crate::{fields, schema::Context};
+use crate::schema::Context;
+
+use super::fields;
 
 #[derive(Debug, PartialEq)]
 pub struct CurrentAccountInsights<'a> {
-    pub accounts: Vec<&'a fields::current_account::CurrentAccount>,
+    pub accounts: Vec<&'a fields::CurrentAccount>,
 }
 
 #[juniper::graphql_object(context = Context)]

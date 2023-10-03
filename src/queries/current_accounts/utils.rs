@@ -1,9 +1,7 @@
-use crate::{
-    fields::{self},
-    parser::types::Report,
-};
+use super::fields;
+use crate::parser::types::Report;
 
-pub fn get_accounts(report: &Report) -> Vec<&fields::current_account::CurrentAccount> {
+pub fn get_accounts(report: &Report) -> Vec<&fields::CurrentAccount> {
     report
         .sole_search
         .primary

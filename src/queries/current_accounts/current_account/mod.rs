@@ -1,10 +1,10 @@
-use crate::{fields, objects, schema::Context};
+use crate::{objects, parser::fields::PaymentFrequency, schema::Context};
 
-use super::payment_history::CurrentAccountPaymentHistory;
+use super::{fields, payment_history::CurrentAccountPaymentHistory};
 
 #[derive(Debug, PartialEq)]
 pub struct CurrentAccount<'a> {
-    pub account: &'a fields::current_account::CurrentAccount,
+    pub account: &'a fields::CurrentAccount,
 }
 
 #[juniper::graphql_object(context = Context)]
@@ -51,7 +51,7 @@ impl CurrentAccount<'_> {
     }
 
     #[graphql(name = "payment_frequency")]
-    pub fn payment_frequency(&self) -> &fields::PaymentFrequency {
+    pub fn payment_frequency(&self) -> &PaymentFrequency {
         &self.account.payment_frequency
     }
 

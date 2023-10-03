@@ -1,3 +1,4 @@
+pub mod fields;
 pub mod types;
 pub mod utils;
 

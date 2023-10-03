@@ -1,12 +1,12 @@
 use crate::{
-    fields,
     objects::{self},
+    queries::current_accounts::fields,
 };
 
 pub fn get_delta<'a>(
     since: &'a objects::input::Since,
-    account: &'a fields::current_account::CurrentAccount,
-    payment_history: &'a fields::current_account::PaymentHistory,
+    account: &'a fields::CurrentAccount,
+    payment_history: &'a fields::PaymentHistory,
 ) -> Option<i32> {
     let current_index = account
         .payment_history
@@ -42,8 +42,8 @@ pub fn get_delta<'a>(
 
 pub fn get_polarity<'a>(
     since: &'a objects::input::Since,
-    account: &'a fields::current_account::CurrentAccount,
-    payment_history: &'a fields::current_account::PaymentHistory,
+    account: &'a fields::CurrentAccount,
+    payment_history: &'a fields::PaymentHistory,
 ) -> Option<objects::output::Polarity> {
     let delta = get_delta(&since, &account, &payment_history);
 
@@ -60,8 +60,8 @@ pub fn get_polarity<'a>(
 
 pub fn get_impact<'a>(
     since: &'a objects::input::Since,
-    account: &'a fields::current_account::CurrentAccount,
-    payment_history: &'a fields::current_account::PaymentHistory,
+    account: &'a fields::CurrentAccount,
+    payment_history: &'a fields::PaymentHistory,
 ) -> Option<objects::output::Impact> {
     let delta = get_delta(&since, &account, &payment_history);
 

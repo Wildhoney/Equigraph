@@ -1,16 +1,12 @@
-use crate::{
-    fields::{self},
-    objects,
-    schema::Context,
-};
-
 use super::changes::CurrentAccountChanges;
+use super::fields;
+use crate::{objects, parser::fields::PaymentStatus, schema::Context};
 
 #[derive(Debug, PartialEq)]
 pub struct CurrentAccountPaymentHistory<'a> {
     pub select: Option<objects::input::Select>,
-    pub account: &'a fields::current_account::CurrentAccount,
-    pub payment_history: &'a fields::current_account::PaymentHistory,
+    pub account: &'a fields::CurrentAccount,
+    pub payment_history: &'a fields::PaymentHistory,
 }
 
 #[juniper::graphql_object(context = Context)]
@@ -21,7 +17,7 @@ impl CurrentAccountPaymentHistory<'_> {
     }
 
     #[graphql(name = "payment_status")]
-    pub fn payment_status(&self) -> &fields::PaymentStatus {
+    pub fn payment_status(&self) -> &PaymentStatus {
         &self.payment_history.payment_status
     }
 

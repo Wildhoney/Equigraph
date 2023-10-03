@@ -1,4 +1,3 @@
-mod fields;
 mod mocks;
 mod objects;
 mod parser;

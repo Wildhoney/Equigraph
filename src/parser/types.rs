@@ -1,4 +1,4 @@
-use crate::fields;
+use super::fields;
 
 pub type Reports = Vec<Report>;
 
