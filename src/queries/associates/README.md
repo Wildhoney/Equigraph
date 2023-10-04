@@ -1,4 +1,4 @@
-# Associate
+# Associates
 
 ```graphql
 {

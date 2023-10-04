@@ -1,4 +1,4 @@
-# Current Account
+# Current Accounts
 
 ```graphql
 {
