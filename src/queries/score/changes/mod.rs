@@ -15,27 +15,29 @@ use crate::{
 };
 use juniper::FieldResult;
 
-pub fn fetch<'a>(
-    kind: &'a ScoreLabelField,
-    report: Option<&'a Report>,
-    context: &'a Context,
-    since: Since,
-) -> FieldResult<ScoreChange<'a>> {
-    Ok(ScoreChange {
-        kind,
-        report: match since {
-            Since::First => context.reports.last(),
-            Since::Previous => forward_by(1, report, &context.reports),
-            Since::Next => backward_by(1, report, &context.reports),
-        },
-        parent_report: report,
-    })
-}
-
 pub struct ScoreChange<'a> {
     pub kind: &'a ScoreLabelField,
     pub report: Option<&'a Report>,
     pub parent_report: Option<&'a Report>,
+}
+
+impl ScoreChange<'_> {
+    pub fn new<'a>(
+        kind: &'a ScoreLabelField,
+        report: Option<&'a Report>,
+        context: &'a Context,
+        since: Since,
+    ) -> FieldResult<ScoreChange<'a>> {
+        Ok(ScoreChange {
+            kind,
+            report: match since {
+                Since::First => context.reports.last(),
+                Since::Previous => forward_by(1, report, &context.reports),
+                Since::Next => backward_by(1, report, &context.reports),
+            },
+            parent_report: report,
+        })
+    }
 }
 
 #[juniper::graphql_object(context = Context)]

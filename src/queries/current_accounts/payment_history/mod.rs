@@ -4,43 +4,45 @@ use crate::objects::input::{Select, Since};
 use crate::objects::output::Balance;
 use crate::{parser::fields::PaymentStatusField, schema::Context};
 
-pub fn fetch<'a>(
-    select: Option<Select>,
-    account: &'a CurrentAccountField,
-) -> Vec<CurrentAccountPaymentHistory> {
-    let mut payment_histories = account.payment_history.iter();
-
-    let payment_history = match select {
-        Some(Select::Latest) => match payment_histories.nth(0) {
-            Some(payment_history) => vec![payment_history],
-            _ => vec![],
-        },
-        Some(Select::Oldest) => match payment_histories.last() {
-            Some(payment_history) => vec![payment_history],
-            _ => vec![],
-        },
-        Some(Select::Polar) => match [payment_histories.nth(0), payment_histories.last()] {
-            [Some(first), Some(last)] => vec![first, last],
-            _ => vec![],
-        },
-        _ => payment_histories.collect::<Vec<_>>(),
-    };
-
-    payment_history
-        .iter()
-        .map(|payment_history| CurrentAccountPaymentHistory {
-            select: select.to_owned(),
-            account,
-            payment_history: payment_history,
-        })
-        .collect::<Vec<_>>()
-}
-
 #[derive(Debug, PartialEq)]
 pub struct CurrentAccountPaymentHistory<'a> {
     pub select: Option<Select>,
     pub account: &'a CurrentAccountField,
     pub payment_history: &'a fields::PaymentHistoryField,
+}
+
+impl CurrentAccountPaymentHistory<'_> {
+    pub fn new<'a>(
+        select: Option<Select>,
+        account: &'a CurrentAccountField,
+    ) -> Vec<CurrentAccountPaymentHistory> {
+        let mut payment_histories = account.payment_history.iter();
+
+        let payment_history = match select {
+            Some(Select::Latest) => match payment_histories.nth(0) {
+                Some(payment_history) => vec![payment_history],
+                _ => vec![],
+            },
+            Some(Select::Oldest) => match payment_histories.last() {
+                Some(payment_history) => vec![payment_history],
+                _ => vec![],
+            },
+            Some(Select::Polar) => match [payment_histories.nth(0), payment_histories.last()] {
+                [Some(first), Some(last)] => vec![first, last],
+                _ => vec![],
+            },
+            _ => payment_histories.collect::<Vec<_>>(),
+        };
+
+        payment_history
+            .iter()
+            .map(|payment_history| CurrentAccountPaymentHistory {
+                select: select.to_owned(),
+                account,
+                payment_history: payment_history,
+            })
+            .collect::<Vec<_>>()
+    }
 }
 
 #[juniper::graphql_object(context = Context)]

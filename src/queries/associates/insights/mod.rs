@@ -1,13 +1,14 @@
-use juniper::FieldResult;
-
 use crate::{parser::types::Report, schema::Context};
-
-pub fn fetch<'a>(report: &'a Option<&'a Report>) -> FieldResult<Insights> {
-    Ok(Insights { report })
-}
+use juniper::FieldResult;
 
 pub struct Insights<'a> {
     pub report: &'a Option<&'a Report>,
+}
+
+impl Insights<'_> {
+    pub fn new<'a>(report: &'a Option<&Report>) -> FieldResult<Insights<'a>> {
+        Ok(Insights { report })
+    }
 }
 
 #[juniper::graphql_object(context = Context)]

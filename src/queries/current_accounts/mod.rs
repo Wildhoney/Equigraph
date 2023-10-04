@@ -9,25 +9,27 @@ use self::{current_account::CurrentAccount, insights::CurrentAccountInsights};
 use crate::{parser::fields::ReportField, schema::Context};
 use juniper::FieldResult;
 
-pub fn fetch(context: &Context) -> FieldResult<CurrentAccounts> {
-    Ok(CurrentAccounts {
-        report: context.reports.get(0),
-    })
-}
-
 #[derive(Debug, PartialEq)]
 pub struct CurrentAccounts<'a> {
     pub report: Option<&'a ReportField>,
+}
+
+impl CurrentAccounts<'_> {
+    pub fn new(context: &Context) -> FieldResult<CurrentAccounts> {
+        Ok(CurrentAccounts {
+            report: context.reports.get(0),
+        })
+    }
 }
 
 #[juniper::graphql_object(context = Context)]
 impl CurrentAccounts<'_> {
     #[graphql(name = "current_account")]
     pub fn current_account(&self) -> Vec<CurrentAccount> {
-        current_account::fetch(self.report)
+        CurrentAccount::new(self.report)
     }
 
     pub fn insights(&self) -> Option<CurrentAccountInsights> {
-        insights::fetch(self.report)
+        CurrentAccountInsights::new(self.report)
     }
 }

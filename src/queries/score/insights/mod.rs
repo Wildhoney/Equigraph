@@ -3,17 +3,19 @@ use juniper::FieldResult;
 use super::{fields::ScoreLabelField, utils::get_sentiment};
 use crate::{objects::output::Sentiment, parser::types::Report, schema::Context};
 
-pub fn fetch<'a>(
-    kind: &'a ScoreLabelField,
-    report: Option<&'a Report>,
-) -> FieldResult<ScoreInsight<'a>> {
-    Ok(ScoreInsight { kind, report })
-}
-
 #[derive(Debug, PartialEq)]
 pub struct ScoreInsight<'a> {
     pub kind: &'a ScoreLabelField,
     pub report: Option<&'a Report>,
+}
+
+impl ScoreInsight<'_> {
+    pub fn new<'a>(
+        kind: &'a ScoreLabelField,
+        report: Option<&'a Report>,
+    ) -> FieldResult<ScoreInsight<'a>> {
+        Ok(ScoreInsight { kind, report })
+    }
 }
 
 #[juniper::graphql_object(context = Context)]

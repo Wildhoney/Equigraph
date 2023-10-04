@@ -1,7 +1,5 @@
 use super::{
-    fields::CurrentAccountField,
-    payment_history::{self, CurrentAccountPaymentHistory},
-    utils::get_accounts,
+    fields::CurrentAccountField, payment_history::CurrentAccountPaymentHistory, utils::get_accounts,
 };
 use crate::{
     objects::{
@@ -12,21 +10,23 @@ use crate::{
     schema::Context,
 };
 
-pub fn fetch<'a>(report: Option<&'a Report>) -> Vec<CurrentAccount> {
-    match report {
-        Some(report) => get_accounts(report)
-            .iter()
-            .map(|current_account| CurrentAccount {
-                account: &current_account,
-            })
-            .collect::<Vec<_>>(),
-        None => vec![],
-    }
-}
-
 #[derive(Debug, PartialEq)]
 pub struct CurrentAccount<'a> {
     pub account: &'a CurrentAccountField,
+}
+
+impl CurrentAccount<'_> {
+    pub fn new<'a>(report: Option<&'a Report>) -> Vec<CurrentAccount> {
+        match report {
+            Some(report) => get_accounts(report)
+                .iter()
+                .map(|current_account| CurrentAccount {
+                    account: &current_account,
+                })
+                .collect::<Vec<_>>(),
+            None => vec![],
+        }
+    }
 }
 
 #[juniper::graphql_object(context = Context)]
@@ -79,6 +79,6 @@ impl CurrentAccount<'_> {
 
     #[graphql(name = "payment_history")]
     pub fn payment_history(&self, select: Option<Select>) -> Vec<CurrentAccountPaymentHistory> {
-        payment_history::fetch(select, self.account)
+        CurrentAccountPaymentHistory::new(select, self.account)
     }
 }

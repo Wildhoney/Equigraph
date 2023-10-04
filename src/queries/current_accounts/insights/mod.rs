@@ -1,18 +1,20 @@
 use super::{fields::CurrentAccountField, utils::get_accounts};
 use crate::{parser::types::Report, schema::Context};
 
-pub fn fetch<'a>(report: Option<&'a Report>) -> Option<CurrentAccountInsights> {
-    match report {
-        Some(report) => Some(CurrentAccountInsights {
-            accounts: get_accounts(report),
-        }),
-        None => None,
-    }
-}
-
 #[derive(Debug, PartialEq)]
 pub struct CurrentAccountInsights<'a> {
     pub accounts: Vec<&'a CurrentAccountField>,
+}
+
+impl CurrentAccountInsights<'_> {
+    pub fn new<'a>(report: Option<&'a Report>) -> Option<CurrentAccountInsights> {
+        match report {
+            Some(report) => Some(CurrentAccountInsights {
+                accounts: get_accounts(report),
+            }),
+            None => None,
+        }
+    }
 }
 
 #[juniper::graphql_object(context = Context)]

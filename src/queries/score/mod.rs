@@ -12,17 +12,19 @@ use self::{
 use crate::{objects::input::Since, parser::types::Report, schema::Context};
 use juniper::FieldResult;
 
-pub fn fetch(kind: ScoreLabelField, context: &Context) -> FieldResult<Score> {
-    Ok(Score {
-        kind,
-        report: context.reports.get(0),
-    })
-}
-
 #[derive(Debug, PartialEq)]
 pub struct Score<'a> {
     pub kind: ScoreLabelField,
     pub report: Option<&'a Report>,
+}
+
+impl Score<'_> {
+    pub fn new(kind: ScoreLabelField, context: &Context) -> FieldResult<Score> {
+        Ok(Score {
+            kind,
+            report: context.reports.get(0),
+        })
+    }
 }
 
 #[juniper::graphql_object(context = Context)]
@@ -36,10 +38,10 @@ impl Score<'_> {
     }
 
     pub fn changes(&self, context: &Context, since: Since) -> FieldResult<ScoreChange> {
-        changes::fetch(&self.kind, self.report, context, since)
+        ScoreChange::new(&self.kind, self.report, context, since)
     }
 
     pub fn insights(&self) -> FieldResult<ScoreInsight> {
-        insights::fetch(&self.kind, self.report)
+        ScoreInsight::new(&self.kind, self.report)
     }
 }

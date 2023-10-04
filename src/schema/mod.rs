@@ -1,9 +1,9 @@
 use crate::{
     parser::types::Reports,
     queries::{
-        associates::{self, Associates},
-        current_accounts::{self, CurrentAccounts},
-        score::{self, fields::ScoreLabelField, Score},
+        associates::Associates,
+        current_accounts::CurrentAccounts,
+        score::{fields::ScoreLabelField, Score},
     },
 };
 use juniper::{EmptyMutation, EmptySubscription, FieldResult, RootNode};
@@ -19,16 +19,16 @@ pub fn create_schema() -> Schema {
 #[juniper::graphql_object(context = Context)]
 impl QueryRoot {
     fn score(kind: ScoreLabelField, context: &Context) -> FieldResult<Score> {
-        score::fetch(kind, context)
+        Score::new(kind, context)
     }
 
     fn associates(context: &Context) -> FieldResult<Associates> {
-        associates::fetch(context)
+        Associates::new(context)
     }
 
     #[graphql(name = "current_accounts")]
     fn current_accounts(context: &Context) -> FieldResult<CurrentAccounts> {
-        current_accounts::fetch(context)
+        CurrentAccounts::new(context)
     }
 }
 
