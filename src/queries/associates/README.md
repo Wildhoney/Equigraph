@@ -3,23 +3,29 @@
 ```graphql
 {
   associates {
-    name {
-      title
-      forename
-      surname
+    insights {
+      associates_count
     }
-    date_of_birth {
-      day
-      month
-      year
-      # insight {
-      #   age
-      #   known_since
-      # }
-      # electoral_roll {
-      # ...
-      # }
+    associate {
+      name {
+        title
+        forename
+        surname
+      }
+      date_of_birth {
+        day
+        month
+        year
+      }
     }
   }
 }
+
+# insight {
+#   age
+#   known_since
+# }
+# electoral_roll {
+# ...
+# }
 ```
