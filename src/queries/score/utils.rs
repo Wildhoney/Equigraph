@@ -43,3 +43,55 @@ pub fn get_sentiment(kind: &ScoreLabelField, report: &Option<&Report>) -> Option
         _ => None,
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::{
+        mocks::get_parsed_reports,
+        objects::output::Sentiment,
+        queries::score::{fields::ScoreLabelField, utils::get_maximum_score},
+    };
+
+    use super::get_score;
+
+    #[test]
+    fn it_can_compute_score_for_psolf01() {
+        let reports = get_parsed_reports();
+        assert_eq!(
+            get_score(&ScoreLabelField::PSOLF01, &reports.get(0)),
+            Some(956)
+        );
+    }
+
+    #[test]
+    fn it_can_compute_score_for_rnolf04() {
+        let reports = get_parsed_reports();
+        assert_eq!(
+            get_score(&ScoreLabelField::RNOLF04, &reports.get(0)),
+            Some(538)
+        );
+    }
+
+    #[test]
+    fn it_can_compute_maximum_score_for_psolf01() {
+        assert_eq!(get_maximum_score(&ScoreLabelField::PSOLF01), 1_000);
+    }
+
+    #[test]
+    fn it_can_compute_maximum_score_for_rnolf04() {
+        assert_eq!(get_maximum_score(&ScoreLabelField::RNOLF04), 700);
+    }
+
+    #[test]
+    fn it_can_compute_sentiment() {
+        let reports = get_parsed_reports();
+        assert_eq!(
+            super::get_sentiment(&ScoreLabelField::PSOLF01, &reports.get(0)),
+            Some(Sentiment::High)
+        );
+        assert_eq!(
+            super::get_sentiment(&ScoreLabelField::RNOLF04, &reports.get(0)),
+            Some(Sentiment::High)
+        );
+    }
+}

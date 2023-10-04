@@ -1,7 +1,7 @@
 mod changes;
 pub mod fields;
 mod insights;
-pub mod utils;
+mod utils;
 
 use self::{
     changes::ScoreChange,
@@ -43,5 +43,36 @@ impl Score<'_> {
 
     pub fn insights(&self) -> FieldResult<ScoreInsight> {
         ScoreInsight::new(&self.kind, self.report)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::mocks::run_graphql_query;
+    use juniper::graphql_value;
+    use std::collections::HashMap;
+
+    #[test]
+    fn it_can_get_score() {
+        let query = r#"
+            query Score {
+                old_score: score(kind: RNOLF04) {
+                    current
+                    maximum
+                }
+                new_score: score(kind: PSOLF01) {
+                    current
+                    maximum
+                }
+            }
+        "#;
+
+        assert_eq!(
+            run_graphql_query(query, HashMap::new()),
+            graphql_value!({
+                "old_score": {"current": 538, "maximum": 700},
+                "new_score": {"current": 956, "maximum": 1000}
+            })
+        );
     }
 }

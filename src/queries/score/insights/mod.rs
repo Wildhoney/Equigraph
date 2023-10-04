@@ -27,8 +27,12 @@ impl ScoreInsight<'_> {
 
 #[cfg(test)]
 mod tests {
+    use std::collections::HashMap;
+
+    use juniper::graphql_value;
+
     use crate::{
-        mocks::get_parsed_reports,
+        mocks::{get_parsed_reports, run_graphql_query},
         objects::output::Sentiment,
         queries::score::{fields::ScoreLabelField, utils::get_sentiment},
     };
@@ -40,6 +44,26 @@ mod tests {
         assert_eq!(
             get_sentiment(&ScoreLabelField::PSOLF01, &reports.get(0)),
             Some(Sentiment::High)
+        );
+    }
+
+    #[test]
+    fn it_can_display_insights() {
+        let query = r#"
+            query Score {
+                score(kind: PSOLF01) {
+                    insights {
+                        sentiment
+                    }
+                }
+            }
+        "#;
+
+        assert_eq!(
+            run_graphql_query(query, HashMap::new()),
+            graphql_value!({
+                "score": {"insights": { "sentiment": "HIGH" }}
+            })
         );
     }
 }

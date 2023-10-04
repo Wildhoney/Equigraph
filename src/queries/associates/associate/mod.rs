@@ -49,3 +49,58 @@ impl Associate<'_> {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::mocks::run_graphql_query;
+    use juniper::graphql_value;
+    use std::collections::HashMap;
+
+    #[test]
+    fn it_can_get_associate_name() {
+        let query = r#"
+            query Associates {
+                associates {
+                    associate {
+                        name {
+                            title
+                            forename
+                            surname
+                        }
+                    }
+                }
+            }
+        "#;
+
+        assert_eq!(
+            run_graphql_query(query, HashMap::new()),
+            graphql_value!({
+                "associates": {"associate": [{"name": {"title": "MRS", "forename": "GIHOY", "surname": "HENYJACI"}}]}
+            })
+        );
+    }
+
+    #[test]
+    fn it_can_get_associate_date_of_birth() {
+        let query = r#"
+            query Associates {
+                associates {
+                    associate {
+                        date_of_birth {
+                            day
+                            month
+                            year
+                        }
+                    }
+                }
+            }
+        "#;
+
+        assert_eq!(
+            run_graphql_query(query, HashMap::new()),
+            graphql_value!({
+                "associates": {"associate": [{"date_of_birth": {"day": 7, "month": 2, "year": 1991}}]}
+            })
+        );
+    }
+}

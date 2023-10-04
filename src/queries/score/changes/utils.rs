@@ -43,3 +43,45 @@ pub fn get_impact(
         _ => None,
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::{
+        mocks::get_parsed_reports,
+        objects::output::{Impact, Polarity},
+        queries::score::{
+            changes::utils::{get_delta, get_impact, get_polarity},
+            fields::ScoreLabelField,
+        },
+    };
+
+    #[test]
+    fn it_can_compute_score_delta() {
+        let reports = get_parsed_reports();
+
+        assert_eq!(
+            get_delta(&ScoreLabelField::PSOLF01, &reports.get(1), &reports.get(0)),
+            Some(20)
+        );
+    }
+
+    #[test]
+    fn it_can_compute_score_polarity() {
+        let reports = get_parsed_reports();
+
+        assert_eq!(
+            get_polarity(&ScoreLabelField::PSOLF01, &reports.get(1), &reports.get(0)),
+            Some(Polarity::Positive)
+        );
+    }
+
+    #[test]
+    fn it_can_compute_score_impact() {
+        let reports = get_parsed_reports();
+
+        assert_eq!(
+            get_impact(&ScoreLabelField::PSOLF01, &reports.get(1), &reports.get(0)),
+            Some(Impact::Low)
+        );
+    }
+}

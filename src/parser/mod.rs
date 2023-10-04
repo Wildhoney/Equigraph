@@ -28,7 +28,7 @@ mod tests {
     }
 
     #[test]
-    fn it_can_parse_a_multiple_report() {
+    fn it_can_parse_multiple_reports() {
         let reports: Reports = get_parsed_reports();
         assert_eq!(reports.len(), 2);
     }

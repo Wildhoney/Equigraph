@@ -64,42 +64,33 @@ impl ScoreChange<'_> {
 
 #[cfg(test)]
 mod tests {
-    use crate::{
-        mocks::get_parsed_reports,
-        objects::output::{Impact, Polarity},
-        queries::score::{
-            changes::utils::{get_delta, get_impact, get_polarity},
-            fields::ScoreLabelField,
-        },
-    };
+    use crate::mocks::run_graphql_query;
+    use juniper::graphql_value;
+    use std::collections::HashMap;
 
     #[test]
-    fn it_can_compute_score_delta() {
-        let reports = get_parsed_reports();
+    fn it_can_display_changes() {
+        let query = r#"
+            query Score {
+                score(kind: PSOLF01) {
+                    changes(since: PREVIOUS) {
+                        delta
+                        impact
+                        polarity
+                        score(kind: PSOLF01) {
+                            current
+                            maximum
+                        }
+                    }
+                }
+            }
+        "#;
 
         assert_eq!(
-            get_delta(&ScoreLabelField::PSOLF01, &reports.get(1), &reports.get(0)),
-            Some(20)
-        );
-    }
-
-    #[test]
-    fn it_can_compute_score_polarity() {
-        let reports = get_parsed_reports();
-
-        assert_eq!(
-            get_polarity(&ScoreLabelField::PSOLF01, &reports.get(1), &reports.get(0)),
-            Some(Polarity::Positive)
-        );
-    }
-
-    #[test]
-    fn it_can_compute_score_impact() {
-        let reports = get_parsed_reports();
-
-        assert_eq!(
-            get_impact(&ScoreLabelField::PSOLF01, &reports.get(1), &reports.get(0)),
-            Some(Impact::Low)
+            run_graphql_query(query, HashMap::new()),
+            graphql_value!({
+                "score": {"changes": { "delta": 20, "impact": "LOW", "polarity": "POSITIVE", "score": { "current": 936, "maximum": 1000 } }}
+            })
         );
     }
 }

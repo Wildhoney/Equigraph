@@ -1,4 +1,11 @@
-use crate::parser::{parse_reports, types::Reports};
+use std::collections::HashMap;
+
+use juniper::InputValue;
+
+use crate::{
+    parser::{parse_reports, types::Reports},
+    schema::{create_schema, Context},
+};
 
 pub fn get_latest_report() -> String {
     let report = r#"
@@ -16352,4 +16359,16 @@ pub fn get_historical_report() -> String {
 
 pub fn get_parsed_reports() -> Reports {
     parse_reports(vec![get_latest_report(), get_historical_report()])
+}
+
+#[allow(dead_code)]
+pub fn run_graphql_query(query: &str, variables: HashMap<String, InputValue>) -> juniper::Value {
+    let schema = create_schema();
+    let context = Context {
+        reports: get_parsed_reports(),
+    };
+
+    juniper::execute_sync(query, None, &schema, &variables, &context)
+        .unwrap()
+        .0
 }
