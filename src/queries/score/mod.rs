@@ -8,7 +8,10 @@ use self::{
     utils::{get_delta, get_impact, get_maximum_score, get_polarity, get_score, get_sentiment},
 };
 use crate::{
-    objects::{self, input::Since},
+    objects::{
+        input::Since,
+        output::{Impact, Polarity, Sentiment},
+    },
     parser::utils::{backward_by, forward_by},
     schema::Context,
 };
@@ -57,11 +60,11 @@ impl ScoreChangeObject<'_> {
         get_delta(&self.kind, &self.report, &self.parent_report)
     }
 
-    pub fn impact(&self) -> Option<objects::output::Impact> {
+    pub fn impact(&self) -> Option<Impact> {
         get_impact(&self.kind, &self.report, &self.parent_report)
     }
 
-    pub fn polarity(&self) -> Option<objects::output::Polarity> {
+    pub fn polarity(&self) -> Option<Polarity> {
         get_polarity(&self.kind, &self.report, &self.parent_report)
     }
 
@@ -75,7 +78,7 @@ impl ScoreChangeObject<'_> {
 
 #[juniper::graphql_object(context = Context)]
 impl ScoreInsightObject<'_> {
-    pub fn sentiment(&self) -> Option<objects::output::Sentiment> {
+    pub fn sentiment(&self) -> Option<Sentiment> {
         get_sentiment(&self.kind, &self.report)
     }
 }

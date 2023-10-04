@@ -1,5 +1,8 @@
 use crate::{
-    objects::{self, input::Since},
+    objects::{
+        input::Since,
+        output::{Impact, Polarity},
+    },
     queries::current_accounts::fields::{CurrentAccountField, PaymentHistoryField},
 };
 
@@ -41,15 +44,15 @@ pub fn get_polarity<'a>(
     since: &'a Since,
     account: &'a CurrentAccountField,
     payment_history: &'a PaymentHistoryField,
-) -> Option<objects::output::Polarity> {
+) -> Option<Polarity> {
     let delta = get_delta(&since, &account, &payment_history);
 
     match delta {
         Some(delta) => match delta {
-            delta if delta == 0 => Some(objects::output::Polarity::Unchanged),
-            delta if delta > 0 => Some(objects::output::Polarity::Negative),
-            delta if delta < 500 => Some(objects::output::Polarity::Positive),
-            _ => Some(objects::output::Polarity::Unchanged),
+            delta if delta == 0 => Some(Polarity::Unchanged),
+            delta if delta > 0 => Some(Polarity::Negative),
+            delta if delta < 500 => Some(Polarity::Positive),
+            _ => Some(Polarity::Unchanged),
         },
         _ => None,
     }
@@ -59,14 +62,14 @@ pub fn get_impact<'a>(
     since: &'a Since,
     account: &'a CurrentAccountField,
     payment_history: &'a PaymentHistoryField,
-) -> Option<objects::output::Impact> {
+) -> Option<Impact> {
     let delta = get_delta(&since, &account, &payment_history);
 
     match delta {
         Some(delta) => match delta {
-            delta if delta == 0 => Some(objects::output::Impact::None),
-            delta if delta > 1_000 || 1_000 < delta => Some(objects::output::Impact::High),
-            _ => Some(objects::output::Impact::Low),
+            delta if delta == 0 => Some(Impact::None),
+            delta if delta > 1_000 || 1_000 < delta => Some(Impact::High),
+            _ => Some(Impact::Low),
         },
         _ => None,
     }

@@ -3,7 +3,10 @@ mod utils;
 use self::utils::{get_delta, get_impact, get_polarity};
 use super::fields::{CurrentAccountField, PaymentHistoryField};
 use crate::{
-    objects::{self, input::Since},
+    objects::{
+        input::Since,
+        output::{Impact, Polarity},
+    },
     schema::Context,
 };
 
@@ -20,11 +23,11 @@ impl CurrentAccountChanges<'_> {
         get_delta(&self.since, &self.account, &self.payment_history)
     }
 
-    pub fn impact(&self) -> Option<objects::output::Impact> {
+    pub fn impact(&self) -> Option<Impact> {
         get_impact(&self.since, &self.account, &self.payment_history)
     }
 
-    pub fn polarity(&self) -> Option<objects::output::Polarity> {
+    pub fn polarity(&self) -> Option<Polarity> {
         get_polarity(&self.since, &self.account, &self.payment_history)
     }
 }

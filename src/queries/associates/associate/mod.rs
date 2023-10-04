@@ -1,6 +1,6 @@
 use super::fields::AssociateField;
 use crate::{
-    objects::{self, output::Name},
+    objects::output::{Date, Name},
     schema::Context,
 };
 
@@ -10,7 +10,7 @@ pub struct Associate<'a> {
 
 #[juniper::graphql_object(context = Context)]
 impl Associate<'_> {
-    pub fn name(&self) -> objects::output::Name {
+    pub fn name(&self) -> Name {
         Name {
             title: &self.associate.name.title,
             forename: &self.associate.name.forename,
@@ -19,8 +19,8 @@ impl Associate<'_> {
     }
 
     #[graphql(name = "date_of_birth")]
-    pub fn date_of_birth(&self) -> objects::output::Date {
-        objects::output::Date {
+    pub fn date_of_birth(&self) -> Date {
+        Date {
             day: self.associate.dob.day as i32,
             month: self.associate.dob.month as i32,
             year: self.associate.dob.year as i32,

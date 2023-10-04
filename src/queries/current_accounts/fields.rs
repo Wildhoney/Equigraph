@@ -2,7 +2,7 @@ use juniper::GraphQLObject;
 use serde::Deserialize;
 
 use crate::{
-    objects,
+    objects::output::CompanyClass,
     parser::fields::{PaymentFrequencyField, PaymentStatusField},
 };
 
@@ -22,17 +22,10 @@ pub struct CurrentAccountField {
     #[serde(alias = "companyName")]
     pub company_name: String,
     #[serde(alias = "companyClass")]
-    pub company_class: objects::output::CompanyClass,
+    pub company_class: CompanyClass,
     #[serde(alias = "paymentHistory")]
     pub payment_history: Vec<PaymentHistoryField>,
 }
-
-// #[derive(Debug, GraphQLObject, Clone)]
-// #[graphql(description = "")]
-// pub struct PaymentField<'a> {
-//     pub status: &'a PaymentStatusField,
-//     pub frequency: &'a PaymentFrequencyField,
-// }
 
 #[derive(Debug, PartialEq, Deserialize, GraphQLObject)]
 pub struct BalanceField {

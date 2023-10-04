@@ -2,7 +2,7 @@ use super::fields::{self};
 use super::{changes::CurrentAccountChanges, fields::CurrentAccountField};
 use crate::objects::input::{Select, Since};
 use crate::objects::output::Balance;
-use crate::{objects, parser::fields::PaymentStatusField, schema::Context};
+use crate::{parser::fields::PaymentStatusField, schema::Context};
 
 #[derive(Debug, PartialEq)]
 pub struct CurrentAccountPaymentHistory<'a> {
@@ -25,7 +25,7 @@ impl CurrentAccountPaymentHistory<'_> {
 
     #[graphql(name = "account_balance")]
     pub fn account_balance(&self) -> Balance {
-        objects::output::Balance {
+        Balance {
             amount: self.payment_history.account_balance.balance_amount.amount,
             currency: &self.payment_history.account_balance.balance_amount.currency,
         }

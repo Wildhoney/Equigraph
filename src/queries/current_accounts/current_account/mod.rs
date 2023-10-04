@@ -1,6 +1,9 @@
 use super::{fields::CurrentAccountField, payment_history::CurrentAccountPaymentHistory};
 use crate::{
-    objects::{self, input::Select},
+    objects::{
+        input::Select,
+        output::{Balance, Company},
+    },
     parser::fields::PaymentFrequencyField,
     schema::Context,
 };
@@ -17,8 +20,8 @@ impl CurrentAccount<'_> {
         &self.account.account_number
     }
 
-    pub fn company(&self) -> objects::output::Company {
-        objects::output::Company {
+    pub fn company(&self) -> Company {
+        Company {
             kind: &self.account.company_class,
             name: &self.account.company_name,
         }
@@ -30,24 +33,24 @@ impl CurrentAccount<'_> {
     }
 
     #[graphql(name = "current_balance")]
-    pub fn current_balance(&self) -> objects::output::Balance {
-        objects::output::Balance {
+    pub fn current_balance(&self) -> Balance {
+        Balance {
             amount: self.account.current_balance.balance_amount.amount,
             currency: &self.account.current_balance.balance_amount.currency,
         }
     }
 
     #[graphql(name = "default_balance")]
-    pub fn default_balance(&self) -> objects::output::Balance {
-        objects::output::Balance {
+    pub fn default_balance(&self) -> Balance {
+        Balance {
             amount: self.account.default_balance.balance_amount.amount,
             currency: &self.account.default_balance.balance_amount.currency,
         }
     }
 
     #[graphql(name = "start_balance")]
-    pub fn start_balance(&self) -> objects::output::Balance {
-        objects::output::Balance {
+    pub fn start_balance(&self) -> Balance {
+        Balance {
             amount: self.account.start_balance.balance_amount.amount,
             currency: &self.account.start_balance.balance_amount.currency,
         }
