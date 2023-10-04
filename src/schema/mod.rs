@@ -21,9 +21,11 @@ impl QueryRoot {
     fn score(kind: ScoreLabelField, context: &Context) -> FieldResult<ScoreObject> {
         score::fetch(kind, context)
     }
-    fn associates(context: &Context) -> FieldResult<Vec<Associates>> {
+
+    fn associates(context: &Context) -> FieldResult<Associates> {
         associates::fetch(context)
     }
+
     #[graphql(name = "current_accounts")]
     fn current_accounts(context: &Context) -> FieldResult<CurrentAccounts> {
         current_accounts::fetch(context)
