@@ -3,11 +3,34 @@ mod utils;
 use self::utils::{get_delta, get_impact, get_polarity};
 use super::{fields::ScoreLabelField, Score};
 use crate::{
-    objects::output::{Impact, Polarity},
-    parser::types::Report,
+    objects::{
+        input::Since,
+        output::{Impact, Polarity},
+    },
+    parser::{
+        types::Report,
+        utils::{backward_by, forward_by},
+    },
     schema::Context,
 };
 use juniper::FieldResult;
+
+pub fn fetch<'a>(
+    kind: &'a ScoreLabelField,
+    report: Option<&'a Report>,
+    context: &'a Context,
+    since: Since,
+) -> FieldResult<ScoreChange<'a>> {
+    Ok(ScoreChange {
+        kind,
+        report: match since {
+            Since::First => context.reports.last(),
+            Since::Previous => forward_by(1, report, &context.reports),
+            Since::Next => backward_by(1, report, &context.reports),
+        },
+        parent_report: report,
+    })
+}
 
 pub struct ScoreChange<'a> {
     pub kind: &'a ScoreLabelField,

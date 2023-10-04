@@ -1,12 +1,28 @@
-use super::{fields::CurrentAccountField, payment_history::CurrentAccountPaymentHistory};
+use super::{
+    fields::CurrentAccountField,
+    payment_history::{self, CurrentAccountPaymentHistory},
+    utils::get_accounts,
+};
 use crate::{
     objects::{
         input::Select,
         output::{Balance, Company},
     },
-    parser::fields::PaymentFrequencyField,
+    parser::{fields::PaymentFrequencyField, types::Report},
     schema::Context,
 };
+
+pub fn fetch<'a>(report: Option<&'a Report>) -> Vec<CurrentAccount> {
+    match report {
+        Some(report) => get_accounts(report)
+            .iter()
+            .map(|current_account| CurrentAccount {
+                account: &current_account,
+            })
+            .collect::<Vec<_>>(),
+        None => vec![],
+    }
+}
 
 #[derive(Debug, PartialEq)]
 pub struct CurrentAccount<'a> {
@@ -63,31 +79,6 @@ impl CurrentAccount<'_> {
 
     #[graphql(name = "payment_history")]
     pub fn payment_history(&self, select: Option<Select>) -> Vec<CurrentAccountPaymentHistory> {
-        let mut payment_histories = self.account.payment_history.iter();
-
-        let payment_history = match select {
-            Some(Select::Latest) => match payment_histories.nth(0) {
-                Some(payment_history) => vec![payment_history],
-                _ => vec![],
-            },
-            Some(Select::Oldest) => match payment_histories.last() {
-                Some(payment_history) => vec![payment_history],
-                _ => vec![],
-            },
-            Some(Select::Polar) => match [payment_histories.nth(0), payment_histories.last()] {
-                [Some(first), Some(last)] => vec![first, last],
-                _ => vec![],
-            },
-            _ => payment_histories.collect::<Vec<_>>(),
-        };
-
-        payment_history
-            .iter()
-            .map(|payment_history| CurrentAccountPaymentHistory {
-                select: select.to_owned(),
-                account: &self.account,
-                payment_history: payment_history,
-            })
-            .collect::<Vec<_>>()
+        payment_history::fetch(select, self.account)
     }
 }

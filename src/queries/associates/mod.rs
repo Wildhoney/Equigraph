@@ -19,27 +19,10 @@ pub struct Associates<'a> {
 #[juniper::graphql_object(context = Context)]
 impl Associates<'_> {
     pub fn associate(&self, context: &Context) -> FieldResult<Vec<Associate>> {
-        let associates = context.reports.get(0).map(|report| {
-            report
-                .non_address_specific_data
-                .associates
-                .associate
-                .iter()
-                .map(|associate| Associate {
-                    associate: &associate,
-                })
-                .collect::<Vec<_>>()
-        });
-
-        match associates {
-            Some(associates) => Ok(associates),
-            None => Ok(vec![]),
-        }
+        associate::fetch(context)
     }
 
     pub fn insights(&self) -> FieldResult<Insights> {
-        Ok(Insights {
-            report: &self.report,
-        })
+        insights::fetch(&self.report)
     }
 }

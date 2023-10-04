@@ -9,14 +9,7 @@ use self::{
     insights::ScoreInsight,
     utils::{get_maximum_score, get_score},
 };
-use crate::{
-    objects::input::Since,
-    parser::{
-        types::Report,
-        utils::{backward_by, forward_by},
-    },
-    schema::Context,
-};
+use crate::{objects::input::Since, parser::types::Report, schema::Context};
 use juniper::FieldResult;
 
 pub fn fetch(kind: ScoreLabelField, context: &Context) -> FieldResult<Score> {
@@ -43,21 +36,10 @@ impl Score<'_> {
     }
 
     pub fn changes(&self, context: &Context, since: Since) -> FieldResult<ScoreChange> {
-        Ok(ScoreChange {
-            kind: &self.kind,
-            report: match since {
-                Since::First => context.reports.last(),
-                Since::Previous => forward_by(1, self.report, &context.reports),
-                Since::Next => backward_by(1, self.report, &context.reports),
-            },
-            parent_report: self.report,
-        })
+        changes::fetch(&self.kind, self.report, context, since)
     }
 
     pub fn insights(&self) -> FieldResult<ScoreInsight> {
-        Ok(ScoreInsight {
-            kind: &self.kind,
-            report: self.report,
-        })
+        insights::fetch(&self.kind, self.report)
     }
 }

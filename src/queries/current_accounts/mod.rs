@@ -5,9 +5,7 @@ mod insights;
 mod payment_history;
 mod utils;
 
-use self::{
-    current_account::CurrentAccount, insights::CurrentAccountInsights, utils::get_accounts,
-};
+use self::{current_account::CurrentAccount, insights::CurrentAccountInsights};
 use crate::{parser::fields::ReportField, schema::Context};
 use juniper::FieldResult;
 
@@ -26,23 +24,10 @@ pub struct CurrentAccounts<'a> {
 impl CurrentAccounts<'_> {
     #[graphql(name = "current_account")]
     pub fn current_account(&self) -> Vec<CurrentAccount> {
-        match self.report {
-            Some(report) => get_accounts(report)
-                .iter()
-                .map(|current_account| CurrentAccount {
-                    account: &current_account,
-                })
-                .collect::<Vec<_>>(),
-            None => vec![],
-        }
+        current_account::fetch(self.report)
     }
 
     pub fn insights(&self) -> Option<CurrentAccountInsights> {
-        match self.report {
-            Some(report) => Some(CurrentAccountInsights {
-                accounts: get_accounts(report),
-            }),
-            None => None,
-        }
+        insights::fetch(self.report)
     }
 }
