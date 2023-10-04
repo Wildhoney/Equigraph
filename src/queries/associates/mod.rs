@@ -21,7 +21,7 @@ pub fn fetch(context: &Context) -> FieldResult<Vec<Associates>> {
 }
 
 pub struct Associates<'a> {
-    pub person: &'a fields::Associate,
+    pub person: &'a fields::AssociateField,
 }
 
 #[juniper::graphql_object(context = Context)]

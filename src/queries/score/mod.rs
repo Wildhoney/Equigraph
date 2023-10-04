@@ -3,17 +3,18 @@ pub mod types;
 pub mod utils;
 
 use self::{
+    fields::ScoreLabelField,
     types::{ScoreChangeObject, ScoreInsightObject, ScoreObject},
     utils::{get_delta, get_impact, get_maximum_score, get_polarity, get_score, get_sentiment},
 };
 use crate::{
-    objects,
+    objects::{self, input::Since},
     parser::utils::{backward_by, forward_by},
     schema::Context,
 };
 use juniper::FieldResult;
 
-pub fn fetch(kind: fields::ScoreLabel, context: &Context) -> FieldResult<ScoreObject> {
+pub fn fetch(kind: ScoreLabelField, context: &Context) -> FieldResult<ScoreObject> {
     Ok(ScoreObject {
         kind,
         report: context.reports.get(0),
@@ -30,17 +31,13 @@ impl ScoreObject<'_> {
         get_maximum_score(&self.kind)
     }
 
-    pub fn changes(
-        &self,
-        context: &Context,
-        since: objects::input::Since,
-    ) -> FieldResult<ScoreChangeObject> {
+    pub fn changes(&self, context: &Context, since: Since) -> FieldResult<ScoreChangeObject> {
         Ok(ScoreChangeObject {
             kind: &self.kind,
             report: match since {
-                objects::input::Since::First => context.reports.last(),
-                objects::input::Since::Previous => forward_by(1, self.report, &context.reports),
-                objects::input::Since::Next => backward_by(1, self.report, &context.reports),
+                Since::First => context.reports.last(),
+                Since::Previous => forward_by(1, self.report, &context.reports),
+                Since::Next => backward_by(1, self.report, &context.reports),
             },
             parent_report: self.report,
         })
@@ -68,7 +65,7 @@ impl ScoreChangeObject<'_> {
         get_polarity(&self.kind, &self.report, &self.parent_report)
     }
 
-    pub fn score(&self, kind: fields::ScoreLabel) -> FieldResult<ScoreObject> {
+    pub fn score(&self, kind: ScoreLabelField) -> FieldResult<ScoreObject> {
         Ok(ScoreObject {
             kind,
             report: self.report,

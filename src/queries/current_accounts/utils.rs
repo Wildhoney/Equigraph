@@ -1,7 +1,7 @@
-use super::fields;
+use super::fields::CurrentAccountField;
 use crate::parser::types::Report;
 
-pub fn get_accounts(report: &Report) -> Vec<&fields::CurrentAccount> {
+pub fn get_accounts(report: &Report) -> Vec<&CurrentAccountField> {
     report
         .sole_search
         .primary

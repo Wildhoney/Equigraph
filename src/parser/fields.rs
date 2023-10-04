@@ -1,50 +1,53 @@
 use juniper::GraphQLEnum;
 use serde::Deserialize;
 
-use crate::queries::{self};
+use crate::queries::{
+    associates::fields::AssociatesField, current_accounts::fields::CurrentAccountField,
+    score::fields::ScoresField,
+};
 
 #[derive(Debug, PartialEq, Deserialize)]
-pub struct Report {
+pub struct ReportField {
     #[serde(alias = "nonAddressSpecificData")]
-    pub non_address_specific_data: NonAddressSpecificData,
+    pub non_address_specific_data: NonAddressSpecificDataField,
     #[serde(alias = "soleSearch")]
-    pub sole_search: SoleSearch,
+    pub sole_search: SoleSearchField,
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
-pub struct NonAddressSpecificData {
-    pub associates: queries::associates::fields::Associates,
-    pub scores: queries::score::fields::Scores,
+pub struct NonAddressSpecificDataField {
+    pub associates: AssociatesField,
+    pub scores: ScoresField,
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
-pub struct SoleSearch {
-    pub primary: Primary,
+pub struct SoleSearchField {
+    pub primary: PrimaryField,
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
-pub struct Primary {
+pub struct PrimaryField {
     #[serde(alias = "suppliedAddressData")]
-    pub supplied_address_data: Vec<SuppliedAddressData>,
+    pub supplied_address_data: Vec<SuppliedAddressDataField>,
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
-pub struct SuppliedAddressData {
+pub struct SuppliedAddressDataField {
     #[serde(alias = "matchedAddress")]
-    pub matched_address: MatchedAddress,
+    pub matched_address: MatchedAddressField,
     #[serde(alias = "addressSpecificData")]
-    pub address_specific_data: AddressSpecificData,
+    pub address_specific_data: AddressSpecificDataField,
     #[serde(alias = "noticeOfCorrectionOrDisputePresent")]
     pub notice_of_correction_or_dispute_present: bool,
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
-pub struct MatchedAddress {
-    address: Address,
+pub struct MatchedAddressField {
+    address: AddressField,
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
-pub struct Address {
+pub struct AddressField {
     #[serde(alias = "addressID")]
     address_id: String,
     county: String,
@@ -56,33 +59,33 @@ pub struct Address {
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
-pub struct AddressSpecificData {
+pub struct AddressSpecificDataField {
     #[serde(alias = "insightData")]
-    pub insight_data: InsightData,
+    pub insight_data: InsightDataField,
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
-pub struct InsightData {
+pub struct InsightDataField {
     #[serde(alias = "currentAccount")]
-    pub current_account: Vec<queries::current_accounts::fields::CurrentAccount>,
+    pub current_account: Vec<CurrentAccountField>,
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
-pub struct Date {
+pub struct DateField {
     pub day: u8,
     pub month: u8,
     pub year: u16,
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
-pub struct Name {
+pub struct NameField {
     pub title: String,
     pub forename: String,
     pub surname: String,
 }
 
 #[derive(Debug, PartialEq, Deserialize, GraphQLEnum)]
-pub enum PaymentFrequency {
+pub enum PaymentFrequencyField {
     #[serde(alias = "MONTHLY")]
     Monthly,
     #[serde(alias = "PERIODICALLY")]
@@ -90,7 +93,7 @@ pub enum PaymentFrequency {
 }
 
 #[derive(Debug, PartialEq, Deserialize, GraphQLEnum)]
-pub enum PaymentStatus {
+pub enum PaymentStatusField {
     #[serde(alias = "ZERO")]
     Zero,
     S,

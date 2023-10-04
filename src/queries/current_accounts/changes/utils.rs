@@ -1,12 +1,12 @@
 use crate::{
-    objects::{self},
-    queries::current_accounts::fields,
+    objects::{self, input::Since},
+    queries::current_accounts::fields::{CurrentAccountField, PaymentHistoryField},
 };
 
 pub fn get_delta<'a>(
-    since: &'a objects::input::Since,
-    account: &'a fields::CurrentAccount,
-    payment_history: &'a fields::PaymentHistory,
+    since: &'a Since,
+    account: &'a CurrentAccountField,
+    payment_history: &'a PaymentHistoryField,
 ) -> Option<i32> {
     let current_index = account
         .payment_history
@@ -16,18 +16,15 @@ pub fn get_delta<'a>(
     let current_amount = payment_history.account_balance.balance_amount.amount;
 
     match since {
-        objects::input::Since::First => match account.payment_history.last() {
+        Since::First => match account.payment_history.last() {
             Some(last) => Some(current_amount - last.account_balance.balance_amount.amount),
             _ => None,
         },
-        objects::input::Since::Previous => match account
-            .payment_history
-            .get(current_index as usize + 1)
-        {
+        Since::Previous => match account.payment_history.get(current_index as usize + 1) {
             Some(previous) => Some(current_amount - previous.account_balance.balance_amount.amount),
             _ => None,
         },
-        objects::input::Since::Next => {
+        Since::Next => {
             if current_index == 0 {
                 return None;
             }
@@ -41,9 +38,9 @@ pub fn get_delta<'a>(
 }
 
 pub fn get_polarity<'a>(
-    since: &'a objects::input::Since,
-    account: &'a fields::CurrentAccount,
-    payment_history: &'a fields::PaymentHistory,
+    since: &'a Since,
+    account: &'a CurrentAccountField,
+    payment_history: &'a PaymentHistoryField,
 ) -> Option<objects::output::Polarity> {
     let delta = get_delta(&since, &account, &payment_history);
 
@@ -59,9 +56,9 @@ pub fn get_polarity<'a>(
 }
 
 pub fn get_impact<'a>(
-    since: &'a objects::input::Since,
-    account: &'a fields::CurrentAccount,
-    payment_history: &'a fields::PaymentHistory,
+    since: &'a Since,
+    account: &'a CurrentAccountField,
+    payment_history: &'a PaymentHistoryField,
 ) -> Option<objects::output::Impact> {
     let delta = get_delta(&since, &account, &payment_history);
 

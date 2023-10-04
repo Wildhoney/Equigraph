@@ -1,12 +1,14 @@
-use super::changes::CurrentAccountChanges;
-use super::fields;
-use crate::{objects, parser::fields::PaymentStatus, schema::Context};
+use super::fields::{self};
+use super::{changes::CurrentAccountChanges, fields::CurrentAccountField};
+use crate::objects::input::{Select, Since};
+use crate::objects::output::Balance;
+use crate::{objects, parser::fields::PaymentStatusField, schema::Context};
 
 #[derive(Debug, PartialEq)]
 pub struct CurrentAccountPaymentHistory<'a> {
-    pub select: Option<objects::input::Select>,
-    pub account: &'a fields::CurrentAccount,
-    pub payment_history: &'a fields::PaymentHistory,
+    pub select: Option<Select>,
+    pub account: &'a CurrentAccountField,
+    pub payment_history: &'a fields::PaymentHistoryField,
 }
 
 #[juniper::graphql_object(context = Context)]
@@ -17,19 +19,19 @@ impl CurrentAccountPaymentHistory<'_> {
     }
 
     #[graphql(name = "payment_status")]
-    pub fn payment_status(&self) -> &PaymentStatus {
+    pub fn payment_status(&self) -> &PaymentStatusField {
         &self.payment_history.payment_status
     }
 
     #[graphql(name = "account_balance")]
-    pub fn account_balance(&self) -> objects::output::Balance {
+    pub fn account_balance(&self) -> Balance {
         objects::output::Balance {
             amount: self.payment_history.account_balance.balance_amount.amount,
             currency: &self.payment_history.account_balance.balance_amount.currency,
         }
     }
 
-    pub fn changes(&self, since: objects::input::Since) -> CurrentAccountChanges {
+    pub fn changes(&self, since: Since) -> CurrentAccountChanges {
         CurrentAccountChanges {
             since: since.to_owned(),
             account: &self.account,

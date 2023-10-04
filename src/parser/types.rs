@@ -1,5 +1,5 @@
-use super::fields;
+use super::fields::ReportField;
 
 pub type Reports = Vec<Report>;
 
-pub type Report = fields::Report;
+pub type Report = ReportField;

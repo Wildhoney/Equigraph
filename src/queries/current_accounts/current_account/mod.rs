@@ -1,10 +1,13 @@
-use crate::{objects, parser::fields::PaymentFrequency, schema::Context};
-
-use super::{fields, payment_history::CurrentAccountPaymentHistory};
+use super::{fields::CurrentAccountField, payment_history::CurrentAccountPaymentHistory};
+use crate::{
+    objects::{self, input::Select},
+    parser::fields::PaymentFrequencyField,
+    schema::Context,
+};
 
 #[derive(Debug, PartialEq)]
 pub struct CurrentAccount<'a> {
-    pub account: &'a fields::CurrentAccount,
+    pub account: &'a CurrentAccountField,
 }
 
 #[juniper::graphql_object(context = Context)]
@@ -51,32 +54,27 @@ impl CurrentAccount<'_> {
     }
 
     #[graphql(name = "payment_frequency")]
-    pub fn payment_frequency(&self) -> &PaymentFrequency {
+    pub fn payment_frequency(&self) -> &PaymentFrequencyField {
         &self.account.payment_frequency
     }
 
     #[graphql(name = "payment_history")]
-    pub fn payment_history(
-        &self,
-        select: Option<objects::input::Select>,
-    ) -> Vec<CurrentAccountPaymentHistory> {
+    pub fn payment_history(&self, select: Option<Select>) -> Vec<CurrentAccountPaymentHistory> {
         let mut payment_histories = self.account.payment_history.iter();
 
         let payment_history = match select {
-            Some(objects::input::Select::Latest) => match payment_histories.nth(0) {
+            Some(Select::Latest) => match payment_histories.nth(0) {
                 Some(payment_history) => vec![payment_history],
                 _ => vec![],
             },
-            Some(objects::input::Select::Oldest) => match payment_histories.last() {
+            Some(Select::Oldest) => match payment_histories.last() {
                 Some(payment_history) => vec![payment_history],
                 _ => vec![],
             },
-            Some(objects::input::Select::Polar) => {
-                match [payment_histories.nth(0), payment_histories.last()] {
-                    [Some(first), Some(last)] => vec![first, last],
-                    _ => vec![],
-                }
-            }
+            Some(Select::Polar) => match [payment_histories.nth(0), payment_histories.last()] {
+                [Some(first), Some(last)] => vec![first, last],
+                _ => vec![],
+            },
             _ => payment_histories.collect::<Vec<_>>(),
         };
 

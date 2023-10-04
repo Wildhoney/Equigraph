@@ -1,14 +1,14 @@
 use serde::Deserialize;
 
-use crate::parser::fields;
+use crate::parser::fields::{DateField, NameField};
 
 #[derive(Debug, PartialEq, Deserialize)]
-pub struct Associates {
-    pub associate: Vec<Associate>,
+pub struct AssociatesField {
+    pub associate: Vec<AssociateField>,
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
-pub struct Associate {
-    pub dob: fields::Date,
-    pub name: fields::Name,
+pub struct AssociateField {
+    pub dob: DateField,
+    pub name: NameField,
 }

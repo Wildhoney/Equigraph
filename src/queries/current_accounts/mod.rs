@@ -8,7 +8,7 @@ mod utils;
 use self::{
     current_account::CurrentAccount, insights::CurrentAccountInsights, utils::get_accounts,
 };
-use crate::{parser::fields::Report, schema::Context};
+use crate::{parser::fields::ReportField, schema::Context};
 use juniper::FieldResult;
 
 pub fn fetch(context: &Context) -> FieldResult<CurrentAccounts> {
@@ -19,7 +19,7 @@ pub fn fetch(context: &Context) -> FieldResult<CurrentAccounts> {
 
 #[derive(Debug, PartialEq)]
 pub struct CurrentAccounts<'a> {
-    pub report: Option<&'a Report>,
+    pub report: Option<&'a ReportField>,
 }
 
 #[juniper::graphql_object(context = Context)]

@@ -1,14 +1,17 @@
 mod utils;
 
 use self::utils::{get_delta, get_impact, get_polarity};
-use super::fields;
-use crate::{objects, schema::Context};
+use super::fields::{CurrentAccountField, PaymentHistoryField};
+use crate::{
+    objects::{self, input::Since},
+    schema::Context,
+};
 
 #[derive(Debug, PartialEq)]
 pub struct CurrentAccountChanges<'a> {
-    pub since: objects::input::Since,
-    pub account: &'a fields::CurrentAccount,
-    pub payment_history: &'a fields::PaymentHistory,
+    pub since: Since,
+    pub account: &'a CurrentAccountField,
+    pub payment_history: &'a PaymentHistoryField,
 }
 
 #[juniper::graphql_object(context = Context)]

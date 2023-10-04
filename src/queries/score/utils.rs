@@ -1,8 +1,8 @@
 use crate::{objects, parser::types::Report};
 
-use super::fields;
+use super::fields::ScoreLabelField;
 
-pub fn get_score(kind: &fields::ScoreLabel, report: &Option<&Report>) -> Option<i32> {
+pub fn get_score(kind: &ScoreLabelField, report: &Option<&Report>) -> Option<i32> {
     match report {
         Some(report) => {
             let score = report
@@ -19,7 +19,7 @@ pub fn get_score(kind: &fields::ScoreLabel, report: &Option<&Report>) -> Option<
 }
 
 pub fn get_delta(
-    kind: &fields::ScoreLabel,
+    kind: &ScoreLabelField,
     report: &Option<&Report>,
     parent_report: &Option<&Report>,
 ) -> Option<i32> {
@@ -30,7 +30,7 @@ pub fn get_delta(
 }
 
 pub fn get_polarity(
-    kind: &fields::ScoreLabel,
+    kind: &ScoreLabelField,
     report: &Option<&Report>,
     parent_report: &Option<&Report>,
 ) -> Option<objects::output::Polarity> {
@@ -43,7 +43,7 @@ pub fn get_polarity(
 }
 
 pub fn get_impact(
-    kind: &fields::ScoreLabel,
+    kind: &ScoreLabelField,
     report: &Option<&Report>,
     parent_report: &Option<&Report>,
 ) -> Option<objects::output::Impact> {
@@ -58,15 +58,15 @@ pub fn get_impact(
     }
 }
 
-pub fn get_maximum_score(kind: &fields::ScoreLabel) -> i32 {
+pub fn get_maximum_score(kind: &ScoreLabelField) -> i32 {
     match kind {
-        fields::ScoreLabel::RNOLF04 => 700,
-        fields::ScoreLabel::PSOLF01 => 1_000,
+        ScoreLabelField::RNOLF04 => 700,
+        ScoreLabelField::PSOLF01 => 1_000,
     }
 }
 
 pub fn get_sentiment(
-    kind: &fields::ScoreLabel,
+    kind: &ScoreLabelField,
     report: &Option<&Report>,
 ) -> Option<objects::output::Sentiment> {
     let score = get_score(kind, report);
@@ -95,7 +95,7 @@ mod tests {
         mocks::get_parsed_reports,
         objects,
         queries::score::{
-            fields::ScoreLabel,
+            fields::ScoreLabelField,
             utils::{get_delta, get_impact, get_polarity, get_sentiment},
         },
     };
@@ -105,7 +105,7 @@ mod tests {
         let reports = get_parsed_reports();
 
         assert_eq!(
-            get_delta(&ScoreLabel::PSOLF01, &reports.get(1), &reports.get(0)),
+            get_delta(&ScoreLabelField::PSOLF01, &reports.get(1), &reports.get(0)),
             Some(20)
         );
     }
@@ -115,7 +115,7 @@ mod tests {
         let reports = get_parsed_reports();
 
         assert_eq!(
-            get_polarity(&ScoreLabel::PSOLF01, &reports.get(1), &reports.get(0)),
+            get_polarity(&ScoreLabelField::PSOLF01, &reports.get(1), &reports.get(0)),
             Some(objects::output::Polarity::Positive)
         );
     }
@@ -125,7 +125,7 @@ mod tests {
         let reports = get_parsed_reports();
 
         assert_eq!(
-            get_impact(&ScoreLabel::PSOLF01, &reports.get(1), &reports.get(0)),
+            get_impact(&ScoreLabelField::PSOLF01, &reports.get(1), &reports.get(0)),
             Some(objects::output::Impact::Low)
         );
     }
@@ -135,7 +135,7 @@ mod tests {
         let reports = get_parsed_reports();
 
         assert_eq!(
-            get_sentiment(&ScoreLabel::PSOLF01, &reports.get(0)),
+            get_sentiment(&ScoreLabelField::PSOLF01, &reports.get(0)),
             Some(objects::output::Sentiment::High)
         );
     }
