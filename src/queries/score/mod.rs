@@ -1,31 +1,39 @@
+mod changes;
 pub mod fields;
-pub mod types;
+mod insights;
 pub mod utils;
 
 use self::{
+    changes::ScoreChange,
     fields::ScoreLabelField,
-    types::{ScoreChangeObject, ScoreInsightObject, ScoreObject},
-    utils::{get_delta, get_impact, get_maximum_score, get_polarity, get_score, get_sentiment},
+    insights::ScoreInsight,
+    utils::{get_maximum_score, get_score},
 };
 use crate::{
-    objects::{
-        input::Since,
-        output::{Impact, Polarity, Sentiment},
+    objects::input::Since,
+    parser::{
+        types::Report,
+        utils::{backward_by, forward_by},
     },
-    parser::utils::{backward_by, forward_by},
     schema::Context,
 };
 use juniper::FieldResult;
 
-pub fn fetch(kind: ScoreLabelField, context: &Context) -> FieldResult<ScoreObject> {
-    Ok(ScoreObject {
+pub fn fetch(kind: ScoreLabelField, context: &Context) -> FieldResult<Score> {
+    Ok(Score {
         kind,
         report: context.reports.get(0),
     })
 }
 
+#[derive(Debug, PartialEq)]
+pub struct Score<'a> {
+    pub kind: ScoreLabelField,
+    pub report: Option<&'a Report>,
+}
+
 #[juniper::graphql_object(context = Context)]
-impl ScoreObject<'_> {
+impl Score<'_> {
     pub fn current(&self) -> Option<i32> {
         get_score(&self.kind, &self.report)
     }
@@ -34,8 +42,8 @@ impl ScoreObject<'_> {
         get_maximum_score(&self.kind)
     }
 
-    pub fn changes(&self, context: &Context, since: Since) -> FieldResult<ScoreChangeObject> {
-        Ok(ScoreChangeObject {
+    pub fn changes(&self, context: &Context, since: Since) -> FieldResult<ScoreChange> {
+        Ok(ScoreChange {
             kind: &self.kind,
             report: match since {
                 Since::First => context.reports.last(),
@@ -46,39 +54,10 @@ impl ScoreObject<'_> {
         })
     }
 
-    pub fn insights(&self) -> FieldResult<ScoreInsightObject> {
-        Ok(ScoreInsightObject {
+    pub fn insights(&self) -> FieldResult<ScoreInsight> {
+        Ok(ScoreInsight {
             kind: &self.kind,
             report: self.report,
         })
-    }
-}
-
-#[juniper::graphql_object(context = Context)]
-impl ScoreChangeObject<'_> {
-    pub fn delta(&self) -> Option<i32> {
-        get_delta(&self.kind, &self.report, &self.parent_report)
-    }
-
-    pub fn impact(&self) -> Option<Impact> {
-        get_impact(&self.kind, &self.report, &self.parent_report)
-    }
-
-    pub fn polarity(&self) -> Option<Polarity> {
-        get_polarity(&self.kind, &self.report, &self.parent_report)
-    }
-
-    pub fn score(&self, kind: ScoreLabelField) -> FieldResult<ScoreObject> {
-        Ok(ScoreObject {
-            kind,
-            report: self.report,
-        })
-    }
-}
-
-#[juniper::graphql_object(context = Context)]
-impl ScoreInsightObject<'_> {
-    pub fn sentiment(&self) -> Option<Sentiment> {
-        get_sentiment(&self.kind, &self.report)
     }
 }
