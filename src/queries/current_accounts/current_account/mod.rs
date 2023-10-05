@@ -82,3 +82,38 @@ impl CurrentAccount<'_> {
         CurrentAccountPaymentHistory::new(select, self.account)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::mocks::run_graphql_query;
+    use juniper::graphql_value;
+    use std::collections::HashMap;
+
+    #[test]
+    fn it_can_get_current_account() {
+        let query = r#"
+            query CurrentAccount {
+                current_accounts {
+                    current_account {
+                        account_number
+                    }
+                }
+            }
+        "#;
+
+        assert_eq!(
+            run_graphql_query(query, HashMap::new()),
+            graphql_value!({
+                "current_accounts": {
+                    "current_account": [
+                        { "account_number": "zGML/Ld93it5j86rAFo2wxM8oGHNdoWJj4WTwoRmkcc=" },
+                        { "account_number": "3oEmu6B1FCnWguuTc93gXTPtT3NMcaxCKSm2MLOFvMw=" },
+                        { "account_number": "5YduNv4WxF4SOS0GqS8uh/yOA/TFTgsQT1uH5kAB8RQ=" },
+                        { "account_number": "iMt7bI9kNQtpjsWYsMr69lgUsgyg5XQVMF4dhBknm3E=" },
+                        { "account_number": "LFTlUsWtDduQAo2L7zJOtNKDI86DztlNPL6Fg7iz4+M=" },
+                    ]
+                },
+            })
+        );
+    }
+}

@@ -39,7 +39,7 @@ mod tests {
     #[test]
     fn it_can_display_insights() {
         let query = r#"
-        query CurrentAccounts {
+        query Insights {
             current_accounts {
                 insights {
                     accounts_count

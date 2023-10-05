@@ -73,3 +73,100 @@ impl CurrentAccountPaymentHistory<'_> {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::mocks::run_graphql_query;
+    use juniper::graphql_value;
+    use std::collections::HashMap;
+
+    #[test]
+    fn it_can_get_payment_history_using_latest_selector() {
+        let query = r#"
+            query PaymentHistory {
+                current_accounts {
+                    current_account {
+                        payment_history(select: LATEST) {
+                            age_in_months
+                        }
+                    }
+                }
+            }
+        "#;
+
+        assert_eq!(
+            run_graphql_query(query, HashMap::new()),
+            graphql_value!({
+                "current_accounts": {
+                    "current_account": [
+                        { "payment_history": [{ "age_in_months": 0 }] },
+                        { "payment_history": [{ "age_in_months": 0 }] },
+                        { "payment_history": [{ "age_in_months": 0 }] },
+                        { "payment_history": [{ "age_in_months": 0 }] },
+                        { "payment_history": [{ "age_in_months": 0 }] },
+                    ]
+                },
+            })
+        );
+    }
+
+    #[test]
+    fn it_can_get_payment_history_using_polar_selector() {
+        let query = r#"
+            query PaymentHistory {
+                current_accounts {
+                    current_account {
+                        payment_history(select: POLAR) {
+                            age_in_months
+                        }
+                    }
+                }
+            }
+        "#;
+
+        assert_eq!(
+            run_graphql_query(query, HashMap::new()),
+            graphql_value!({
+                "current_accounts": {
+                    "current_account": [
+                        { "payment_history": [{ "age_in_months": 0 }, { "age_in_months": 47 }] },
+                        { "payment_history": [{ "age_in_months": 0 }, { "age_in_months": 47 }] },
+                        { "payment_history": [{ "age_in_months": 0 }, { "age_in_months": 47 }] },
+                        { "payment_history": [{ "age_in_months": 0 }, { "age_in_months": 27 }] },
+                        { "payment_history": [{ "age_in_months": 0 }, { "age_in_months": 27 }] },
+                    ]
+                },
+            })
+        );
+    }
+
+    #[test]
+    fn it_can_get_payment_history_using_oldest_selector() {
+        let query = r#"
+            query PaymentHistory {
+                current_accounts {
+                    current_account {
+                        payment_history(select: OLDEST) {
+                            age_in_months
+                        }
+                    }
+                }
+            }
+        "#;
+
+        assert_eq!(
+            run_graphql_query(query, HashMap::new()),
+            graphql_value!({
+                "current_accounts": {
+                    "current_account": [
+                        { "payment_history": [{ "age_in_months": 47 }] },
+                        { "payment_history": [{ "age_in_months": 47 }] },
+                        { "payment_history": [{ "age_in_months": 47 }] },
+                        { "payment_history": [{ "age_in_months": 27 }] },
+                        { "payment_history": [{ "age_in_months": 27 }] },
+                    ]
+                },
+            })
+        );
+    }
+}

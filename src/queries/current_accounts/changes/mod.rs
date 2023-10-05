@@ -31,3 +31,44 @@ impl CurrentAccountChanges<'_> {
         get_polarity(&self.since, &self.account, &self.payment_history)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::mocks::run_graphql_query;
+    use juniper::graphql_value;
+    use std::collections::HashMap;
+
+    #[test]
+    fn it_can_get_changes() {
+        let query = r#"
+        query Changes {
+            current_accounts {
+                current_account {
+                    payment_history(select: LATEST) {
+                        changes(since: PREVIOUS) {
+                            delta
+                            impact
+                            polarity
+                        }
+                    }
+                }
+            }
+        }
+    "#;
+
+        assert_eq!(
+            run_graphql_query(query, HashMap::new()),
+            graphql_value!({
+                "current_accounts": {
+                    "current_account": [
+                        { "payment_history": [{ "changes": { "delta": 0, "impact": "NONE", "polarity": "UNCHANGED" } }] },
+                        { "payment_history": [{ "changes": { "delta": 0, "impact": "NONE", "polarity": "UNCHANGED" } }] },
+                        { "payment_history": [{ "changes": { "delta": 0, "impact": "NONE", "polarity": "UNCHANGED" } }] },
+                        { "payment_history": [{ "changes": { "delta": 0, "impact": "NONE", "polarity": "UNCHANGED" } }] },
+                        { "payment_history": [{ "changes": { "delta": (-2), "impact": "LOW", "polarity": "POSITIVE" } }] },
+                    ]
+                },
+            })
+        );
+    }
+}
