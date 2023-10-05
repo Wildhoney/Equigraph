@@ -4,7 +4,7 @@ use super::{
 use crate::{
     objects::{
         input::Select,
-        output::{Balance, Company},
+        output::{Balance, Company, Date},
     },
     parser::{fields::PaymentFrequencyField, types::Report},
     schema::Context,
@@ -80,6 +80,15 @@ impl CurrentAccount<'_> {
     #[graphql(name = "payment_history")]
     pub fn payment_history(&self, select: Option<Select>) -> Vec<CurrentAccountPaymentHistory> {
         CurrentAccountPaymentHistory::new(select, self.account)
+    }
+
+    #[graphql(name = "start_date")]
+    pub fn start_date(&self) -> Date {
+        Date {
+            day: self.account.start_date.day as i32,
+            month: self.account.start_date.month as i32,
+            year: self.account.start_date.year as i32,
+        }
     }
 }
 

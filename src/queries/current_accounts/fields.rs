@@ -3,7 +3,7 @@ use serde::Deserialize;
 
 use crate::{
     objects::output::CompanyClass,
-    parser::fields::{PaymentFrequencyField, PaymentStatusField},
+    parser::fields::{DateField, PaymentFrequencyField, PaymentStatusField},
 };
 
 #[derive(Debug, PartialEq, Deserialize)]
@@ -25,6 +25,8 @@ pub struct CurrentAccountField {
     pub company_class: CompanyClass,
     #[serde(alias = "paymentHistory")]
     pub payment_history: Vec<PaymentHistoryField>,
+    #[serde(alias = "startDate")]
+    pub start_date: DateField,
 }
 
 #[derive(Debug, PartialEq, Deserialize, GraphQLObject)]
