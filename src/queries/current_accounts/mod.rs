@@ -3,10 +3,9 @@ mod current_account;
 pub mod fields;
 mod insights;
 mod payment_history;
-mod utils;
 
-use self::{current_account::CurrentAccount, insights::CurrentAccountInsights};
-use crate::{parser::fields::ReportField, schema::Context};
+use self::insights::CurrentAccountInsights;
+use crate::{parser::fields::ReportField, schema::Context, utils::CurrentAccountInsight};
 use juniper::FieldResult;
 
 #[derive(Debug, PartialEq)]
@@ -25,8 +24,8 @@ impl CurrentAccounts<'_> {
 #[juniper::graphql_object(context = Context)]
 impl CurrentAccounts<'_> {
     #[graphql(name = "current_account")]
-    pub fn current_account(&self) -> Vec<CurrentAccount> {
-        CurrentAccount::new(self.report)
+    pub fn current_account(&self) -> Vec<CurrentAccountInsight> {
+        CurrentAccountInsight::new(self.report)
     }
 
     pub fn insights(&self) -> Option<CurrentAccountInsights> {

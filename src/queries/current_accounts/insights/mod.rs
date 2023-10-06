@@ -1,16 +1,19 @@
-use super::{fields::CurrentAccountField, utils::get_accounts};
-use crate::{parser::types::Report, schema::Context};
+use crate::{
+    parser::types::Report,
+    schema::Context,
+    utils::{get_current_account_insights, CurrentAccountInsight},
+};
 
 #[derive(Debug, PartialEq)]
 pub struct CurrentAccountInsights<'a> {
-    pub accounts: Vec<&'a CurrentAccountField>,
+    pub current_accounts: Vec<CurrentAccountInsight<'a>>,
 }
 
 impl CurrentAccountInsights<'_> {
     pub fn new<'a>(report: Option<&'a Report>) -> Option<CurrentAccountInsights> {
         match report {
             Some(report) => Some(CurrentAccountInsights {
-                accounts: get_accounts(report),
+                current_accounts: get_current_account_insights(report),
             }),
             None => None,
         }
@@ -21,12 +24,14 @@ impl CurrentAccountInsights<'_> {
 impl CurrentAccountInsights<'_> {
     #[graphql(name = "count")]
     pub fn count(&self) -> i32 {
-        self.accounts.len() as i32
+        self.current_accounts.len() as i32
     }
 
     #[graphql(name = "has_overdraft")]
     pub fn has_overdraft(&self) -> bool {
-        self.accounts.iter().any(|account| account.overdraft)
+        self.current_accounts
+            .iter()
+            .any(|x| x.current_account.overdraft)
     }
 }
 

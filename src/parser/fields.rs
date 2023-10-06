@@ -3,7 +3,7 @@ use serde::Deserialize;
 
 use crate::queries::{
     associates::fields::AssociatesField, current_accounts::fields::CurrentAccountField,
-    score::fields::ScoresField,
+    score::fields::ScoresField, utils::address::fields::MatchedAddressField,
 };
 
 #[derive(Debug, PartialEq, Deserialize)]
@@ -39,23 +39,6 @@ pub struct SuppliedAddressDataField {
     pub address_specific_data: AddressSpecificDataField,
     #[serde(alias = "noticeOfCorrectionOrDisputePresent")]
     pub notice_of_correction_or_dispute_present: bool,
-}
-
-#[derive(Debug, PartialEq, Deserialize)]
-pub struct MatchedAddressField {
-    address: AddressField,
-}
-
-#[derive(Debug, PartialEq, Deserialize)]
-pub struct AddressField {
-    #[serde(alias = "addressID")]
-    address_id: String,
-    county: String,
-    number: String,
-    #[serde(alias = "postTown")]
-    post_town: String,
-    postcode: String,
-    street1: String,
 }
 
 #[derive(Debug, PartialEq, Deserialize)]

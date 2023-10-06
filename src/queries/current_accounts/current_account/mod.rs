@@ -1,96 +1,90 @@
-use super::{
-    fields::CurrentAccountField, payment_history::CurrentAccountPaymentHistory, utils::get_accounts,
-};
+use super::payment_history::CurrentAccountPaymentHistory;
 use crate::{
     objects::{
         input::{Format, Select},
         output::{Balance, Company, Date},
     },
     parser::{fields::PaymentFrequencyField, types::Report},
+    queries::utils::address::Address,
     schema::Context,
-    utils::get_date,
+    utils::{get_current_account_insights, get_date, CurrentAccountInsight},
 };
+use juniper::FieldResult;
 
-#[derive(Debug, PartialEq)]
-pub struct CurrentAccount<'a> {
-    pub account: &'a CurrentAccountField,
-}
-
-impl CurrentAccount<'_> {
-    pub fn new<'a>(report: Option<&'a Report>) -> Vec<CurrentAccount> {
+impl CurrentAccountInsight<'_> {
+    pub fn new<'a>(report: Option<&'a Report>) -> Vec<CurrentAccountInsight> {
         match report {
-            Some(report) => get_accounts(report)
-                .iter()
-                .map(|current_account| CurrentAccount {
-                    account: &current_account,
-                })
-                .collect::<Vec<_>>(),
+            Some(report) => get_current_account_insights(report),
             None => vec![],
         }
     }
 }
 
 #[juniper::graphql_object(context = Context)]
-impl CurrentAccount<'_> {
+impl CurrentAccountInsight<'_> {
     #[graphql(name = "account_number")]
     pub fn account_number(&self) -> &String {
-        &self.account.account_number
+        &self.current_account.account_number
     }
 
     pub fn company(&self) -> Company {
         Company {
-            kind: &self.account.company_class,
-            name: &self.account.company_name,
+            kind: &self.current_account.company_class,
+            name: &self.current_account.company_name,
         }
     }
 
     #[graphql(name = "has_overdraft")]
     pub fn has_overdraft(&self) -> &bool {
-        &self.account.overdraft
+        &self.current_account.overdraft
     }
 
     #[graphql(name = "current_balance")]
     pub fn current_balance(&self) -> Balance {
         Balance {
-            amount: self.account.current_balance.balance_amount.amount,
-            currency: &self.account.current_balance.balance_amount.currency,
+            amount: self.current_account.current_balance.balance_amount.amount,
+            currency: &self.current_account.current_balance.balance_amount.currency,
         }
     }
 
     #[graphql(name = "default_balance")]
     pub fn default_balance(&self) -> Balance {
         Balance {
-            amount: self.account.default_balance.balance_amount.amount,
-            currency: &self.account.default_balance.balance_amount.currency,
+            amount: self.current_account.default_balance.balance_amount.amount,
+            currency: &self.current_account.default_balance.balance_amount.currency,
         }
     }
 
     #[graphql(name = "start_balance")]
     pub fn start_balance(&self) -> Balance {
         Balance {
-            amount: self.account.start_balance.balance_amount.amount,
-            currency: &self.account.start_balance.balance_amount.currency,
+            amount: self.current_account.start_balance.balance_amount.amount,
+            currency: &self.current_account.start_balance.balance_amount.currency,
         }
     }
 
     #[graphql(name = "payment_frequency")]
     pub fn payment_frequency(&self) -> &PaymentFrequencyField {
-        &self.account.payment_frequency
-    }
-
-    #[graphql(name = "payment_history")]
-    pub fn payment_history(&self, select: Option<Select>) -> Vec<CurrentAccountPaymentHistory> {
-        CurrentAccountPaymentHistory::new(select, self.account)
+        &self.current_account.payment_frequency
     }
 
     #[graphql(name = "start_date")]
     pub fn start_date(&self, format: Format) -> Option<Date> {
         get_date(
-            self.account.start_date.year,
-            self.account.start_date.month,
-            self.account.start_date.day,
+            self.current_account.start_date.year,
+            self.current_account.start_date.month,
+            self.current_account.start_date.day,
             format,
         )
+    }
+
+    #[graphql(name = "payment_history")]
+    pub fn payment_history(&self, select: Option<Select>) -> Vec<CurrentAccountPaymentHistory> {
+        CurrentAccountPaymentHistory::new(select, self.current_account)
+    }
+
+    pub fn address(&self) -> FieldResult<Address> {
+        Address::new(self.address)
     }
 }
 
