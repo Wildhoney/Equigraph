@@ -4,7 +4,7 @@
 {
   associates {
     insights {
-      associates_count
+      count
     }
     associate {
       name {

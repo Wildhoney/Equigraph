@@ -19,8 +19,8 @@ impl CurrentAccountInsights<'_> {
 
 #[juniper::graphql_object(context = Context)]
 impl CurrentAccountInsights<'_> {
-    #[graphql(name = "accounts_count")]
-    pub fn accounts_count(&self) -> i32 {
+    #[graphql(name = "count")]
+    pub fn count(&self) -> i32 {
         self.accounts.len() as i32
     }
 
@@ -42,7 +42,7 @@ mod tests {
         query Insights {
             current_accounts {
                 insights {
-                    accounts_count
+                    count
                     has_overdraft
                 }
             }
@@ -52,7 +52,7 @@ mod tests {
         assert_eq!(
             run_graphql_query(query, HashMap::new()),
             graphql_value!({
-                "current_accounts": {"insights": { "accounts_count": 5, "has_overdraft": false }}
+                "current_accounts": {"insights": { "count": 5, "has_overdraft": false }}
             })
         );
     }
