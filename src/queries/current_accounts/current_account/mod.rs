@@ -3,11 +3,12 @@ use super::{
 };
 use crate::{
     objects::{
-        input::Select,
+        input::{Format, Select},
         output::{Balance, Company, Date},
     },
     parser::{fields::PaymentFrequencyField, types::Report},
     schema::Context,
+    utils::get_date,
 };
 
 #[derive(Debug, PartialEq)]
@@ -83,12 +84,13 @@ impl CurrentAccount<'_> {
     }
 
     #[graphql(name = "start_date")]
-    pub fn start_date(&self) -> Date {
-        Date {
-            day: self.account.start_date.day as i32,
-            month: self.account.start_date.month as i32,
-            year: self.account.start_date.year as i32,
-        }
+    pub fn start_date(&self, format: Format) -> Option<Date> {
+        get_date(
+            self.account.start_date.year,
+            self.account.start_date.month,
+            self.account.start_date.day,
+            format,
+        )
     }
 }
 
@@ -120,6 +122,34 @@ mod tests {
                         { "account_number": "5YduNv4WxF4SOS0GqS8uh/yOA/TFTgsQT1uH5kAB8RQ=" },
                         { "account_number": "iMt7bI9kNQtpjsWYsMr69lgUsgyg5XQVMF4dhBknm3E=" },
                         { "account_number": "LFTlUsWtDduQAo2L7zJOtNKDI86DztlNPL6Fg7iz4+M=" },
+                    ]
+                },
+            })
+        );
+    }
+
+    #[test]
+    fn it_can_get_current_account_with_start_date() {
+        let query = r#"
+            query CurrentAccount {
+                current_accounts {
+                    current_account {
+                        start_date(format: "%Y-%m-%d")
+                    }
+                }
+            }
+        "#;
+
+        assert_eq!(
+            run_graphql_query(query, HashMap::new()),
+            graphql_value!({
+                "current_accounts": {
+                    "current_account": [
+                        { "start_date": "2004-11-10" },
+                        { "start_date": "2013-06-28" },
+                        { "start_date": "2016-06-06" },
+                        { "start_date": "2019-09-29" },
+                        { "start_date": "2019-07-17" },
                     ]
                 },
             })

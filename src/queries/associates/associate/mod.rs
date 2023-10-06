@@ -1,7 +1,11 @@
 use super::fields::AssociateField;
 use crate::{
-    objects::output::{Date, Name},
+    objects::{
+        input::Format,
+        output::{Date, Name},
+    },
     schema::Context,
+    utils::get_date,
 };
 use juniper::FieldResult;
 
@@ -41,12 +45,13 @@ impl Associate<'_> {
     }
 
     #[graphql(name = "date_of_birth")]
-    pub fn date_of_birth(&self) -> Date {
-        Date {
-            day: self.associate.dob.day as i32,
-            month: self.associate.dob.month as i32,
-            year: self.associate.dob.year as i32,
-        }
+    pub fn date_of_birth(&self, format: Format) -> Option<Date> {
+        get_date(
+            self.associate.dob.year,
+            self.associate.dob.month,
+            self.associate.dob.day,
+            format,
+        )
     }
 }
 
@@ -86,11 +91,7 @@ mod tests {
             query Associates {
                 associates {
                     associate {
-                        date_of_birth {
-                            day
-                            month
-                            year
-                        }
+                        date_of_birth(format: "%Y-%m-%d")
                     }
                 }
             }
@@ -99,7 +100,7 @@ mod tests {
         assert_eq!(
             run_graphql_query(query, HashMap::new()),
             graphql_value!({
-                "associates": {"associate": [{"date_of_birth": {"day": 7, "month": 2, "year": 1991}}]}
+                "associates": {"associate": [{"date_of_birth": "1991-02-07"}]}
             })
         );
     }

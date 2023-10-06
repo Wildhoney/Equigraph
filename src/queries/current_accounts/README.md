@@ -11,6 +11,7 @@
         name
       }
       account_number
+      start_date(format: "%Y-%m-%d")
       payment_history(select: LATEST) {
         age_in_months
         account_balance {

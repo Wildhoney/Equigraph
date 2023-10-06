@@ -12,11 +12,7 @@
         forename
         surname
       }
-      date_of_birth {
-        day
-        month
-        year
-      }
+      date_of_birth(format: "%Y-%m-%d")
     }
   }
 }

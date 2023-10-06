@@ -14,3 +14,5 @@ pub enum Since {
     Next,
     First,
 }
+
+pub type Format = String;

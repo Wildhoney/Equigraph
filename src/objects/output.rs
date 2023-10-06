@@ -1,13 +1,7 @@
 use juniper::{GraphQLEnum, GraphQLObject};
 use serde::Deserialize;
 
-#[derive(Debug, GraphQLObject)]
-#[graphql(description = "")]
-pub struct Date {
-    pub day: i32,
-    pub month: i32,
-    pub year: i32,
-}
+pub type Date = String;
 
 #[derive(Debug, GraphQLObject)]
 #[graphql(description = "")]

@@ -8,6 +8,7 @@ actix = "0.13.1"
 actix-cors = "0.6.4"
 actix-web = "4.4.0"
 actix-web-lab = "0.19.1"
+chrono = "0.4.31"
 juniper = "0.15.10"
 juniper-compose = "0.0.3"
 serde = { version = "1.0.188", features = ["derive"] }
