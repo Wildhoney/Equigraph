@@ -64,6 +64,17 @@ impl CurrentAccountInsight<'_> {
         }
     }
 
+    #[graphql(name = "credit_limit")]
+    pub fn credit_limit(&self) -> Option<Balance> {
+        match self.current_account.credit_limit {
+            Some(ref credit_limit) => Some(Balance {
+                amount: credit_limit.limit.amount,
+                currency: &credit_limit.limit.currency,
+            }),
+            None => None,
+        }
+    }
+
     #[graphql(name = "payment_frequency")]
     pub fn payment_frequency(&self) -> &PaymentFrequencyField {
         &self.current_account.payment_frequency

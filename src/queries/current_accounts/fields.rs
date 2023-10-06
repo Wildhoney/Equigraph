@@ -12,6 +12,8 @@ pub struct CurrentAccountField {
     pub account_number: String,
     #[serde(alias = "currentBalance")]
     pub current_balance: BalanceField,
+    #[serde(alias = "creditLimit")]
+    pub credit_limit: Option<CreditLimitField>,
     #[serde(alias = "defaultBalance")]
     pub default_balance: BalanceField,
     #[serde(alias = "startBalance")]
@@ -33,6 +35,11 @@ pub struct CurrentAccountField {
 pub struct BalanceField {
     #[serde(alias = "balanceAmount")]
     pub balance_amount: AmountField,
+}
+
+#[derive(Debug, PartialEq, Deserialize, GraphQLObject)]
+pub struct CreditLimitField {
+    pub limit: AmountField,
 }
 
 #[derive(Debug, PartialEq, Deserialize, GraphQLObject)]
