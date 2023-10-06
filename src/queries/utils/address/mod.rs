@@ -1,8 +1,8 @@
 pub mod fields;
 
+use self::fields::MatchedAddressField;
 use crate::schema::Context;
 use juniper::FieldResult;
-use self::fields::MatchedAddressField;
 
 #[derive(Debug, PartialEq)]
 pub struct Address<'a> {

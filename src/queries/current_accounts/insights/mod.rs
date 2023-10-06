@@ -1,7 +1,7 @@
 use crate::{
+    insights::{get_current_account_insights, CurrentAccountInsight},
     parser::types::Report,
     schema::Context,
-    utils::{get_current_account_insights, CurrentAccountInsight},
 };
 
 #[derive(Debug, PartialEq)]

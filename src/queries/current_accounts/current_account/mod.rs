@@ -1,5 +1,6 @@
 use super::payment_history::CurrentAccountPaymentHistory;
 use crate::{
+    insights::{get_current_account_insights, CurrentAccountInsight},
     objects::{
         input::{Format, Select},
         output::{Balance, Company, Date},
@@ -7,7 +8,7 @@ use crate::{
     parser::{fields::PaymentFrequencyField, types::Report},
     queries::utils::address::Address,
     schema::Context,
-    utils::{get_current_account_insights, get_date, CurrentAccountInsight},
+    utils::get_date,
 };
 use juniper::FieldResult;
 

@@ -5,7 +5,7 @@ mod insights;
 mod payment_history;
 
 use self::insights::CurrentAccountInsights;
-use crate::{parser::fields::ReportField, schema::Context, utils::CurrentAccountInsight};
+use crate::{insights::CurrentAccountInsight, parser::fields::ReportField, schema::Context};
 use juniper::FieldResult;
 
 #[derive(Debug, PartialEq)]

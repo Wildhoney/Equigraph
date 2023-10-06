@@ -1,3 +1,4 @@
+mod insights;
 mod mocks;
 mod objects;
 mod parser;
