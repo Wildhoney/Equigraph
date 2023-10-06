@@ -1,12 +1,12 @@
 use super::payment_history::CurrentAccountPaymentHistory;
 use crate::{
+    fields::matched_address::MatchedAddressField,
     insights::{get_current_account_insights, CurrentAccountInsight},
     objects::{
         input::{Format, Select},
         output::{Balance, Company, Date},
     },
     parser::{fields::PaymentFrequencyField, types::Report},
-    queries::utils::address::Address,
     schema::Context,
     utils::get_date,
 };
@@ -95,8 +95,8 @@ impl CurrentAccountInsight<'_> {
         CurrentAccountPaymentHistory::new(select, self.current_account)
     }
 
-    pub fn address(&self) -> FieldResult<Address> {
-        Address::new(self.address)
+    pub fn address(&self) -> FieldResult<&MatchedAddressField> {
+        Ok(self.address)
     }
 }
 

@@ -1,9 +1,12 @@
 use juniper::GraphQLEnum;
 use serde::Deserialize;
 
-use crate::queries::{
-    associates::fields::AssociatesField, current_accounts::fields::CurrentAccountField,
-    score::fields::ScoresField, utils::address::fields::MatchedAddressField,
+use crate::{
+    fields::matched_address::MatchedAddressField,
+    queries::{
+        associates::fields::AssociatesField, current_accounts::fields::CurrentAccountField,
+        score::fields::ScoresField,
+    },
 };
 
 #[derive(Debug, PartialEq, Deserialize)]

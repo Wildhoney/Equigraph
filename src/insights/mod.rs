@@ -1,6 +1,6 @@
+use crate::fields::matched_address::MatchedAddressField;
 use crate::parser::types::Report;
 use crate::queries::current_accounts::fields::CurrentAccountField;
-use crate::queries::utils::address::fields::MatchedAddressField;
 
 #[derive(Debug, PartialEq)]
 pub struct CurrentAccountInsight<'a> {

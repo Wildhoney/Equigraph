@@ -1,3 +1,4 @@
+mod fields;
 mod insights;
 mod mocks;
 mod objects;
