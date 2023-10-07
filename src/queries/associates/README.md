@@ -6,11 +6,9 @@
     insights {
       count
     }
-    associate {
-      name {
+    associate(unique: true) {
+      name{
         title
-        forename
-        surname
       }
       date_of_birth(format: "%Y-%m-%d")
     }
