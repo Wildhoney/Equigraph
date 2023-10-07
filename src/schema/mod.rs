@@ -1,10 +1,6 @@
 use crate::{
     parser::types::Reports,
-    queries::{
-        associates::Associates,
-        current_accounts::CurrentAccounts,
-        score::{ScoreField, ScoreLabelField},
-    },
+    queries::{associates::Associates, current_accounts::CurrentAccounts, scores::ScoresField},
 };
 use juniper::{EmptyMutation, EmptySubscription, FieldResult, RootNode};
 
@@ -18,17 +14,8 @@ pub fn create_schema() -> Schema {
 
 #[juniper::graphql_object(context = Context)]
 impl QueryRoot {
-    fn score(context: &Context, kind: ScoreLabelField) -> FieldResult<&ScoreField> {
-        Ok(context
-            .reports
-            .get(0)
-            .unwrap()
-            .non_address_specific_data
-            .scores
-            .score
-            .iter()
-            .find(|score| score.score_label == kind)
-            .unwrap())
+    fn scores(context: &Context) -> FieldResult<Vec<&ScoresField>> {
+        Ok(ScoresField::new(&context.reports))
     }
 
     fn associates(context: &Context) -> FieldResult<Associates> {
