@@ -1,6 +1,5 @@
 pub mod fields;
 pub mod types;
-pub mod utils;
 
 use self::types::{Report, Reports};
 use serde_json;
