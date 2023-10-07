@@ -5,7 +5,7 @@ use crate::{
     fields::matched_address::MatchedAddressField,
     queries::{
         associates::fields::AssociatesField, current_accounts::fields::CurrentAccountField,
-        score::fields::ScoresField,
+        score::ScoresField,
     },
 };
 

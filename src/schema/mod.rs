@@ -3,7 +3,7 @@ use crate::{
     queries::{
         associates::Associates,
         current_accounts::CurrentAccounts,
-        score::{fields::ScoreLabelField, Score},
+        score::{ScoreField, ScoreLabelField},
     },
 };
 use juniper::{EmptyMutation, EmptySubscription, FieldResult, RootNode};
@@ -18,8 +18,17 @@ pub fn create_schema() -> Schema {
 
 #[juniper::graphql_object(context = Context)]
 impl QueryRoot {
-    fn score(kind: ScoreLabelField, context: &Context) -> FieldResult<Score> {
-        Score::new(kind, context)
+    fn score(context: &Context, kind: ScoreLabelField) -> FieldResult<&ScoreField> {
+        Ok(context
+            .reports
+            .get(0)
+            .unwrap()
+            .non_address_specific_data
+            .scores
+            .score
+            .iter()
+            .find(|score| score.score_label == kind)
+            .unwrap())
     }
 
     fn associates(context: &Context) -> FieldResult<Associates> {
