@@ -1,7 +1,7 @@
 mod utils;
 
 use self::utils::{find_score_by_id_and_since, get_delta, get_impact, get_polarity};
-use super::ScoreField;
+use super::score::ScoreField;
 use crate::{
     objects::{
         input::Since,
@@ -13,17 +13,17 @@ use juniper::GraphQLObject;
 
 #[derive(Debug, PartialEq, GraphQLObject)]
 #[graphql(description = "")]
-pub struct Changes {
+pub struct ScoresChanges {
     pub delta: i32,
     pub impact: Impact,
     pub polarity: Polarity,
 }
 
-impl Changes {
+impl ScoresChanges {
     pub fn new(context: &Context, since: Since, score: &ScoreField) -> Option<Self> {
         let compare_with_score = find_score_by_id_and_since(since, &score.id, &context.reports)?;
 
-        Some(Changes {
+        Some(ScoresChanges {
             delta: get_delta(score.value, compare_with_score),
             impact: get_impact(score.value, compare_with_score),
             polarity: get_polarity(score.value, compare_with_score),

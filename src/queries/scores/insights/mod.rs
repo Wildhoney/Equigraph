@@ -1,19 +1,19 @@
 mod utils;
 
 use self::utils::get_sentiment;
-use super::{utils::get_maximum_score, ScoreField};
+use super::score::{utils::get_maximum_score, ScoreField};
 use crate::objects::output::Sentiment;
 use juniper::GraphQLObject;
 
 #[derive(Debug, PartialEq, GraphQLObject)]
 #[graphql(description = "")]
-pub struct Insights {
+pub struct ScoresInsights {
     pub sentiment: Option<Sentiment>,
 }
 
-impl Insights {
+impl ScoresInsights {
     pub fn new(score: &ScoreField) -> Self {
-        Insights {
+        ScoresInsights {
             sentiment: get_sentiment(score.value, get_maximum_score(&score.score_label)),
         }
     }

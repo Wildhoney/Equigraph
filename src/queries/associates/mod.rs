@@ -1,30 +1,26 @@
 mod associate;
-pub mod fields;
+pub mod associates;
 mod insights;
 
-use self::{associate::Associate, insights::Insights};
-use crate::{parser::types::Report, schema::Context};
-use juniper::FieldResult;
+use self::{associate::AssociateField, insights::AssociatesInsights};
+use crate::schema::Context;
 
-pub struct Associates<'a> {
-    pub report: Option<&'a Report>,
-}
-
-impl Associates<'_> {
-    pub fn new(context: &Context) -> FieldResult<Associates> {
-        Ok(Associates {
-            report: context.reports.get(0),
-        })
-    }
+#[derive(Debug, PartialEq)]
+pub struct AssociatesRoot<'a> {
+    context: &'a Context,
 }
 
 #[juniper::graphql_object(context = Context)]
-impl Associates<'_> {
-    pub fn associate(&self, context: &Context) -> FieldResult<Vec<Associate>> {
-        Associate::new(context)
+impl AssociatesRoot<'_> {
+    pub fn associate(&self) -> Vec<&AssociateField> {
+        self.context
+            .reports
+            .iter()
+            .flat_map(|report| &report.non_address_specific_data.associates.associate)
+            .collect::<Vec<_>>()
     }
 
-    pub fn insights(&self) -> FieldResult<Insights> {
-        Insights::new(&self.report)
+    pub fn insights(&self, context: &Context) -> AssociatesInsights {
+        AssociatesInsights::new(&context)
     }
 }

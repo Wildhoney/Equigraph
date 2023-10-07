@@ -1,25 +1,21 @@
-use crate::{parser::types::Report, schema::Context};
-use juniper::FieldResult;
+use crate::schema::Context;
+use juniper::GraphQLObject;
 
-pub struct Insights<'a> {
-    pub report: &'a Option<&'a Report>,
+#[derive(Debug, PartialEq, GraphQLObject)]
+#[graphql(description = "")]
+pub struct AssociatesInsights {
+    pub count: i32,
 }
 
-impl Insights<'_> {
-    pub fn new<'a>(report: &'a Option<&Report>) -> FieldResult<Insights<'a>> {
-        Ok(Insights { report })
-    }
-}
-
-#[juniper::graphql_object(context = Context)]
-impl Insights<'_> {
-    #[graphql(name = "count")]
-    pub fn count(&self) -> Option<i32> {
-        match self.report {
-            Some(report) => {
-                Some(report.non_address_specific_data.associates.associate.len() as i32)
-            }
-            None => None,
+impl AssociatesInsights {
+    pub fn new(context: &Context) -> Self {
+        AssociatesInsights {
+            count: context
+                .reports
+                .iter()
+                .map(|report| &report.non_address_specific_data.associates)
+                .collect::<Vec<_>>()
+                .len() as i32,
         }
     }
 }
@@ -35,11 +31,11 @@ mod tests {
         let query = r#"
             query Associates {
                 associates {
-                    insights {
-                        count
-                    }
+                  insights {
+                    count
+                  }
                 }
-            }
+              }
         "#;
 
         assert_eq!(

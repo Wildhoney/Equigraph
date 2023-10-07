@@ -4,8 +4,8 @@ use serde::Deserialize;
 use crate::{
     fields::matched_address::MatchedAddressField,
     queries::{
-        associates::fields::AssociatesField, current_accounts::fields::CurrentAccountField,
-        scores::ScoresField,
+        associates::associates::AssociatesField, current_accounts::fields::CurrentAccountField,
+        scores::scores::ScoresField,
     },
 };
 
