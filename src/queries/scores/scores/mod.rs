@@ -1,4 +1,7 @@
-use super::{score::{ScoreField, ScoreLabelField}, ScoresRoot};
+use super::{
+    score::{ScoreField, ScoreLabelField},
+    ScoresRoot,
+};
 use crate::schema::Context;
 use serde::Deserialize;
 
@@ -13,8 +16,6 @@ impl ScoresField {
         Some(self.score.iter().find(|score| score.score_label == kind)?)
     }
 }
-
-
 
 impl ScoresField {
     pub fn new(context: &Context) -> ScoresRoot {

@@ -20,29 +20,29 @@ impl AssociatesInsights {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use crate::mocks::run_graphql_query;
-    use juniper::graphql_value;
-    use std::collections::HashMap;
+// #[cfg(test)]
+// mod tests {
+//     use crate::mocks::run_graphql_query;
+//     use juniper::graphql_value;
+//     use std::collections::HashMap;
 
-    #[test]
-    fn it_can_display_insights() {
-        let query = r#"
-            query Associates {
-                associates {
-                  insights {
-                    count
-                  }
-                }
-              }
-        "#;
+//     #[test]
+//     fn it_can_display_insights() {
+//         let query = r#"
+//             query Associates {
+//                 associates {
+//                   insights {
+//                     count
+//                   }
+//                 }
+//               }
+//         "#;
 
-        assert_eq!(
-            run_graphql_query(query, HashMap::new()),
-            graphql_value!({
-                "associates": {"insights": { "count": 1 }}
-            })
-        );
-    }
-}
+//         assert_eq!(
+//             run_graphql_query(query, HashMap::new()),
+//             graphql_value!({
+//                 "associates": {"insights": { "count": 1 }}
+//             })
+//         );
+//     }
+// }

@@ -3,8 +3,8 @@ mod insights;
 mod score;
 pub mod scores;
 
-use crate::schema::Context;
 use self::score::{ScoreField, ScoreLabelField};
+use crate::schema::Context;
 
 #[derive(Debug, PartialEq)]
 pub struct ScoresRoot<'a> {
@@ -54,32 +54,31 @@ mod tests {
             }
         "#;
 
-        assert_eq!(
-            run_graphql_query(query, HashMap::new()),
-            graphql_value!({
-                "scores": [
-                    {
-                        "old_score": {
-                            "current": 538,
-                            "maximum": 700
-                        },
-                        "new_score": {
-                            "current": 956,
-                            "maximum": 1000
-                        }
-                    },
-                    {
-                        "old_score": {
-                            "current": 508,
-                            "maximum": 700
-                        },
-                        "new_score": {
-                            "current": 936,
-                            "maximum": 1000
-                        }
-                    }
+        let expected = graphql_value!({
+            "scores": {
+                "old_score": [
+                  {
+                    "current": 538,
+                    "maximum": 700
+                  },
+                  {
+                    "current": 508,
+                    "maximum": 700
+                  }
+                ],
+                "new_score": [
+                  {
+                    "current": 956,
+                    "maximum": 1000
+                  },
+                  {
+                    "current": 936,
+                    "maximum": 1000
+                  }
                 ]
-            })
-        );
+              }
+        });
+
+        assert_eq!(run_graphql_query(query, HashMap::new()), expected);
     }
 }

@@ -39,26 +39,23 @@ mod tests {
               }
         "#;
 
-        assert_eq!(
-            run_graphql_query(query, HashMap::new()),
-            graphql_value!({
-                "scores": [
-                    {
-                        "score": {
-                            "insights": {
-                                "sentiment": "HIGH"
-                            }
-                        }
-                    },
-                    {
-                        "score": {
-                            "insights": {
-                                "sentiment": "HIGH"
-                            }
-                        }
+        let expected = graphql_value!({
+            "scores": {
+                "score": [
+                  {
+                    "insights": {
+                      "sentiment": "HIGH"
                     }
+                  },
+                  {
+                    "insights": {
+                      "sentiment": "HIGH"
+                    }
+                  }
                 ]
-            })
-        );
+              }
+        });
+
+        assert_eq!(run_graphql_query(query, HashMap::new()), expected);
     }
 }

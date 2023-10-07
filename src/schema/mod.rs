@@ -1,6 +1,10 @@
 use crate::{
     parser::types::Reports,
-    queries::{associates::{AssociatesRoot, associates::AssociatesField}, current_accounts::CurrentAccounts, scores::{ScoresRoot, scores::ScoresField}},
+    queries::{
+        associates::{associates::AssociatesField, AssociatesRoot},
+        current_accounts::CurrentAccounts,
+        scores::{scores::ScoresField, ScoresRoot},
+    },
 };
 use juniper::{EmptyMutation, EmptySubscription, FieldResult, RootNode};
 

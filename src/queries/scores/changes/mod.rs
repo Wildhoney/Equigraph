@@ -33,11 +33,9 @@ impl ScoresChanges {
 
 #[cfg(test)]
 mod tests {
-    use std::collections::HashMap;
-
-    use juniper::graphql_value;
-
     use crate::mocks::run_graphql_query;
+    use juniper::graphql_value;
+    use std::collections::HashMap;
 
     #[test]
     fn it_can_display_changes() {
@@ -55,25 +53,22 @@ mod tests {
               }
         "#;
 
-        assert_eq!(
-            run_graphql_query(query, HashMap::new()),
-            graphql_value!({
-                "scores": [
-                    {
-                      "score": {
-                        "changes": {
-                          "impact": "HIGH",
-                          "delta": 448
-                        }
-                      }
-                    },
-                    {
-                      "score": {
-                        "changes": {juniper::Value::Null}
-                      }
-                    }
-                ]
-            })
-        );
+        let expected = graphql_value!({
+          "scores": {
+            "score": [
+              {
+                "changes": {
+                  "impact": "HIGH",
+                  "delta": 448
+                }
+              },
+              {
+                "changes": {juniper::Value::Null}
+              }
+            ]
+          }
+        });
+
+        assert_eq!(run_graphql_query(query, HashMap::new()), expected);
     }
 }
