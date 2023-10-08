@@ -1,9 +1,8 @@
 use crate::{
     parser::types::Reports,
     queries::{
-        associates::{associates::AssociatesField, AssociatesRoot},
-        current_accounts::CurrentAccounts,
-        scores::{scores::ScoresField, ScoresRoot},
+        associates::associates::AssociatesField, current_accounts::CurrentAccounts,
+        scores::scores::ScoresField,
     },
 };
 use juniper::{EmptyMutation, EmptySubscription, FieldResult, RootNode};
@@ -18,11 +17,11 @@ pub fn create_schema() -> Schema {
 
 #[juniper::graphql_object(context = Context)]
 impl QueryRoot {
-    fn scores(context: &Context) -> FieldResult<ScoresRoot> {
+    fn scores(context: &Context) -> FieldResult<ScoresField> {
         Ok(ScoresField::new(context))
     }
 
-    fn associates(context: &Context) -> FieldResult<AssociatesRoot> {
+    fn associates(context: &Context) -> FieldResult<AssociatesField> {
         Ok(AssociatesField::new(&context))
     }
 

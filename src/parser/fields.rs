@@ -56,14 +56,14 @@ pub struct InsightDataField {
     pub current_account: Vec<CurrentAccountField>,
 }
 
-#[derive(Debug, PartialEq, Deserialize, Eq, Hash)]
+#[derive(Debug, PartialEq, Deserialize, Eq, Hash, Clone)]
 pub struct DateField {
     pub day: u8,
     pub month: u8,
     pub year: u16,
 }
 
-#[derive(Debug, PartialEq, Deserialize, Eq, Hash)]
+#[derive(Debug, PartialEq, Deserialize, Eq, Hash, Clone)]
 pub struct NameField {
     pub title: String,
     pub forename: String,

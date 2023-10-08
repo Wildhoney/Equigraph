@@ -9,7 +9,7 @@ use crate::{
 };
 use serde::Deserialize;
 
-#[derive(Debug, PartialEq, Deserialize, Eq, Hash)]
+#[derive(Debug, PartialEq, Deserialize, Eq, Hash, Clone)]
 pub struct AssociateField {
     pub dob: DateField,
     pub name: NameField,

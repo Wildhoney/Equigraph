@@ -7,7 +7,7 @@ use juniper::GraphQLEnum;
 use serde::Deserialize;
 use uuid::Uuid;
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Debug, PartialEq, Deserialize, Clone)]
 pub struct ScoreField {
     #[serde(default = "unique_id")]
     pub id: Uuid,
@@ -19,7 +19,7 @@ pub struct ScoreField {
     pub value: u16,
 }
 
-#[derive(Debug, PartialEq, Deserialize, GraphQLEnum)]
+#[derive(Debug, PartialEq, Deserialize, GraphQLEnum, Clone)]
 pub enum ScoreLabelField {
     RNOLF04,
     PSOLF01,
