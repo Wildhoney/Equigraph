@@ -1,6 +1,3 @@
-use juniper::{FieldResult, GraphQLObject};
-use serde::Deserialize;
-
 use crate::{
     fields::matched_address::MatchedAddressField,
     objects::{
@@ -9,11 +6,16 @@ use crate::{
     },
     parser::fields::{DateField, PaymentFrequencyField, PaymentStatusField},
     schema::Context,
-    utils::get_date,
+    utils::{get_date, unique_id},
 };
+use juniper::{FieldResult, GraphQLObject};
+use serde::Deserialize;
+use uuid::Uuid;
 
 #[derive(Debug, PartialEq, Deserialize, Clone)]
 pub struct CurrentAccountField {
+    #[serde(default = "unique_id")]
+    pub id: Uuid,
     #[serde(alias = "accountNumber")]
     pub account_number: String,
     #[serde(alias = "currentBalance")]
@@ -138,7 +140,23 @@ impl CurrentAccountField {
     //     CurrentAccountPaymentHistory::new(select, self.current_account)
     // }
 
-    // pub fn address(&self) -> FieldResult<&MatchedAddressField> {
-    //     self.address
-    // }
+    pub fn address(&self, context: &Context) -> Option<&MatchedAddressField> {
+        let address = context.reports.iter().find_map(|report| {
+            report
+                .sole_search
+                .primary
+                .supplied_address_data
+                .iter()
+                .find(|supplied_address_data| {
+                    supplied_address_data
+                        .address_specific_data
+                        .insight_data
+                        .current_account
+                        .iter()
+                        .any(|current_account| current_account.id == self.id)
+                })
+        })?;
+
+        Some(&address.matched_address)
+    }
 }
