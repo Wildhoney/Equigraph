@@ -118,7 +118,7 @@ pub enum PaymentFrequencyField {
     Periodically,
 }
 
-#[derive(Debug, PartialEq, Deserialize, GraphQLEnum, Clone)]
+#[derive(Debug, PartialEq, Deserialize, GraphQLEnum, Clone, Copy)]
 pub enum PaymentStatusField {
     #[serde(alias = "ZERO")]
     Zero,

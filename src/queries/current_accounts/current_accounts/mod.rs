@@ -1,14 +1,14 @@
 use crate::{
     fields::matched_address::MatchedAddressField,
     objects::{
-        input::Format,
+        input::{Format, Select},
         output::{Balance, Company, CompanyClass, Date},
     },
     parser::fields::{DateField, PaymentFrequencyField, PaymentStatusField},
     schema::Context,
     utils::{get_date, unique_id},
 };
-use juniper::{FieldResult, GraphQLObject};
+use juniper::GraphQLObject;
 use serde::Deserialize;
 use uuid::Uuid;
 
@@ -64,6 +64,35 @@ pub struct PaymentHistoryField {
     pub age_in_months: i32,
     #[serde(alias = "paymentStatus")]
     pub payment_status: PaymentStatusField,
+}
+
+#[juniper::graphql_object(context = Context)]
+impl PaymentHistoryField {
+    #[graphql(name = "age_in_months")]
+    pub fn age_in_months(&self) -> i32 {
+        self.age_in_months
+    }
+
+    #[graphql(name = "payment_status")]
+    pub fn payment_status(&self) -> &PaymentStatusField {
+        &self.payment_status
+    }
+
+    #[graphql(name = "account_balance")]
+    pub fn account_balance(&self) -> Balance {
+        Balance {
+            amount: self.account_balance.balance_amount.amount,
+            currency: &self.account_balance.balance_amount.currency,
+        }
+    }
+
+    // pub fn changes(&self, since: Since) -> CurrentAccountChanges {
+    //     CurrentAccountChanges {
+    //         since: since.to_owned(),
+    //         account: &self.account,
+    //         payment_history: &self.payment_history,
+    //     }
+    // }
 }
 
 #[juniper::graphql_object(context = Context)]
@@ -135,10 +164,15 @@ impl CurrentAccountField {
         )
     }
 
-    // #[graphql(name = "payment_history")]
-    // pub fn payment_history(&self, select: Option<Select>) -> Vec<CurrentAccountPaymentHistory> {
-    //     CurrentAccountPaymentHistory::new(select, self.current_account)
-    // }
+    #[graphql(name = "payment_history")]
+    pub fn payment_history(&self, select: Select) -> &[PaymentHistoryField] {
+        match select {
+            Select::All => &self.payment_history[..],
+            Select::Latest => &self.payment_history[0..1],
+            Select::Oldest => &self.payment_history[self.payment_history.len() - 1..],
+            _ => &self.payment_history[..],
+        }
+    }
 
     pub fn address(&self, context: &Context) -> Option<&MatchedAddressField> {
         let address = context.reports.iter().find_map(|report| {
