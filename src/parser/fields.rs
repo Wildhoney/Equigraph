@@ -2,7 +2,7 @@ use crate::{
     fields::matched_address::MatchedAddressField,
     queries::{
         associates::associates::AssociatesField,
-        current_accounts::current_accounts::CurrentAccountField, scores::scores::ScoresField,
+        current_accounts::current_account::CurrentAccountField, scores::scores::ScoresField,
     },
     schema::Context,
 };
