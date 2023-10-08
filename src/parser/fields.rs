@@ -1,13 +1,14 @@
-use juniper::GraphQLEnum;
-use serde::Deserialize;
-
 use crate::{
     fields::matched_address::MatchedAddressField,
     queries::{
-        associates::associates::AssociatesField, current_accounts::fields::CurrentAccountField,
-        scores::scores::ScoresField,
+        associates::associates::AssociatesField,
+        current_accounts::current_accounts::CurrentAccountField, scores::scores::ScoresField,
     },
+    schema::Context,
 };
+use itertools::Itertools;
+use juniper::GraphQLEnum;
+use serde::Deserialize;
 
 #[derive(Debug, PartialEq, Deserialize)]
 pub struct ReportField {
@@ -56,6 +57,45 @@ pub struct InsightDataField {
     pub current_account: Vec<CurrentAccountField>,
 }
 
+pub enum InsightDataFieldKind {
+    CurrentAccount,
+}
+
+impl InsightDataField {
+    pub fn new(context: &Context, _kind: InsightDataFieldKind) -> Self {
+        Self {
+            current_account: context
+                .reports
+                .iter()
+                .flat_map(|report| {
+                    report
+                        .sole_search
+                        .primary
+                        .supplied_address_data
+                        .iter()
+                        .flat_map(|supplied_address_data| {
+                            supplied_address_data
+                                .address_specific_data
+                                .insight_data
+                                .current_account
+                                .to_owned()
+                        })
+                        .collect::<Vec<_>>()
+                })
+                .unique_by(|current_account| current_account.account_number.to_owned())
+                .collect::<Vec<_>>(),
+        }
+    }
+}
+
+#[juniper::graphql_object(context = Context)]
+impl InsightDataField {
+    #[graphql(name = "current_account")]
+    pub fn current_account(&self) -> Vec<&CurrentAccountField> {
+        self.current_account.iter().collect::<Vec<_>>()
+    }
+}
+
 #[derive(Debug, PartialEq, Deserialize, Eq, Hash, Clone)]
 pub struct DateField {
     pub day: u8,
@@ -70,7 +110,7 @@ pub struct NameField {
     pub surname: String,
 }
 
-#[derive(Debug, PartialEq, Deserialize, GraphQLEnum)]
+#[derive(Debug, PartialEq, Deserialize, GraphQLEnum, Clone)]
 pub enum PaymentFrequencyField {
     #[serde(alias = "MONTHLY")]
     Monthly,
@@ -78,7 +118,7 @@ pub enum PaymentFrequencyField {
     Periodically,
 }
 
-#[derive(Debug, PartialEq, Deserialize, GraphQLEnum)]
+#[derive(Debug, PartialEq, Deserialize, GraphQLEnum, Clone)]
 pub enum PaymentStatusField {
     #[serde(alias = "ZERO")]
     Zero,

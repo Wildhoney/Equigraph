@@ -18,8 +18,8 @@ impl ScoresField {
 }
 
 impl ScoresField {
-    pub fn new(context: &Context) -> ScoresField {
-        ScoresField {
+    pub fn new(context: &Context) -> Self {
+        Self {
             score: context
                 .reports
                 .iter()
