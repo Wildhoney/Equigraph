@@ -30,7 +30,7 @@ mod tests {
         let query = r#"
             query Score {
                 scores {
-                  score(kind: PSOLF01) {
+                  score(select: ALL, kind: PSOLF01) {
                     insights {
                       sentiment
                     }

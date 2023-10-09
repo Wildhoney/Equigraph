@@ -168,9 +168,11 @@ impl CurrentAccountField {
     pub fn payment_history(&self, select: Select) -> &[PaymentHistoryField] {
         match select {
             Select::All => &self.payment_history[..],
-            Select::Latest => &self.payment_history[0..1],
-            Select::Oldest => &self.payment_history[self.payment_history.len() - 1..],
-            _ => &self.payment_history[..],
+            Select::Latest => &self.payment_history.get(0..1).unwrap_or(&[]),
+            Select::Oldest => &self
+                .payment_history
+                .get(self.payment_history.len() - 1..)
+                .unwrap_or(&[]),
         }
     }
 

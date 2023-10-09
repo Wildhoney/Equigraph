@@ -1,5 +1,5 @@
 use super::score::{ScoreField, ScoreLabelField};
-use crate::schema::Context;
+use crate::{objects::input::Select, schema::Context};
 use serde::Deserialize;
 
 #[derive(Debug, PartialEq, Deserialize)]
@@ -9,11 +9,18 @@ pub struct ScoresField {
 
 #[juniper::graphql_object(context = Context)]
 impl ScoresField {
-    pub fn score(&self, kind: ScoreLabelField) -> Vec<&ScoreField> {
-        self.score
+    pub fn score(&self, kind: ScoreLabelField, select: Select) -> Vec<&ScoreField> {
+        let scores = self
+            .score
             .iter()
             .filter(|score| score.score_label == kind)
-            .collect::<Vec<_>>()
+            .collect::<Vec<_>>();
+
+        match select {
+            Select::All => scores[..].to_vec(),
+            Select::Latest => scores.get(0..1).unwrap_or(&[]).to_vec(),
+            Select::Oldest => scores.get(scores.len() - 1..).unwrap_or(&[]).to_vec(),
+        }
     }
 }
 
@@ -48,11 +55,11 @@ mod tests {
         let query = r#"
             query Score {
                 scores {
-                    old_score: score(kind: RNOLF04) {
+                    old_score: score(select: ALL, kind: RNOLF04) {
                         current
                         maximum
                     }
-                    new_score: score(kind: PSOLF01) {
+                    new_score: score(select: ALL, kind: PSOLF01) {
                         current
                         maximum
                     }
