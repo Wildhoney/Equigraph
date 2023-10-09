@@ -4,11 +4,12 @@ use crate::{
         input::{Format, Select},
         output::{Balance, Company, CompanyClass, Date},
     },
-    parser::fields::{DateField, PaymentFrequencyField, PaymentStatusField},
+    parser::fields::{
+        BalanceField, CreditLimitField, DateField, PaymentFrequencyField, PaymentHistoryField,
+    },
     schema::Context,
     utils::{get_date, unique_id},
 };
-use juniper::GraphQLObject;
 use serde::Deserialize;
 use uuid::Uuid;
 
@@ -37,62 +38,6 @@ pub struct CurrentAccountField {
     pub payment_history: Vec<PaymentHistoryField>,
     #[serde(alias = "startDate")]
     pub start_date: DateField,
-}
-
-#[derive(Debug, PartialEq, Deserialize, GraphQLObject, Clone)]
-pub struct BalanceField {
-    #[serde(alias = "balanceAmount")]
-    pub balance_amount: AmountField,
-}
-
-#[derive(Debug, PartialEq, Deserialize, GraphQLObject, Clone)]
-pub struct CreditLimitField {
-    pub limit: AmountField,
-}
-
-#[derive(Debug, PartialEq, Deserialize, GraphQLObject, Clone)]
-pub struct AmountField {
-    pub amount: i32,
-    pub currency: String,
-}
-
-#[derive(Debug, PartialEq, Deserialize, Clone)]
-pub struct PaymentHistoryField {
-    #[serde(alias = "accountBalance")]
-    pub account_balance: BalanceField,
-    #[serde(alias = "ageInMonths")]
-    pub age_in_months: i32,
-    #[serde(alias = "paymentStatus")]
-    pub payment_status: PaymentStatusField,
-}
-
-#[juniper::graphql_object(context = Context)]
-impl PaymentHistoryField {
-    #[graphql(name = "age_in_months")]
-    pub fn age_in_months(&self) -> i32 {
-        self.age_in_months
-    }
-
-    #[graphql(name = "payment_status")]
-    pub fn payment_status(&self) -> &PaymentStatusField {
-        &self.payment_status
-    }
-
-    #[graphql(name = "account_balance")]
-    pub fn account_balance(&self) -> Balance {
-        Balance {
-            amount: self.account_balance.balance_amount.amount,
-            currency: &self.account_balance.balance_amount.currency,
-        }
-    }
-
-    // pub fn changes(&self, since: Since) -> CurrentAccountChanges {
-    //     CurrentAccountChanges {
-    //         since: since.to_owned(),
-    //         account: &self.account,
-    //         payment_history: &self.payment_history,
-    //     }
-    // }
 }
 
 #[juniper::graphql_object(context = Context)]
@@ -194,5 +139,208 @@ impl CurrentAccountField {
         })?;
 
         Some(&address.matched_address)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::mocks::run_graphql_query;
+    use juniper::graphql_value;
+    use std::collections::HashMap;
+
+    #[test]
+    fn it_can_get_current_account_details() {
+        let query = r#"
+            query CurrentAccount {
+                current_accounts {
+                    current_account {
+                      account_number
+                      company {
+                        kind
+                        name
+                      }
+                      current_balance {
+                        amount
+                        currency
+                      }
+                      default_balance {
+                        amount
+                        currency
+                      }
+                      start_balance {
+                        amount
+                        currency
+                      }
+                      credit_limit {
+                        amount
+                        currency
+                      }
+                      payment_frequency
+                      start_date(format: "%d/%m/%Y")
+                      address {
+                        number
+                        street
+                        town
+                        county
+                      }
+                    }
+                }
+            }
+        "#;
+
+        let expected = graphql_value!({
+            "current_accounts": {
+                "current_account": [
+                    {
+                    "account_number": "zGML/Ld93it5j86rAFo2wxM8oGHNdoWJj4WTwoRmkcc=",
+                    "company": {
+                        "kind": "BANK",
+                        "name": "HSBC PLC (I)"
+                    },
+                    "current_balance": {
+                        "amount": 0,
+                        "currency": "GBP"
+                    },
+                    "default_balance": {
+                        "amount": 0,
+                        "currency": "GBP"
+                    },
+                    "start_balance": {
+                        "amount": 0,
+                        "currency": "GBP"
+                    },
+                    "credit_limit": {juniper::Value::Null},
+                    "payment_frequency": "MONTHLY",
+                    "start_date": "10/11/2004",
+                    "address": {
+                        "number": "25447",
+                        "street": "LZOQYQFI GYYW",
+                        "town": "HORSHAM",
+                        "county": "PIQW GYHZIF"
+                    }
+                    },
+                    {
+                    "account_number": "3oEmu6B1FCnWguuTc93gXTPtT3NMcaxCKSm2MLOFvMw=",
+                    "company": {
+                        "kind": "BANK",
+                        "name": "LLOYDS BANK (WAS LLOYDS TSB) (I)"
+                    },
+                    "current_balance": {
+                        "amount": 0,
+                        "currency": "GBP"
+                    },
+                    "default_balance": {
+                        "amount": 0,
+                        "currency": "GBP"
+                    },
+                    "start_balance": {
+                        "amount": 0,
+                        "currency": "GBP"
+                    },
+                    "credit_limit": {
+                        "amount": 1000,
+                        "currency": "GBP"
+                    },
+                    "payment_frequency": "MONTHLY",
+                    "start_date": "28/06/2013",
+                    "address": {
+                        "number": "25447",
+                        "street": "LZOQYQFI GYYW",
+                        "town": "HORSHAM",
+                        "county": "PIQW GYHZIF"
+                    }
+                    },
+                    {
+                    "account_number": "5YduNv4WxF4SOS0GqS8uh/yOA/TFTgsQT1uH5kAB8RQ=",
+                    "company": {
+                        "kind": "BANK",
+                        "name": "LLOYDS BANK (WAS LLOYDS TSB) (I)"
+                    },
+                    "current_balance": {
+                        "amount": 0,
+                        "currency": "GBP"
+                    },
+                    "default_balance": {
+                        "amount": 0,
+                        "currency": "GBP"
+                    },
+                    "start_balance": {
+                        "amount": 0,
+                        "currency": "GBP"
+                    },
+                    "credit_limit": {juniper::Value::Null},
+                    "payment_frequency": "MONTHLY",
+                    "start_date": "06/06/2016",
+                    "address": {
+                        "number": "25447",
+                        "street": "LZOQYQFI GYYW",
+                        "town": "HORSHAM",
+                        "county": "PIQW GYHZIF"
+                    }
+                    },
+                    {
+                    "account_number": "iMt7bI9kNQtpjsWYsMr69lgUsgyg5XQVMF4dhBknm3E=",
+                    "company": {
+                        "kind": "BANK",
+                        "name": "MONZO BANK LIMITED (I)"
+                    },
+                    "current_balance": {
+                        "amount": 0,
+                        "currency": "GBP"
+                    },
+                    "default_balance": {
+                        "amount": 0,
+                        "currency": "GBP"
+                    },
+                    "start_balance": {
+                        "amount": 0,
+                        "currency": "GBP"
+                    },
+                    "credit_limit": {juniper::Value::Null},
+                    "payment_frequency": "PERIODICALLY",
+                    "start_date": "29/09/2019",
+                    "address": {
+                        "number": "25447",
+                        "street": "LZOQYQFI GYYW",
+                        "town": "HORSHAM",
+                        "county": "PIQW GYHZIF"
+                    }
+                    },
+                    {
+                    "account_number": "LFTlUsWtDduQAo2L7zJOtNKDI86DztlNPL6Fg7iz4+M=",
+                    "company": {
+                        "kind": "BANK",
+                        "name": "MONZO BANK LIMITED (I)"
+                    },
+                    "current_balance": {
+                        "amount": 0,
+                        "currency": "GBP"
+                    },
+                    "default_balance": {
+                        "amount": 0,
+                        "currency": "GBP"
+                    },
+                    "start_balance": {
+                        "amount": 0,
+                        "currency": "GBP"
+                    },
+                    "credit_limit": {
+                        "amount": 1000,
+                        "currency": "GBP"
+                    },
+                    "payment_frequency": "PERIODICALLY",
+                    "start_date": "17/07/2019",
+                    "address": {
+                        "number": "25447",
+                        "street": "LZOQYQFI GYYW",
+                        "town": "HORSHAM",
+                        "county": "PIQW GYHZIF"
+                    }
+                    }
+                ]
+            }
+        });
+
+        assert_eq!(run_graphql_query(query, HashMap::new()), expected);
     }
 }

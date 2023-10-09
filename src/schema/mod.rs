@@ -3,7 +3,10 @@ use crate::{
         fields::{InsightDataField, InsightDataFieldKind},
         types::Reports,
     },
-    queries::{associates::associates::AssociatesField, scores::scores::ScoresField},
+    queries::{
+        associates::associates::AssociatesField,
+        current_accounts::current_accounts::CurrentAccounts, scores::scores::ScoresField,
+    },
 };
 use juniper::{EmptyMutation, EmptySubscription, FieldResult, RootNode};
 
@@ -26,7 +29,7 @@ impl QueryRoot {
     }
 
     #[graphql(name = "current_accounts")]
-    fn current_accounts(context: &Context) -> FieldResult<InsightDataField> {
+    fn current_accounts(context: &Context) -> FieldResult<CurrentAccounts> {
         Ok(InsightDataField::new(
             context,
             InsightDataFieldKind::CurrentAccount,

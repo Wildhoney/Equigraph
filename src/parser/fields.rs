@@ -1,13 +1,17 @@
 use crate::{
     fields::matched_address::MatchedAddressField,
+    objects::output::Balance,
     queries::{
         associates::associates::AssociatesField,
-        current_accounts::current_account::CurrentAccountField, scores::scores::ScoresField,
+        current_accounts::{
+            current_account::CurrentAccountField, current_accounts::CurrentAccounts,
+        },
+        scores::scores::ScoresField,
     },
     schema::Context,
 };
 use itertools::Itertools;
-use juniper::GraphQLEnum;
+use juniper::{GraphQLEnum, GraphQLObject};
 use serde::Deserialize;
 
 #[derive(Debug, PartialEq, Deserialize)]
@@ -62,9 +66,9 @@ pub enum InsightDataFieldKind {
 }
 
 impl InsightDataField {
-    pub fn new(context: &Context, _kind: InsightDataFieldKind) -> Self {
-        Self {
-            current_account: context
+    pub fn new(context: &Context, _kind: InsightDataFieldKind) -> CurrentAccounts {
+        CurrentAccounts {
+            items: context
                 .reports
                 .iter()
                 .flat_map(|report| {
@@ -85,14 +89,6 @@ impl InsightDataField {
                 .unique_by(|current_account| current_account.account_number.to_owned())
                 .collect::<Vec<_>>(),
         }
-    }
-}
-
-#[juniper::graphql_object(context = Context)]
-impl InsightDataField {
-    #[graphql(name = "current_account")]
-    pub fn current_account(&self) -> Vec<&CurrentAccountField> {
-        self.current_account.iter().collect::<Vec<_>>()
     }
 }
 
@@ -124,4 +120,60 @@ pub enum PaymentStatusField {
     Zero,
     S,
     U,
+}
+
+#[derive(Debug, PartialEq, Deserialize, GraphQLObject, Clone)]
+pub struct BalanceField {
+    #[serde(alias = "balanceAmount")]
+    pub balance_amount: AmountField,
+}
+
+#[derive(Debug, PartialEq, Deserialize, GraphQLObject, Clone)]
+pub struct CreditLimitField {
+    pub limit: AmountField,
+}
+
+#[derive(Debug, PartialEq, Deserialize, GraphQLObject, Clone)]
+pub struct AmountField {
+    pub amount: i32,
+    pub currency: String,
+}
+
+#[derive(Debug, PartialEq, Deserialize, Clone)]
+pub struct PaymentHistoryField {
+    #[serde(alias = "accountBalance")]
+    pub account_balance: BalanceField,
+    #[serde(alias = "ageInMonths")]
+    pub age_in_months: i32,
+    #[serde(alias = "paymentStatus")]
+    pub payment_status: PaymentStatusField,
+}
+
+#[juniper::graphql_object(context = Context)]
+impl PaymentHistoryField {
+    #[graphql(name = "age_in_months")]
+    pub fn age_in_months(&self) -> i32 {
+        self.age_in_months
+    }
+
+    #[graphql(name = "payment_status")]
+    pub fn payment_status(&self) -> &PaymentStatusField {
+        &self.payment_status
+    }
+
+    #[graphql(name = "account_balance")]
+    pub fn account_balance(&self) -> Balance {
+        Balance {
+            amount: self.account_balance.balance_amount.amount,
+            currency: &self.account_balance.balance_amount.currency,
+        }
+    }
+
+    // pub fn changes(&self, since: Since) -> CurrentAccountChanges {
+    //     CurrentAccountChanges {
+    //         since: since.to_owned(),
+    //         account: &self.account,
+    //         payment_history: &self.payment_history,
+    //     }
+    // }
 }
