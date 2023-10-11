@@ -60,43 +60,43 @@ impl CurrentAccountField {
     }
 
     #[graphql(name = "current_balance")]
-    pub fn current_balance(&self) -> Balance {
+    pub fn current_balance(&self, strip_ending_zeroes: Option<bool>) -> Balance {
         let amount = self.current_balance.balance_amount.amount;
         let currency = &self.current_balance.balance_amount.currency;
 
         Balance {
             amount,
             currency,
-            value: get_formatted_currency(amount, currency),
+            value: get_formatted_currency(amount, currency, strip_ending_zeroes),
         }
     }
 
     #[graphql(name = "default_balance")]
-    pub fn default_balance(&self) -> Balance {
+    pub fn default_balance(&self, strip_ending_zeroes: Option<bool>) -> Balance {
         let amount = self.current_balance.balance_amount.amount;
         let currency = &self.default_balance.balance_amount.currency;
 
         Balance {
             amount,
             currency,
-            value: get_formatted_currency(amount, currency),
+            value: get_formatted_currency(amount, currency, strip_ending_zeroes),
         }
     }
 
     #[graphql(name = "start_balance")]
-    pub fn start_balance(&self) -> Balance {
+    pub fn start_balance(&self, strip_ending_zeroes: Option<bool>) -> Balance {
         let amount = self.current_balance.balance_amount.amount;
         let currency = &self.start_balance.balance_amount.currency;
 
         Balance {
             amount,
             currency,
-            value: get_formatted_currency(amount, currency),
+            value: get_formatted_currency(amount, currency, strip_ending_zeroes),
         }
     }
 
     #[graphql(name = "credit_limit")]
-    pub fn credit_limit(&self) -> Option<Balance> {
+    pub fn credit_limit(&self, strip_ending_zeroes: Option<bool>) -> Option<Balance> {
         match &self.credit_limit {
             Some(credit_limit) => Some(Balance {
                 amount: credit_limit.limit.amount,
@@ -104,6 +104,7 @@ impl CurrentAccountField {
                 value: get_formatted_currency(
                     credit_limit.limit.amount,
                     &credit_limit.limit.currency,
+                    strip_ending_zeroes,
                 ),
             }),
             None => None,

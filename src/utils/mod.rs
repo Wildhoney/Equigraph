@@ -16,18 +16,25 @@ pub fn unique_id() -> Uuid {
     Uuid::new_v4()
 }
 
-pub fn get_formatted_currency(amount: i32, currency: &str) -> String {
-    format!(
-        "{}",
-        Money::from_str(
-            &amount.to_string(),
-            match currency {
-                "GBP" => iso::GBP,
-                "USD" => iso::USD,
-                "EUR" => iso::EUR,
-                _ => iso::GBP,
-            }
-        )
-        .unwrap()
-    )
+pub fn get_formatted_currency(
+    amount: i32,
+    currency: &str,
+    strip_ending_zeroes: Option<bool>,
+) -> String {
+    let formatted = Money::from_str(
+        &amount.to_string(),
+        match currency {
+            "GBP" => iso::GBP,
+            "USD" => iso::USD,
+            "EUR" => iso::EUR,
+            _ => iso::GBP,
+        },
+    );
+
+    let value = match strip_ending_zeroes {
+        Some(true) => formatted.unwrap().to_string().replace(".00", ""),
+        _ => formatted.unwrap().to_string(),
+    };
+
+    format!("{}", value)
 }

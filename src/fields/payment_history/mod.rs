@@ -38,14 +38,14 @@ impl PaymentHistoryField {
     }
 
     #[graphql(name = "account_balance")]
-    pub fn account_balance(&self) -> Balance {
+    pub fn account_balance(&self, strip_ending_zeroes: Option<bool>) -> Balance {
         let amount = self.account_balance.balance_amount.amount;
         let currency = &self.account_balance.balance_amount.currency;
 
         Balance {
             amount,
             currency,
-            value: get_formatted_currency(amount, currency),
+            value: get_formatted_currency(amount, currency, strip_ending_zeroes),
         }
     }
 
