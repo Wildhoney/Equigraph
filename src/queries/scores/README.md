@@ -1,9 +1,9 @@
-# Score
+# Scores
 
 ```graphql
-{
+query Scores {
   scores {
-    score(kind: RNOLF04) {
+    score(kind: RNOLF04, select: LATEST) {
       current
       maximum
       changes(since: PREVIOUS) {

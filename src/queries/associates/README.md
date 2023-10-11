@@ -1,13 +1,13 @@
 # Associates
 
 ```graphql
-{
+query Associates {
   associates {
     insights {
       count
     }
     associate(unique: true) {
-      name{
+      name {
         title
       }
       date_of_birth(format: "%Y-%m-%d")
