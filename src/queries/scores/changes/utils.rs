@@ -28,7 +28,7 @@ pub fn get_impact(lhs_score: u16, rhs_score: u16) -> Impact {
 }
 
 pub fn find_score_by_id_and_since(since: Since, id: &Uuid, reports: &Reports) -> Option<u16> {
-    let current_report_index = reports.iter().position(|report| {
+    let current_index = reports.iter().position(|report| {
         report
             .non_address_specific_data
             .scores
@@ -38,14 +38,8 @@ pub fn find_score_by_id_and_since(since: Since, id: &Uuid, reports: &Reports) ->
     })?;
 
     let report = match since {
-        Since::Previous => reports.get(current_report_index + 1),
-        Since::Next => {
-            if current_report_index == 0 {
-                None
-            } else {
-                reports.get(current_report_index - 1)
-            }
-        }
+        Since::Previous => reports.get(current_index + 1),
+        Since::Next => (current_index != 0).then(|| reports.get(current_index - 1))?,
         Since::First => reports.first(),
         Since::Last => reports.last(),
     }?;

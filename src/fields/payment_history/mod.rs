@@ -54,11 +54,7 @@ impl PaymentHistoryField {
         let compare_with_payment_history = match since {
             Since::Previous => payment_histories.get(current_index + 1),
             Since::Next => {
-                if current_index == 0 {
-                    None
-                } else {
-                    payment_histories.get(current_index - 1)
-                }
+                (current_index != 0).then(|| payment_histories.get(current_index - 1))?
             }
             Since::First => payment_histories.first(),
             Since::Last => payment_histories.last(),
