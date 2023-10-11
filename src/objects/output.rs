@@ -32,13 +32,13 @@ pub enum Impact {
     Low,
 }
 
-#[derive(Debug, GraphQLObject)]
-#[graphql(description = "")]
-pub struct Balance<'a> {
-    pub amount: i32,
-    pub currency: &'a str,
-    pub value: String,
-}
+// #[derive(Debug, GraphQLObject)]
+// #[graphql(description = "")]
+// pub struct Balance<'a> {
+//     pub amount: i32,
+//     pub currency: &'a str,
+//     pub value: String,
+// }
 
 #[derive(Debug, PartialEq, Deserialize, GraphQLEnum, Clone)]
 pub enum CompanyClass {

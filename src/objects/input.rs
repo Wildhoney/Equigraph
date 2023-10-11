@@ -16,3 +16,10 @@ pub enum Since {
 }
 
 pub type Format = String;
+
+#[derive(Debug, Clone, PartialEq, GraphQLEnum)]
+#[graphql(description = "Whether to strip the ending zeroes from the amount")]
+pub enum EndingZeroes {
+    Strip,
+    Keep,
+}

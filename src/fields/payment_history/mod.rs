@@ -1,13 +1,13 @@
 mod utils;
 
-use super::{BalanceField, PaymentStatusField};
+use super::{AmountField, BalanceField, PaymentStatusField};
 use crate::{
     objects::{
         input::Since,
-        output::{Balance, Impact, Polarity},
+        output::{Impact, Polarity},
     },
     schema::Context,
-    utils::{get_formatted_currency, unique_id},
+    utils::unique_id,
 };
 use juniper::GraphQLObject;
 use serde::Deserialize;
@@ -38,15 +38,8 @@ impl PaymentHistoryField {
     }
 
     #[graphql(name = "account_balance")]
-    pub fn account_balance(&self, strip_ending_zeroes: Option<bool>) -> Balance {
-        let amount = self.account_balance.balance_amount.amount;
-        let currency = &self.account_balance.balance_amount.currency;
-
-        Balance {
-            amount,
-            currency,
-            value: get_formatted_currency(amount, currency, strip_ending_zeroes),
-        }
+    pub fn account_balance(&self) -> &AmountField {
+        &self.account_balance.balance_amount
     }
 
     pub fn changes(&self, context: &Context, since: Since) -> Option<Changes> {

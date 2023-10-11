@@ -5,9 +5,12 @@ pub mod payment_history;
 use self::insight_data::InsightDataField;
 use crate::{
     fields::matched_address::MatchedAddressField,
+    objects::input::EndingZeroes,
     queries::{associates::associates::AssociatesField, scores::scores::ScoresField},
+    schema::Context,
+    utils::get_amount,
 };
-use juniper::{GraphQLEnum, GraphQLObject};
+use juniper::GraphQLEnum;
 use serde::Deserialize;
 
 #[derive(Debug, PartialEq, Deserialize)]
@@ -81,19 +84,36 @@ pub enum PaymentStatusField {
     U,
 }
 
-#[derive(Debug, PartialEq, Deserialize, GraphQLObject, Clone)]
+#[derive(Debug, PartialEq, Deserialize, Clone)]
 pub struct BalanceField {
     #[serde(alias = "balanceAmount")]
     pub balance_amount: AmountField,
 }
 
-#[derive(Debug, PartialEq, Deserialize, GraphQLObject, Clone)]
+#[derive(Debug, PartialEq, Deserialize, Clone)]
 pub struct CreditLimitField {
     pub limit: AmountField,
 }
 
-#[derive(Debug, PartialEq, Deserialize, GraphQLObject, Clone)]
+#[derive(Debug, PartialEq, Deserialize, Clone)]
 pub struct AmountField {
     pub amount: i32,
     pub currency: String,
+}
+
+#[juniper::graphql_object(context = Context)]
+impl AmountField {
+    pub fn amount(&self) -> i32 {
+        self.amount
+    }
+
+    pub fn currency(&self) -> &str {
+        &self.currency
+    }
+
+    pub fn value(&self, zeroes: Option<EndingZeroes>) -> String {
+        let amount = self.amount;
+        let currency = &self.currency;
+        get_amount(amount, currency, zeroes)
+    }
 }

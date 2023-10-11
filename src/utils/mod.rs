@@ -1,4 +1,4 @@
-use crate::objects::input::Format;
+use crate::objects::input::{EndingZeroes, Format};
 use chrono::{TimeZone, Utc};
 use rusty_money::{iso, Money};
 use uuid::Uuid;
@@ -16,10 +16,10 @@ pub fn unique_id() -> Uuid {
     Uuid::new_v4()
 }
 
-pub fn get_formatted_currency(
+pub fn get_amount(
     amount: i32,
     currency: &str,
-    strip_ending_zeroes: Option<bool>,
+    strip_ending_zeroes: Option<EndingZeroes>,
 ) -> String {
     let formatted = Money::from_str(
         &amount.to_string(),
@@ -32,9 +32,26 @@ pub fn get_formatted_currency(
     );
 
     let value = match strip_ending_zeroes {
-        Some(true) => formatted.unwrap().to_string().replace(".00", ""),
+        Some(EndingZeroes::Strip) => formatted.unwrap().to_string().replace(".00", ""),
         _ => formatted.unwrap().to_string(),
     };
 
     format!("{}", value)
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::{objects::input::EndingZeroes, utils::get_amount};
+
+    #[test]
+    fn it_can_format_amount_and_keep_ending_zeroes() {
+        let amount = get_amount(100, "GBP", Some(EndingZeroes::Keep));
+        assert_eq!(amount, "£100.00");
+    }
+
+    #[test]
+    fn it_can_format_amount_and_strip_ending_zeroes() {
+        let amount = get_amount(100, "GBP", Some(EndingZeroes::Strip));
+        assert_eq!(amount, "£100");
+    }
 }

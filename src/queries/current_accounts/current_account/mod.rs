@@ -1,14 +1,14 @@
 use crate::{
     fields::{
-        matched_address::MatchedAddressField, payment_history::PaymentHistoryField, BalanceField,
-        CreditLimitField, DateField, PaymentFrequencyField,
+        matched_address::MatchedAddressField, payment_history::PaymentHistoryField, AmountField,
+        BalanceField, CreditLimitField, DateField, PaymentFrequencyField,
     },
     objects::{
         input::{Format, Select},
-        output::{Balance, Company, CompanyClass, Date},
+        output::{Company, CompanyClass, Date},
     },
     schema::Context,
-    utils::{get_date, get_formatted_currency, unique_id},
+    utils::{get_date, unique_id},
 };
 use serde::Deserialize;
 use uuid::Uuid;
@@ -60,53 +60,24 @@ impl CurrentAccountField {
     }
 
     #[graphql(name = "current_balance")]
-    pub fn current_balance(&self, strip_ending_zeroes: Option<bool>) -> Balance {
-        let amount = self.current_balance.balance_amount.amount;
-        let currency = &self.current_balance.balance_amount.currency;
-
-        Balance {
-            amount,
-            currency,
-            value: get_formatted_currency(amount, currency, strip_ending_zeroes),
-        }
+    pub fn current_balance(&self) -> &AmountField {
+        &self.current_balance.balance_amount
     }
 
     #[graphql(name = "default_balance")]
-    pub fn default_balance(&self, strip_ending_zeroes: Option<bool>) -> Balance {
-        let amount = self.current_balance.balance_amount.amount;
-        let currency = &self.default_balance.balance_amount.currency;
-
-        Balance {
-            amount,
-            currency,
-            value: get_formatted_currency(amount, currency, strip_ending_zeroes),
-        }
+    pub fn default_balance(&self) -> &AmountField {
+        &self.current_balance.balance_amount
     }
 
     #[graphql(name = "start_balance")]
-    pub fn start_balance(&self, strip_ending_zeroes: Option<bool>) -> Balance {
-        let amount = self.current_balance.balance_amount.amount;
-        let currency = &self.start_balance.balance_amount.currency;
-
-        Balance {
-            amount,
-            currency,
-            value: get_formatted_currency(amount, currency, strip_ending_zeroes),
-        }
+    pub fn start_balance(&self) -> &AmountField {
+        &self.start_balance.balance_amount
     }
 
     #[graphql(name = "credit_limit")]
-    pub fn credit_limit(&self, strip_ending_zeroes: Option<bool>) -> Option<Balance> {
+    pub fn credit_limit(&self) -> Option<&AmountField> {
         match &self.credit_limit {
-            Some(credit_limit) => Some(Balance {
-                amount: credit_limit.limit.amount,
-                currency: &credit_limit.limit.currency,
-                value: get_formatted_currency(
-                    credit_limit.limit.amount,
-                    &credit_limit.limit.currency,
-                    strip_ending_zeroes,
-                ),
-            }),
+            Some(credit_limit) => Some(&credit_limit.limit),
             None => None,
         }
     }
