@@ -1,4 +1,4 @@
-use super::fields::ReportField;
+use crate::fields::ReportField;
 
 pub type Reports = Vec<Report>;
 

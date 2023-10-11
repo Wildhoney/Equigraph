@@ -1,8 +1,6 @@
 use crate::{
-    parser::{
-        fields::{InsightDataField, InsightDataFieldKind},
-        types::Reports,
-    },
+    fields::insight_data::{InsightDataField, InsightDataFieldKind},
+    parser::types::Reports,
     queries::{
         associates::associates::AssociatesField,
         current_accounts::current_accounts::CurrentAccounts, scores::scores::ScoresField,

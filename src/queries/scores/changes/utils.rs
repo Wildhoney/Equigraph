@@ -38,10 +38,17 @@ pub fn find_score_by_id_and_since(since: Since, id: &Uuid, reports: &Reports) ->
     })?;
 
     let report = match since {
-        Since::Previous => reports.get(current_report_index + 1)?,
-        Since::Next => reports.get(current_report_index - 1)?,
-        Since::First => reports.first()?,
-    };
+        Since::Previous => reports.get(current_report_index + 1),
+        Since::Next => {
+            if current_report_index == 0 {
+                None
+            } else {
+                reports.get(current_report_index - 1)
+            }
+        }
+        Since::First => reports.first(),
+        Since::Last => reports.last(),
+    }?;
 
     Some(
         report

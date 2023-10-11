@@ -1,9 +1,9 @@
 use crate::{
+    fields::{DateField, NameField},
     objects::{
         input::Format,
         output::{Date, Name},
     },
-    parser::fields::{DateField, NameField},
     schema::Context,
     utils::get_date,
 };

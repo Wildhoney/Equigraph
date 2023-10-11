@@ -1,4 +1,3 @@
-pub mod fields;
 pub mod types;
 
 use self::types::{Report, Reports};

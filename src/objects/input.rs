@@ -9,9 +9,10 @@ pub enum Select {
 
 #[derive(Debug, Clone, PartialEq, GraphQLEnum)]
 pub enum Since {
+    First,
     Previous,
     Next,
-    First,
+    Last,
 }
 
 pub type Format = String;

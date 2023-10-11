@@ -1,11 +1,11 @@
 use crate::{
-    fields::matched_address::MatchedAddressField,
+    fields::{
+        matched_address::MatchedAddressField, payment_history::PaymentHistoryField, BalanceField,
+        CreditLimitField, DateField, PaymentFrequencyField,
+    },
     objects::{
         input::{Format, Select},
         output::{Balance, Company, CompanyClass, Date},
-    },
-    parser::fields::{
-        BalanceField, CreditLimitField, DateField, PaymentFrequencyField, PaymentHistoryField,
     },
     schema::Context,
     utils::{get_date, unique_id},
