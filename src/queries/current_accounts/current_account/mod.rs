@@ -8,7 +8,7 @@ use crate::{
         output::{Balance, Company, CompanyClass, Date},
     },
     schema::Context,
-    utils::{get_date, unique_id},
+    utils::{get_date, get_formatted_currency, unique_id},
 };
 use serde::Deserialize;
 use uuid::Uuid;
@@ -61,34 +61,50 @@ impl CurrentAccountField {
 
     #[graphql(name = "current_balance")]
     pub fn current_balance(&self) -> Balance {
+        let amount = self.current_balance.balance_amount.amount;
+        let currency = &self.current_balance.balance_amount.currency;
+
         Balance {
-            amount: self.current_balance.balance_amount.amount,
-            currency: &self.current_balance.balance_amount.currency,
+            amount,
+            currency,
+            value: get_formatted_currency(amount, currency),
         }
     }
 
     #[graphql(name = "default_balance")]
     pub fn default_balance(&self) -> Balance {
+        let amount = self.current_balance.balance_amount.amount;
+        let currency = &self.default_balance.balance_amount.currency;
+
         Balance {
-            amount: self.default_balance.balance_amount.amount,
-            currency: &self.default_balance.balance_amount.currency,
+            amount,
+            currency,
+            value: get_formatted_currency(amount, currency),
         }
     }
 
     #[graphql(name = "start_balance")]
     pub fn start_balance(&self) -> Balance {
+        let amount = self.current_balance.balance_amount.amount;
+        let currency = &self.start_balance.balance_amount.currency;
+
         Balance {
-            amount: self.start_balance.balance_amount.amount,
-            currency: &self.start_balance.balance_amount.currency,
+            amount,
+            currency,
+            value: get_formatted_currency(amount, currency),
         }
     }
 
     #[graphql(name = "credit_limit")]
     pub fn credit_limit(&self) -> Option<Balance> {
-        match self.credit_limit {
-            Some(ref credit_limit) => Some(Balance {
+        match &self.credit_limit {
+            Some(credit_limit) => Some(Balance {
                 amount: credit_limit.limit.amount,
                 currency: &credit_limit.limit.currency,
+                value: get_formatted_currency(
+                    credit_limit.limit.amount,
+                    &credit_limit.limit.currency,
+                ),
             }),
             None => None,
         }

@@ -7,7 +7,7 @@ use crate::{
         output::{Balance, Impact, Polarity},
     },
     schema::Context,
-    utils::unique_id,
+    utils::{get_formatted_currency, unique_id},
 };
 use juniper::GraphQLObject;
 use serde::Deserialize;
@@ -39,9 +39,13 @@ impl PaymentHistoryField {
 
     #[graphql(name = "account_balance")]
     pub fn account_balance(&self) -> Balance {
+        let amount = self.account_balance.balance_amount.amount;
+        let currency = &self.account_balance.balance_amount.currency;
+
         Balance {
-            amount: self.account_balance.balance_amount.amount,
-            currency: &self.account_balance.balance_amount.currency,
+            amount,
+            currency,
+            value: get_formatted_currency(amount, currency),
         }
     }
 

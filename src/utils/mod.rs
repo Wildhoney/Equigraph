@@ -1,5 +1,6 @@
 use crate::objects::input::Format;
 use chrono::{TimeZone, Utc};
+use rusty_money::{iso, Money};
 use uuid::Uuid;
 
 pub fn get_date(year: u16, month: u8, day: u8, format: Format) -> Option<String> {
@@ -13,4 +14,20 @@ pub fn get_date(year: u16, month: u8, day: u8, format: Format) -> Option<String>
 
 pub fn unique_id() -> Uuid {
     Uuid::new_v4()
+}
+
+pub fn get_formatted_currency(amount: i32, currency: &str) -> String {
+    format!(
+        "{}",
+        Money::from_str(
+            &amount.to_string(),
+            match currency {
+                "GBP" => iso::GBP,
+                "USD" => iso::USD,
+                "EUR" => iso::EUR,
+                _ => iso::GBP,
+            }
+        )
+        .unwrap()
+    )
 }
