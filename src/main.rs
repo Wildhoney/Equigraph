@@ -6,8 +6,7 @@ mod queries;
 mod schema;
 mod utils;
 
-use std::{io, sync::Arc};
-
+use crate::schema::{create_schema, Schema};
 use actix_cors::Cors;
 use actix_web::{
     get, middleware, route,
@@ -18,8 +17,7 @@ use actix_web_lab::respond::Html;
 use juniper::http::{graphiql::graphiql_source, GraphQLRequest};
 use mocks::get_parsed_reports;
 use schema::Context;
-
-use crate::schema::{create_schema, Schema};
+use std::{io, sync::Arc};
 
 #[get("/graphiql")]
 async fn graphql_playground() -> impl Responder {

@@ -8,9 +8,9 @@ query CurrentAccounts {
       has_overdraft
       payment_history(select: LATEST) {
         account_balance {
+          formatted(zeroes: KEEP)
           amount
           currency
-          value(zeroes: KEEP)
         }
         changes(since: PREVIOUS) {
           delta

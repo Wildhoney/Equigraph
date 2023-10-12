@@ -1,14 +1,14 @@
-use crate::objects::input::{EndingZeroes, Format};
+use crate::objects::input::{EndingZeroes, Like};
 use chrono::{TimeZone, Utc};
 use rusty_money::{iso, Money};
 use uuid::Uuid;
 
-pub fn get_date(year: u16, month: u8, day: u8, format: Format) -> Option<String> {
+pub fn get_date(year: u16, month: u8, day: u8, like: Like) -> Option<String> {
     let date_time = Utc
         .with_ymd_and_hms(year as i32, month as u32, day as u32, 0, 0, 0)
         .unwrap();
 
-    let format_date = || format!("{}", date_time.format(format.as_str()));
+    let format_date = || format!("{}", date_time.format(like.as_str()));
     Some(std::panic::catch_unwind(format_date).ok()?)
 }
 

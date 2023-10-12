@@ -5,10 +5,13 @@ pub mod payment_history;
 use self::insight_data::InsightDataField;
 use crate::{
     fields::matched_address::MatchedAddressField,
-    objects::input::EndingZeroes,
+    objects::{
+        input::{EndingZeroes, Like},
+        output::Date,
+    },
     queries::{associates::associates::AssociatesField, scores::scores::ScoresField},
     schema::Context,
-    utils::get_amount,
+    utils::{get_amount, get_date},
 };
 use juniper::GraphQLEnum;
 use serde::Deserialize;
@@ -61,6 +64,25 @@ pub struct DateField {
     pub year: u16,
 }
 
+#[juniper::graphql_object(context = Context)]
+impl DateField {
+    pub fn day(&self) -> i32 {
+        self.day as i32
+    }
+
+    pub fn month(&self) -> i32 {
+        self.month as i32
+    }
+
+    pub fn year(&self) -> i32 {
+        self.year as i32
+    }
+
+    pub fn formatted(&self, like: Like) -> Option<Date> {
+        get_date(self.year, self.month, self.day, like)
+    }
+}
+
 #[derive(Debug, PartialEq, Deserialize, Eq, Hash, Clone)]
 pub struct NameField {
     pub title: String,
@@ -111,7 +133,7 @@ impl AmountField {
         &self.currency
     }
 
-    pub fn value(&self, zeroes: Option<EndingZeroes>) -> String {
+    pub fn formatted(&self, zeroes: Option<EndingZeroes>) -> String {
         let amount = self.amount;
         let currency = &self.currency;
         get_amount(amount, currency, zeroes)

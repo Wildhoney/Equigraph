@@ -4,11 +4,11 @@ use crate::{
         BalanceField, CreditLimitField, DateField, PaymentFrequencyField,
     },
     objects::{
-        input::{Format, Select},
-        output::{Company, CompanyClass, Date},
+        input::Select,
+        output::{Company, CompanyClass},
     },
     schema::Context,
-    utils::{get_date, unique_id},
+    utils::unique_id,
 };
 use serde::Deserialize;
 use uuid::Uuid;
@@ -88,13 +88,8 @@ impl CurrentAccountField {
     }
 
     #[graphql(name = "start_date")]
-    pub fn start_date(&self, format: Format) -> Option<Date> {
-        get_date(
-            self.start_date.year,
-            self.start_date.month,
-            self.start_date.day,
-            format,
-        )
+    pub fn start_date(&self) -> &DateField {
+        &self.start_date
     }
 
     #[graphql(name = "payment_history")]
@@ -164,7 +159,12 @@ mod tests {
                         currency
                       }
                       payment_frequency
-                      start_date(format: "%d/%m/%Y")
+                      start_date {
+                        formatted(like: "%d/%m/%Y")
+                        day
+                        month
+                        year
+                      }
                       address {
                         number
                         street
@@ -179,154 +179,179 @@ mod tests {
         let expected = graphql_value!({
             "current_accounts": {
                 "current_account": [
-                    {
+                  {
                     "account_number": "zGML/Ld93it5j86rAFo2wxM8oGHNdoWJj4WTwoRmkcc=",
                     "company": {
-                        "kind": "BANK",
-                        "name": "HSBC PLC (I)"
+                      "kind": "BANK",
+                      "name": "HSBC PLC (I)"
                     },
                     "current_balance": {
-                        "amount": 0,
-                        "currency": "GBP"
+                      "amount": 0,
+                      "currency": "GBP"
                     },
                     "default_balance": {
-                        "amount": 0,
-                        "currency": "GBP"
+                      "amount": 0,
+                      "currency": "GBP"
                     },
                     "start_balance": {
-                        "amount": 0,
-                        "currency": "GBP"
+                      "amount": 0,
+                      "currency": "GBP"
                     },
                     "credit_limit": {juniper::Value::Null},
                     "payment_frequency": "MONTHLY",
-                    "start_date": "10/11/2004",
-                    "address": {
-                        "number": "25447",
-                        "street": "LZOQYQFI GYYW",
-                        "town": "HORSHAM",
-                        "county": "PIQW GYHZIF"
-                    }
+                    "start_date": {
+                      "formatted": "10/11/2004",
+                      "day": 10,
+                      "month": 11,
+                      "year": 2004
                     },
-                    {
+                    "address": {
+                      "number": "25447",
+                      "street": "LZOQYQFI GYYW",
+                      "town": "HORSHAM",
+                      "county": "PIQW GYHZIF"
+                    }
+                  },
+                  {
                     "account_number": "3oEmu6B1FCnWguuTc93gXTPtT3NMcaxCKSm2MLOFvMw=",
                     "company": {
-                        "kind": "BANK",
-                        "name": "LLOYDS BANK (WAS LLOYDS TSB) (I)"
+                      "kind": "BANK",
+                      "name": "LLOYDS BANK (WAS LLOYDS TSB) (I)"
                     },
                     "current_balance": {
-                        "amount": 0,
-                        "currency": "GBP"
+                      "amount": 0,
+                      "currency": "GBP"
                     },
                     "default_balance": {
-                        "amount": 0,
-                        "currency": "GBP"
+                      "amount": 0,
+                      "currency": "GBP"
                     },
                     "start_balance": {
-                        "amount": 0,
-                        "currency": "GBP"
+                      "amount": 0,
+                      "currency": "GBP"
                     },
                     "credit_limit": {
-                        "amount": 1000,
-                        "currency": "GBP"
+                      "amount": 1000,
+                      "currency": "GBP"
                     },
                     "payment_frequency": "MONTHLY",
-                    "start_date": "28/06/2013",
-                    "address": {
-                        "number": "25447",
-                        "street": "LZOQYQFI GYYW",
-                        "town": "HORSHAM",
-                        "county": "PIQW GYHZIF"
-                    }
+                    "start_date": {
+                      "formatted": "28/06/2013",
+                      "day": 28,
+                      "month": 6,
+                      "year": 2013
                     },
-                    {
+                    "address": {
+                      "number": "25447",
+                      "street": "LZOQYQFI GYYW",
+                      "town": "HORSHAM",
+                      "county": "PIQW GYHZIF"
+                    }
+                  },
+                  {
                     "account_number": "5YduNv4WxF4SOS0GqS8uh/yOA/TFTgsQT1uH5kAB8RQ=",
                     "company": {
-                        "kind": "BANK",
-                        "name": "LLOYDS BANK (WAS LLOYDS TSB) (I)"
+                      "kind": "BANK",
+                      "name": "LLOYDS BANK (WAS LLOYDS TSB) (I)"
                     },
                     "current_balance": {
-                        "amount": 0,
-                        "currency": "GBP"
+                      "amount": 0,
+                      "currency": "GBP"
                     },
                     "default_balance": {
-                        "amount": 0,
-                        "currency": "GBP"
+                      "amount": 0,
+                      "currency": "GBP"
                     },
                     "start_balance": {
-                        "amount": 0,
-                        "currency": "GBP"
+                      "amount": 0,
+                      "currency": "GBP"
                     },
                     "credit_limit": {juniper::Value::Null},
                     "payment_frequency": "MONTHLY",
-                    "start_date": "06/06/2016",
-                    "address": {
-                        "number": "25447",
-                        "street": "LZOQYQFI GYYW",
-                        "town": "HORSHAM",
-                        "county": "PIQW GYHZIF"
-                    }
+                    "start_date": {
+                      "formatted": "06/06/2016",
+                      "day": 6,
+                      "month": 6,
+                      "year": 2016
                     },
-                    {
+                    "address": {
+                      "number": "25447",
+                      "street": "LZOQYQFI GYYW",
+                      "town": "HORSHAM",
+                      "county": "PIQW GYHZIF"
+                    }
+                  },
+                  {
                     "account_number": "iMt7bI9kNQtpjsWYsMr69lgUsgyg5XQVMF4dhBknm3E=",
                     "company": {
-                        "kind": "BANK",
-                        "name": "MONZO BANK LIMITED (I)"
+                      "kind": "BANK",
+                      "name": "MONZO BANK LIMITED (I)"
                     },
                     "current_balance": {
-                        "amount": 0,
-                        "currency": "GBP"
+                      "amount": 0,
+                      "currency": "GBP"
                     },
                     "default_balance": {
-                        "amount": 0,
-                        "currency": "GBP"
+                      "amount": 0,
+                      "currency": "GBP"
                     },
                     "start_balance": {
-                        "amount": 0,
-                        "currency": "GBP"
+                      "amount": 0,
+                      "currency": "GBP"
                     },
                     "credit_limit": {juniper::Value::Null},
                     "payment_frequency": "PERIODICALLY",
-                    "start_date": "29/09/2019",
-                    "address": {
-                        "number": "25447",
-                        "street": "LZOQYQFI GYYW",
-                        "town": "HORSHAM",
-                        "county": "PIQW GYHZIF"
-                    }
+                    "start_date": {
+                      "formatted": "29/09/2019",
+                      "day": 29,
+                      "month": 9,
+                      "year": 2019
                     },
-                    {
+                    "address": {
+                      "number": "25447",
+                      "street": "LZOQYQFI GYYW",
+                      "town": "HORSHAM",
+                      "county": "PIQW GYHZIF"
+                    }
+                  },
+                  {
                     "account_number": "LFTlUsWtDduQAo2L7zJOtNKDI86DztlNPL6Fg7iz4+M=",
                     "company": {
-                        "kind": "BANK",
-                        "name": "MONZO BANK LIMITED (I)"
+                      "kind": "BANK",
+                      "name": "MONZO BANK LIMITED (I)"
                     },
                     "current_balance": {
-                        "amount": 0,
-                        "currency": "GBP"
+                      "amount": 0,
+                      "currency": "GBP"
                     },
                     "default_balance": {
-                        "amount": 0,
-                        "currency": "GBP"
+                      "amount": 0,
+                      "currency": "GBP"
                     },
                     "start_balance": {
-                        "amount": 0,
-                        "currency": "GBP"
+                      "amount": 0,
+                      "currency": "GBP"
                     },
                     "credit_limit": {
-                        "amount": 1000,
-                        "currency": "GBP"
+                      "amount": 1000,
+                      "currency": "GBP"
                     },
                     "payment_frequency": "PERIODICALLY",
-                    "start_date": "17/07/2019",
+                    "start_date": {
+                      "formatted": "17/07/2019",
+                      "day": 17,
+                      "month": 7,
+                      "year": 2019
+                    },
                     "address": {
-                        "number": "25447",
-                        "street": "LZOQYQFI GYYW",
-                        "town": "HORSHAM",
-                        "county": "PIQW GYHZIF"
+                      "number": "25447",
+                      "street": "LZOQYQFI GYYW",
+                      "town": "HORSHAM",
+                      "county": "PIQW GYHZIF"
                     }
-                    }
+                  }
                 ]
-            }
+              }
         });
 
         assert_eq!(run_graphql_query(query, HashMap::new()), expected);

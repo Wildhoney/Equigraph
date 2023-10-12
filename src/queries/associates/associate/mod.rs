@@ -1,11 +1,7 @@
 use crate::{
     fields::{DateField, NameField},
-    objects::{
-        input::Format,
-        output::{Date, Name},
-    },
+    objects::output::Name,
     schema::Context,
-    utils::get_date,
 };
 use serde::Deserialize;
 
@@ -26,7 +22,7 @@ impl AssociateField {
     }
 
     #[graphql(name = "date_of_birth")]
-    pub fn date_of_birth(&self, format: Format) -> Option<Date> {
-        get_date(self.dob.year, self.dob.month, self.dob.day, format)
+    pub fn date_of_birth(&self) -> &DateField {
+        &self.dob
     }
 }

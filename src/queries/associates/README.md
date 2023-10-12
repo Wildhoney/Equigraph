@@ -10,7 +10,12 @@ query Associates {
       name {
         title
       }
-      date_of_birth(format: "%Y-%m-%d")
+      date_of_birth {
+        formatted(like: "%Y-%m-%d")
+        day
+        month
+        year
+      }
     }
   }
 }

@@ -15,7 +15,7 @@ pub enum Since {
     Last,
 }
 
-pub type Format = String;
+pub type Like = String;
 
 #[derive(Debug, Clone, PartialEq, GraphQLEnum)]
 #[graphql(description = "Whether to strip the ending zeroes from the amount")]
