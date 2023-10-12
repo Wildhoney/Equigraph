@@ -1,9 +1,10 @@
 use crate::{
-    fields::insight_data::{InsightDataField, InsightDataFieldKind},
+    fields::insight_data::InsightDataField,
     parser::types::Reports,
     queries::{
         associates::associates::AssociatesField,
         current_accounts::current_accounts::CurrentAccounts, scores::scores::ScoresField,
+        secured_loans::secured_loans::SecuredLoans,
     },
 };
 use juniper::{EmptyMutation, EmptySubscription, FieldResult, RootNode};
@@ -28,10 +29,12 @@ impl QueryRoot {
 
     #[graphql(name = "current_accounts")]
     fn current_accounts(context: &Context) -> FieldResult<CurrentAccounts> {
-        Ok(InsightDataField::new(
-            context,
-            InsightDataFieldKind::CurrentAccount,
-        ))
+        Ok(InsightDataField::current_accounts(context))
+    }
+
+    #[graphql(name = "secured_loans")]
+    fn secured_loans(context: &Context) -> FieldResult<SecuredLoans> {
+        Ok(InsightDataField::secured_loans(context))
     }
 }
 
