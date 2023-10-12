@@ -98,6 +98,12 @@ pub enum PaymentFrequencyField {
     Periodically,
 }
 
+#[derive(Debug, PartialEq, Deserialize, GraphQLEnum, Clone)]
+pub enum LoanTypeField {
+    #[serde(alias = "MORTGAGE")]
+    Mortgage,
+}
+
 #[derive(Debug, PartialEq, Deserialize, GraphQLEnum, Clone, Copy)]
 pub enum PaymentStatusField {
     #[serde(alias = "ZERO")]
