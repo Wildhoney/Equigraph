@@ -3,14 +3,14 @@ use juniper::FieldResult;
 use super::{current_account::CurrentAccountField, insights::CurrentAccountsInsights};
 use crate::schema::Context;
 
-pub struct CurrentAccounts {
-    pub items: Vec<CurrentAccountField>,
+pub struct CurrentAccounts<'a> {
+    pub items: Vec<&'a CurrentAccountField>,
 }
 
 #[juniper::graphql_object(context = Context)]
-impl CurrentAccounts {
+impl CurrentAccounts<'_> {
     #[graphql(name = "current_account")]
-    pub fn current_account() -> &Vec<CurrentAccountField> {
+    pub fn current_account() -> &Vec<&CurrentAccountField> {
         &self.items
     }
 

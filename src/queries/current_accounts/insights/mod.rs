@@ -9,7 +9,7 @@ pub struct CurrentAccountsInsights {
 }
 
 impl CurrentAccountsInsights {
-    pub fn new(items: &Vec<CurrentAccountField>) -> Self {
+    pub fn new(items: &Vec<&CurrentAccountField>) -> Self {
         CurrentAccountsInsights {
             count: items.len() as i32,
         }

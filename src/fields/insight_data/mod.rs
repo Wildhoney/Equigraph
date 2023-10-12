@@ -31,11 +31,10 @@ impl InsightDataField {
                         .supplied_address_data
                         .iter()
                         .flat_map(|supplied_address_data| {
-                            supplied_address_data
+                            &supplied_address_data
                                 .address_specific_data
                                 .insight_data
                                 .current_account
-                                .to_owned()
                         })
                         .collect::<Vec<_>>()
                 })
@@ -55,11 +54,10 @@ impl InsightDataField {
                         .supplied_address_data
                         .iter()
                         .flat_map(|supplied_address_data| {
-                            supplied_address_data
+                            &supplied_address_data
                                 .address_specific_data
                                 .insight_data
                                 .secured_loan
-                                .to_owned()
                         })
                         .collect::<Vec<_>>()
                 })
