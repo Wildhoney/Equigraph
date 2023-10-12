@@ -1,4 +1,8 @@
-use crate::objects::input::{EndingZeroes, Like};
+use crate::{
+    fields::{payment_history::PaymentHistoryField, SuppliedAddressDataField},
+    objects::input::{EndingZeroes, Like, Select},
+    parser::types::Reports,
+};
 use chrono::{TimeZone, Utc};
 use rusty_money::{iso, Money};
 use uuid::Uuid;
@@ -37,6 +41,37 @@ pub fn get_amount(
     };
 
     format!("{}", value)
+}
+
+pub fn partition_payment_history(
+    select: Select,
+    payment_histories: &Vec<PaymentHistoryField>,
+) -> &[PaymentHistoryField] {
+    match select {
+        Select::All => &payment_histories[..],
+        Select::Latest => &payment_histories.get(0..1).unwrap_or(&[]),
+        Select::Oldest => &payment_histories
+            .get(payment_histories.len() - 1..)
+            .unwrap_or(&[]),
+    }
+}
+
+pub fn find_address_by_id(id: Uuid, reports: &Reports) -> Option<&SuppliedAddressDataField> {
+    Some(reports.iter().find_map(|report| {
+        report
+            .sole_search
+            .primary
+            .supplied_address_data
+            .iter()
+            .find(|supplied_address_data| {
+                supplied_address_data
+                    .address_specific_data
+                    .insight_data
+                    .current_account
+                    .iter()
+                    .any(|current_account| current_account.id == id)
+            })
+    })?)
 }
 
 #[cfg(test)]
