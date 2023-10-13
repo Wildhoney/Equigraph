@@ -25,7 +25,7 @@ query SecuredLoans {
       insights {
         active
         current_end_date {
-          formatted(like:"%d/%m/%Y")
+          formatted(like: "%d/%m/%Y")
         }
         payment_analysis {
           made
