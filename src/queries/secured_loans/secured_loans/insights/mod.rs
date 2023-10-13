@@ -1,16 +1,16 @@
-use crate::queries::associates::associate::AssociateField;
+use crate::queries::secured_loans::secured_loan::SecuredLoanField;
 use juniper::GraphQLObject;
 
 #[derive(Debug, PartialEq, GraphQLObject)]
 #[graphql(description = "")]
-pub struct AssociatesInsights {
+pub struct SecuredLoansInsights {
     pub count: i32,
 }
 
-impl AssociatesInsights {
-    pub fn new(associates: Vec<AssociateField>) -> Self {
-        AssociatesInsights {
-            count: associates.len() as i32,
+impl SecuredLoansInsights {
+    pub fn new(insight: Vec<&SecuredLoanField>) -> Self {
+        SecuredLoansInsights {
+            count: insight.len() as i32,
         }
     }
 }
@@ -22,10 +22,10 @@ mod tests {
     use std::collections::HashMap;
 
     #[test]
-    fn it_can_get_associates_insights() {
+    fn it_can_get_secured_loans_insights() {
         let query = r#"
-            query AssociatesInsights {
-                associates {
+            query SecuredLoansInsights {
+                secured_loans {
                     insights {
                         count
                     }
@@ -34,7 +34,7 @@ mod tests {
         "#;
 
         let expected = graphql_value!({
-            "associates": {
+            "secured_loans": {
                 "insights": {
                     "count": 2
                 }

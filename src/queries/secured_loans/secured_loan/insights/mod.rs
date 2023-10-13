@@ -46,7 +46,7 @@ mod tests {
     use std::collections::HashMap;
 
     #[test]
-    fn it_can_get_current_accounts() {
+    fn it_can_get_secured_loan_insights() {
         let query = r#"
             query SecuredLoanInsights {
                 secured_loans {

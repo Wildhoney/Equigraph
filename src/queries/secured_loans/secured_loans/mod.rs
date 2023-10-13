@@ -1,3 +1,6 @@
+mod insights;
+
+use self::insights::SecuredLoansInsights;
 use super::secured_loan::SecuredLoanField;
 use crate::schema::Context;
 
@@ -10,6 +13,10 @@ impl SecuredLoans<'_> {
     #[graphql(name = "secured_loan")]
     pub fn secured_loan() -> &Vec<&SecuredLoanField> {
         &self.items
+    }
+
+    pub fn insights() -> SecuredLoansInsights {
+        SecuredLoansInsights::new(self.items.clone())
     }
 }
 
