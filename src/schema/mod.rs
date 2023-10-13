@@ -33,8 +33,8 @@ impl QueryRoot {
     }
 
     #[graphql(name = "secured_loans")]
-    fn secured_loans(context: &Context) -> FieldResult<SecuredLoans> {
-        Ok(InsightDataField::secured_loans(context))
+    fn secured_loans(context: &Context, active: Option<bool>) -> FieldResult<SecuredLoans> {
+        Ok(InsightDataField::secured_loans(context, active))
     }
 }
 

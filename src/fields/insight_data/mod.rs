@@ -42,7 +42,7 @@ impl InsightDataField {
                 .collect::<Vec<_>>(),
         }
     }
-    pub fn secured_loans(context: &Context) -> SecuredLoans {
+    pub fn secured_loans(context: &Context, active: Option<bool>) -> SecuredLoans {
         SecuredLoans {
             items: context
                 .reports
@@ -62,6 +62,11 @@ impl InsightDataField {
                         .collect::<Vec<_>>()
                 })
                 .unique_by(|secured_loan| secured_loan.account_number.to_owned())
+                .filter(|secured_loan| match active {
+                    Some(true) => secured_loan.end_date.is_none(),
+                    Some(false) => secured_loan.end_date.is_some(),
+                    None => true,
+                })
                 .collect::<Vec<_>>(),
         }
     }
