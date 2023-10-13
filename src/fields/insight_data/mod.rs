@@ -24,7 +24,7 @@ pub struct InsightDataField {
 
 impl InsightDataField {
     pub fn current_accounts(context: &Context, _options: QueryOptions) -> CurrentAccounts {
-        let items = get_insights::<CurrentAccountField>(&context.reports, &|insight_data| {
+        let items = get_insights(&context.reports, &|insight_data| {
             &insight_data.current_account
         })
         .into_iter()
@@ -34,7 +34,7 @@ impl InsightDataField {
         CurrentAccounts { items }
     }
     pub fn secured_loans(context: &Context, options: QueryOptions) -> SecuredLoans {
-        let items = get_insights::<SecuredLoanField>(&context.reports, &|insight_data| {
+        let items = get_insights(&context.reports, &|insight_data| {
             &insight_data.secured_loan
         })
         .into_iter()

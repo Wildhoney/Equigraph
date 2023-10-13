@@ -18,12 +18,11 @@ pub fn get_payment_histories_by_id(id: Uuid, reports: &Reports) -> Vec<&PaymentH
                         .insight_data
                         .current_account
                         .iter()
-                        .filter_map(|current_account| {
-                            current_account
-                                .payment_history
+                        .filter_map(|item| {
+                            item.payment_history
                                 .iter()
                                 .any(|payment_history| (payment_history.id == id))
-                                .then(|| &current_account.payment_history)
+                                .then(|| &item.payment_history)
                         })
                         .flatten()
                         .collect_vec()
