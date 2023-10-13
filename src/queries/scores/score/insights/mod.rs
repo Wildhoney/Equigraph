@@ -1,7 +1,7 @@
 mod utils;
 
 use self::utils::get_sentiment;
-use super::score::{utils::get_maximum_score, ScoreField};
+use super::{utils::get_maximum_score, ScoreField};
 use crate::objects::output::Sentiment;
 use juniper::GraphQLObject;
 

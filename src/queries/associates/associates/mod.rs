@@ -1,4 +1,7 @@
-use super::{associate::AssociateField, insights::AssociatesInsights};
+mod insights;
+
+use self::insights::AssociatesInsights;
+use super::associate::AssociateField;
 use crate::schema::Context;
 use itertools::Itertools;
 use serde::Deserialize;

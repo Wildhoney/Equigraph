@@ -1,7 +1,9 @@
-use juniper::FieldResult;
+mod insights;
 
-use super::{current_account::CurrentAccountField, insights::CurrentAccountsInsights};
+use self::insights::CurrentAccountsInsights;
+use super::current_account::CurrentAccountField;
 use crate::schema::Context;
+use juniper::FieldResult;
 
 pub struct CurrentAccounts<'a> {
     pub items: Vec<&'a CurrentAccountField>,

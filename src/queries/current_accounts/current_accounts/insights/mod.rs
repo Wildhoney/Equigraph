@@ -1,4 +1,4 @@
-use super::current_account::CurrentAccountField;
+use crate::queries::current_accounts::current_account::CurrentAccountField;
 use juniper::GraphQLObject;
 
 #[derive(Debug, PartialEq, GraphQLObject)]

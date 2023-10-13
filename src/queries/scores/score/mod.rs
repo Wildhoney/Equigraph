@@ -1,7 +1,8 @@
+mod insights;
 pub mod utils;
 
-use self::utils::get_maximum_score;
-use super::{changes::ScoresChanges, insights::ScoresInsights};
+use self::{insights::ScoresInsights, utils::get_maximum_score};
+use super::changes::ScoresChanges;
 use crate::{objects::input::Since, schema::Context, utils::unique_id};
 use juniper::GraphQLEnum;
 use serde::Deserialize;
