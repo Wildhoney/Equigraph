@@ -1,4 +1,4 @@
-use crate::schema::Context;
+use crate::queries::associates::associate::AssociateField;
 use juniper::GraphQLObject;
 
 #[derive(Debug, PartialEq, GraphQLObject)]
@@ -8,14 +8,9 @@ pub struct AssociatesInsights {
 }
 
 impl AssociatesInsights {
-    pub fn new(context: &Context) -> Self {
+    pub fn new(associates: Vec<AssociateField>) -> Self {
         AssociatesInsights {
-            count: context
-                .reports
-                .iter()
-                .map(|report| &report.non_address_specific_data.associates)
-                .collect::<Vec<_>>()
-                .len() as i32,
+            count: associates.len() as i32,
         }
     }
 }

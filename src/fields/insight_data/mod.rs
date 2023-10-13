@@ -1,4 +1,5 @@
 use crate::{
+    objects::input::{Active, QueryOptions},
     queries::{
         current_accounts::{
             current_account::CurrentAccountField, current_accounts::CurrentAccounts,
@@ -19,7 +20,7 @@ pub struct InsightDataField {
 }
 
 impl InsightDataField {
-    pub fn current_accounts(context: &Context) -> CurrentAccounts {
+    pub fn current_accounts(context: &Context, _options: QueryOptions) -> CurrentAccounts {
         CurrentAccounts {
             items: context
                 .reports
@@ -42,7 +43,7 @@ impl InsightDataField {
                 .collect::<Vec<_>>(),
         }
     }
-    pub fn secured_loans(context: &Context, active: Option<bool>) -> SecuredLoans {
+    pub fn secured_loans(context: &Context, options: QueryOptions) -> SecuredLoans {
         SecuredLoans {
             items: context
                 .reports
@@ -62,9 +63,9 @@ impl InsightDataField {
                         .collect::<Vec<_>>()
                 })
                 .unique_by(|secured_loan| secured_loan.account_number.to_owned())
-                .filter(|secured_loan| match active {
-                    Some(true) => secured_loan.end_date.is_none(),
-                    Some(false) => secured_loan.end_date.is_some(),
+                .filter(|secured_loan| match options.active {
+                    Some(Active::Include) => secured_loan.end_date.is_none(),
+                    Some(Active::Exclude) => secured_loan.end_date.is_some(),
                     None => true,
                 })
                 .collect::<Vec<_>>(),

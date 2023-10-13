@@ -8,7 +8,7 @@ pub struct SecuredLoans<'a> {
 #[juniper::graphql_object(context = Context)]
 impl SecuredLoans<'_> {
     #[graphql(name = "secured_loan")]
-    pub fn current_account() -> &Vec<&SecuredLoanField> {
+    pub fn secured_loan() -> &Vec<&SecuredLoanField> {
         &self.items
     }
 }

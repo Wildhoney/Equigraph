@@ -1,5 +1,6 @@
 use crate::{
     fields::insight_data::InsightDataField,
+    objects::input::{Active, QueryOptions, Unique},
     parser::types::Reports,
     queries::{
         associates::associates::AssociatesField,
@@ -23,18 +24,36 @@ impl QueryRoot {
         Ok(ScoresField::new(context))
     }
 
-    fn associates(context: &Context) -> FieldResult<AssociatesField> {
-        Ok(AssociatesField::new(&context))
+    fn associates(context: &Context, unique: Option<Unique>) -> FieldResult<AssociatesField> {
+        Ok(AssociatesField::new(
+            &context,
+            QueryOptions {
+                unique,
+                active: None,
+            },
+        ))
     }
 
     #[graphql(name = "current_accounts")]
-    fn current_accounts(context: &Context) -> FieldResult<CurrentAccounts> {
-        Ok(InsightDataField::current_accounts(context))
+    fn current_accounts(context: &Context, unique: Option<Unique>) -> FieldResult<CurrentAccounts> {
+        Ok(InsightDataField::current_accounts(
+            context,
+            QueryOptions {
+                unique,
+                active: None,
+            },
+        ))
     }
 
     #[graphql(name = "secured_loans")]
-    fn secured_loans(context: &Context, active: Option<bool>) -> FieldResult<SecuredLoans> {
-        Ok(InsightDataField::secured_loans(context, active))
+    fn secured_loans(context: &Context, active: Option<Active>) -> FieldResult<SecuredLoans> {
+        Ok(InsightDataField::secured_loans(
+            context,
+            QueryOptions {
+                unique: None,
+                active,
+            },
+        ))
     }
 }
 
