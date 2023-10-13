@@ -1,3 +1,6 @@
+mod utils;
+
+use self::utils::get_insights;
 use crate::{
     objects::input::{Active, QueryOptions},
     queries::{
@@ -21,54 +24,28 @@ pub struct InsightDataField {
 
 impl InsightDataField {
     pub fn current_accounts(context: &Context, _options: QueryOptions) -> CurrentAccounts {
-        CurrentAccounts {
-            items: context
-                .reports
-                .iter()
-                .flat_map(|report| {
-                    report
-                        .sole_search
-                        .primary
-                        .supplied_address_data
-                        .iter()
-                        .flat_map(|supplied_address_data| {
-                            &supplied_address_data
-                                .address_specific_data
-                                .insight_data
-                                .current_account
-                        })
-                        .collect::<Vec<_>>()
-                })
-                .unique_by(|current_account| current_account.account_number.to_owned())
-                .collect::<Vec<_>>(),
-        }
+        let items = get_insights::<CurrentAccountField>(&context.reports, &|insight_data| {
+            &insight_data.current_account
+        })
+        .into_iter()
+        .unique_by(|item| &item.account_number)
+        .collect::<Vec<_>>();
+
+        CurrentAccounts { items }
     }
     pub fn secured_loans(context: &Context, options: QueryOptions) -> SecuredLoans {
-        SecuredLoans {
-            items: context
-                .reports
-                .iter()
-                .flat_map(|report| {
-                    report
-                        .sole_search
-                        .primary
-                        .supplied_address_data
-                        .iter()
-                        .flat_map(|supplied_address_data| {
-                            &supplied_address_data
-                                .address_specific_data
-                                .insight_data
-                                .secured_loan
-                        })
-                        .collect::<Vec<_>>()
-                })
-                .unique_by(|secured_loan| secured_loan.account_number.to_owned())
-                .filter(|secured_loan| match options.active {
-                    Some(Active::Include) => secured_loan.end_date.is_none(),
-                    Some(Active::Exclude) => secured_loan.end_date.is_some(),
-                    None => true,
-                })
-                .collect::<Vec<_>>(),
-        }
+        let items = get_insights::<SecuredLoanField>(&context.reports, &|insight_data| {
+            &insight_data.secured_loan
+        })
+        .into_iter()
+        .unique_by(|item| &item.account_number)
+        .filter(|secured_loan| match options.active {
+            Some(Active::Include) => secured_loan.end_date.is_none(),
+            Some(Active::Exclude) => secured_loan.end_date.is_some(),
+            None => true,
+        })
+        .collect::<Vec<_>>();
+
+        SecuredLoans { items }
     }
 }
