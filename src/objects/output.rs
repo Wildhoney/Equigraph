@@ -1,6 +1,8 @@
 use juniper::{GraphQLEnum, GraphQLObject};
 use serde::Deserialize;
 
+use crate::schema::Context;
+
 pub type Date = String;
 
 #[derive(Debug, GraphQLObject)]
@@ -45,4 +47,34 @@ pub enum CompanyClass {
 pub struct Company<'a> {
     pub kind: &'a CompanyClass,
     pub name: &'a String,
+}
+
+#[derive(Debug)]
+pub struct PaymentAnalysis {
+    pub active: bool,
+    pub total: i32,
+    pub payments: i32,
+}
+
+#[juniper::graphql_object(context = Context)]
+impl PaymentAnalysis {
+    pub fn made(&self) -> i32 {
+        self.payments
+    }
+
+    pub fn remaining(&self) -> Option<i32> {
+        if self.active == false {
+            return None;
+        }
+
+        Some((self.total - self.payments as i32) as i32)
+    }
+
+    pub fn total(&self) -> Option<i32> {
+        if self.active == false {
+            return None;
+        }
+
+        Some(self.total)
+    }
 }

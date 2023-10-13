@@ -1,6 +1,5 @@
-use juniper::GraphQLObject;
-
 use super::current_account::CurrentAccountField;
+use juniper::GraphQLObject;
 
 #[derive(Debug, PartialEq, GraphQLObject)]
 #[graphql(description = "")]

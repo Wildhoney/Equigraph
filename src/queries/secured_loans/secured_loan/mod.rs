@@ -1,3 +1,6 @@
+mod insights;
+
+use self::insights::SecuredLoanInsights;
 use crate::{
     fields::{
         payment_history::PaymentHistoryField, AmountField, BalanceField, DateField,
@@ -105,5 +108,93 @@ impl SecuredLoanField {
     #[graphql(name = "fixed_payment_terms")]
     pub fn fixed_payment_terms(&self) -> &FixedPaymentTermsField {
         &self.fixed_payment_terms
+    }
+
+    pub fn insights(&self) -> SecuredLoanInsights {
+        SecuredLoanInsights::new(self.clone())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::mocks::run_graphql_query;
+    use juniper::graphql_value;
+    use std::collections::HashMap;
+
+    #[test]
+    fn it_can_get_current_accounts() {
+        let query = r#"
+            query SecuredLoan {
+                secured_loans {
+                    secured_loan {
+                        account_number
+                        payment_frequency
+                        flexible
+                        start_balance {
+                            amount
+                        }
+                        fixed_payment_terms {
+                            number_of_payments
+                            payment_amount {
+                            formatted(zeroes: STRIP)
+                            }
+                        }
+                        start_date {
+                            year
+                        }
+                        end_date {
+                            year
+                        }
+                    }
+                }
+            }
+        "#;
+
+        let expected = graphql_value!({
+            "secured_loans": {
+                "secured_loan": [
+                  {
+                    "account_number": "kHbepkF0tHD7+oaFLYE/+XMUAuTp58af5EZrYeBtVjs=",
+                    "payment_frequency": "MONTHLY",
+                    "flexible": false,
+                    "start_balance": {
+                      "amount": 0
+                    },
+                    "fixed_payment_terms": {
+                      "number_of_payments": 300,
+                      "payment_amount": {
+                        "formatted": "£2,282"
+                      }
+                    },
+                    "start_date": {
+                      "year": 2022
+                    },
+                    "end_date": {juniper::Value::Null}
+                  },
+                  {
+                    "account_number": "r9jjexGpGIiqxQJx1AODd+N2KFtABRCSglQNZ26UguE=",
+                    "payment_frequency": "MONTHLY",
+                    "flexible": false,
+                    "start_balance": {
+                      "amount": 0
+                    },
+                    "fixed_payment_terms": {
+                      "number_of_payments": 0,
+                      "payment_amount": {
+                        "formatted": "£1,641"
+                      }
+                    },
+                    "start_date": {
+                      "year": 2017
+                    },
+                    "end_date": {
+                      "year": 2022
+                    }
+                  }
+                ]
+              }
+        });
+
+        assert_eq!(run_graphql_query(query, HashMap::new()), expected);
     }
 }

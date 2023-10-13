@@ -1,9 +1,12 @@
 use crate::{
-    fields::{payment_history::PaymentHistoryField, SuppliedAddressDataField},
+    fields::{
+        payment_history::PaymentHistoryField, DateField, PaymentFrequencyField,
+        SuppliedAddressDataField,
+    },
     objects::input::{EndingZeroes, Like, Select},
     parser::types::Reports,
 };
-use chrono::{TimeZone, Utc};
+use chrono::{Datelike, Months, TimeZone, Utc};
 use rusty_money::{iso, Money};
 use uuid::Uuid;
 
@@ -72,6 +75,27 @@ pub fn find_address_by_id(id: Uuid, reports: &Reports) -> Option<&SuppliedAddres
                     .any(|current_account| current_account.id == id)
             })
     })?)
+}
+
+pub fn compute_scheduled_end_date(
+    number_of_payments: i32,
+    payment_frequency: &PaymentFrequencyField,
+) -> Option<DateField> {
+    if number_of_payments == 0 {
+        return None;
+    }
+
+    let date = Utc::now();
+    let end_date = match payment_frequency {
+        PaymentFrequencyField::Monthly => Some(date + Months::new(number_of_payments as u32)),
+        PaymentFrequencyField::Periodically => None,
+    }?;
+
+    Some(DateField {
+        day: end_date.day() as u8,
+        month: end_date.month() as u8,
+        year: end_date.year() as u16,
+    })
 }
 
 #[cfg(test)]

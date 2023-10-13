@@ -22,6 +22,17 @@ query SecuredLoans {
       end_date {
         year
       }
+      insights {
+        active
+        current_end_date {
+          formatted(like:"%d/%m/%Y")
+        }
+        payment_analysis {
+          made
+          total
+          remaining
+        }
+      }
     }
   }
 }
