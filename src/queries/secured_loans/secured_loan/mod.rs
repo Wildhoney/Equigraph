@@ -1,7 +1,7 @@
 use crate::{
     fields::{
-        payment_history::PaymentHistoryField, AmountField, BalanceField, DateField, LoanTypeField,
-        PaymentFrequencyField,
+        payment_history::PaymentHistoryField, AmountField, BalanceField, DateField,
+        FixedPaymentTermsField, LoanTypeField, PaymentFrequencyField,
     },
     objects::{
         input::Select,
@@ -31,6 +31,8 @@ pub struct SecuredLoanField {
     pub loan_type: LoanTypeField,
     #[serde(alias = "startDate")]
     pub start_date: DateField,
+    #[serde(alias = "endDate")]
+    pub end_date: Option<DateField>,
     #[serde(alias = "paymentFrequency")]
     pub payment_frequency: PaymentFrequencyField,
     #[serde(alias = "companyName")]
@@ -38,6 +40,8 @@ pub struct SecuredLoanField {
     #[serde(alias = "companyClass")]
     pub company_class: CompanyClass,
     pub flexible: bool,
+    #[serde(alias = "fixedPaymentTerms")]
+    pub fixed_payment_terms: FixedPaymentTermsField,
 }
 
 #[juniper::graphql_object(context = Context)]
@@ -91,5 +95,15 @@ impl SecuredLoanField {
     #[graphql(name = "start_date")]
     pub fn start_date(&self) -> &DateField {
         &self.start_date
+    }
+
+    #[graphql(name = "end_date")]
+    pub fn end_date(&self) -> &Option<DateField> {
+        &self.end_date
+    }
+
+    #[graphql(name = "fixed_payment_terms")]
+    pub fn fixed_payment_terms(&self) -> &FixedPaymentTermsField {
+        &self.fixed_payment_terms
     }
 }

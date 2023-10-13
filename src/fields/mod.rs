@@ -145,3 +145,24 @@ impl AmountField {
         get_amount(amount, currency, zeroes)
     }
 }
+
+#[derive(Debug, PartialEq, Deserialize, Clone)]
+pub struct FixedPaymentTermsField {
+    #[serde(alias = "numberOfPayments")]
+    pub number_of_payments: i32,
+    #[serde(alias = "paymentAmount")]
+    pub payment_amount: AmountField,
+}
+
+#[juniper::graphql_object(context = Context)]
+impl FixedPaymentTermsField {
+    #[graphql(name = "number_of_payments")]
+    pub fn number_of_payments(&self) -> i32 {
+        self.number_of_payments
+    }
+
+    #[graphql(name = "payment_amount")]
+    pub fn payment_amount(&self) -> &AmountField {
+        &self.payment_amount
+    }
+}

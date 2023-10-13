@@ -1,22 +1,26 @@
 # Secured Loans
 
 ```graphql
-query CurrentAccounts {
-  current_accounts {
-    current_account {
+query SecuredLoans {
+  secured_loans {
+    secured_loan {
       account_number
-      has_overdraft
-      payment_history(select: LATEST) {
-        account_balance {
-          formatted(zeroes: KEEP)
-          amount
-          currency
+      payment_frequency
+      flexible
+      start_balance {
+        amount
+      }
+      fixed_payment_terms {
+        number_of_payments
+        payment_amount {
+          formatted(zeroes: STRIP)
         }
-        changes(since: PREVIOUS) {
-          delta
-          impact
-          polarity
-        }
+      }
+      start_date {
+        year
+      }
+      end_date {
+        year
       }
     }
   }
