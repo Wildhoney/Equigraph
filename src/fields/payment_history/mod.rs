@@ -99,12 +99,17 @@ pub fn get_polarity(kind: &InsightKind, lhs_score: u32, rhs_score: u32) -> Polar
     }
 }
 
-pub fn get_impact(_kind: &InsightKind, lhs_score: u32, rhs_score: u32) -> Impact {
-    match get_delta(lhs_score, rhs_score) {
-        delta if delta == 0 => Impact::None,
-        delta if delta < 200 => Impact::Low,
-        delta if delta >= 200 => Impact::High,
-        _ => Impact::None,
+pub fn get_impact(kind: &InsightKind, lhs_score: u32, rhs_score: u32) -> Impact {
+    match kind {
+        InsightKind::CurrentAccount(_) => match get_delta(lhs_score, rhs_score) {
+            delta if delta < 0 || delta > 0 => Impact::Low,
+            _ => Impact::None,
+        },
+        InsightKind::SecuredLoan(secured_loan) => match get_delta(lhs_score, rhs_score) {
+            delta if delta < 0 && secured_loan.end_date.is_some() => Impact::High,
+            delta if delta < 0 || delta > 0 => Impact::Low,
+            _ => Impact::None,
+        },
     }
 }
 
