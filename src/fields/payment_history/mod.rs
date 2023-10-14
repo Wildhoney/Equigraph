@@ -43,7 +43,7 @@ impl PaymentHistoryField {
     }
 
     pub fn changes(&self, context: &Context, since: Since) -> Option<Changes> {
-        let payment_histories = utils::get_payment_histories_by_id(self.id, &context.reports);
+        let payment_histories = utils::get_payment_histories_by_id(self.id, &context.reports)?;
         let current_index = payment_histories
             .iter()
             .position(|payment_history| payment_history.id == self.id)?;

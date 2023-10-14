@@ -34,17 +34,15 @@ impl InsightDataField {
         CurrentAccounts { items }
     }
     pub fn secured_loans(context: &Context, options: QueryOptions) -> SecuredLoans {
-        let items = get_insights(&context.reports, &|insight_data| {
-            &insight_data.secured_loan
-        })
-        .into_iter()
-        .unique_by(|item| &item.account_number)
-        .filter(|secured_loan| match options.active {
-            Some(Active::Include) => secured_loan.end_date.is_none(),
-            Some(Active::Exclude) => secured_loan.end_date.is_some(),
-            None => true,
-        })
-        .collect::<Vec<_>>();
+        let items = get_insights(&context.reports, &|insight_data| &insight_data.secured_loan)
+            .into_iter()
+            .unique_by(|item| &item.account_number)
+            .filter(|secured_loan| match options.active {
+                Some(Active::Include) => secured_loan.end_date.is_none(),
+                Some(Active::Exclude) => secured_loan.end_date.is_some(),
+                None => true,
+            })
+            .collect::<Vec<_>>();
 
         SecuredLoans { items }
     }

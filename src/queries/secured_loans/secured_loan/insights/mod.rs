@@ -52,15 +52,12 @@ mod tests {
                 secured_loans {
                     secured_loan {
                         insights {
-                        active
-                        current_end_date {
-                            formatted(like:"%d/%m/%Y")
-                        }
-                        payment_analysis {
-                            made
-                            total
-                            remaining
-                        }
+                            active
+                            payment_analysis {
+                                made
+                                total
+                                remaining
+                            }
                         }
                     }
                 }
@@ -73,9 +70,6 @@ mod tests {
                   {
                     "insights": {
                       "active": true,
-                      "current_end_date": {
-                        "formatted": "13/10/2048"
-                      },
                       "payment_analysis": {
                         "made": 15,
                         "total": 300,
@@ -86,7 +80,6 @@ mod tests {
                   {
                     "insights": {
                       "active": false,
-                      "current_end_date": {juniper::Value::Null},
                       "payment_analysis": {
                         "made": 48,
                         "total": {juniper::Value::Null},
