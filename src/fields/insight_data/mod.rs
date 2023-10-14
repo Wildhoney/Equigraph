@@ -14,9 +14,9 @@ use crate::{
 use itertools::Itertools;
 use serde::Deserialize;
 
-pub enum InsightKind {
-    CurrentAccount,
-    SecuredLoan,
+pub enum InsightKind<'a> {
+    CurrentAccount(&'a CurrentAccountField),
+    SecuredLoan(&'a SecuredLoanField),
 }
 
 #[derive(Debug, PartialEq, Deserialize)]

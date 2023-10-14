@@ -4,7 +4,7 @@ use itertools::Itertools;
 use uuid::Uuid;
 
 pub struct PaymentHistory<'a> {
-    pub kind: InsightKind,
+    pub insight: InsightKind<'a>,
     pub list: &'a Vec<PaymentHistoryField>,
 }
 
@@ -37,7 +37,7 @@ pub fn flatten_payment_histories(reports: &Reports) -> Vec<PaymentHistory> {
                             .current_account
                             .iter()
                             .map(|current_account| PaymentHistory {
-                                kind: InsightKind::CurrentAccount,
+                                insight: InsightKind::CurrentAccount(&current_account),
                                 list: &current_account.payment_history,
                             })
                             .collect_vec(),
@@ -45,7 +45,7 @@ pub fn flatten_payment_histories(reports: &Reports) -> Vec<PaymentHistory> {
                             .secured_loan
                             .iter()
                             .map(|secured_loan| PaymentHistory {
-                                kind: InsightKind::SecuredLoan,
+                                insight: InsightKind::SecuredLoan(&secured_loan),
                                 list: &secured_loan.payment_history,
                             })
                             .collect_vec(),
