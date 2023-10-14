@@ -8,19 +8,19 @@ pub struct PaymentHistory<'a> {
     pub list: &'a Vec<PaymentHistoryField>,
 }
 
-pub fn get_payment_histories_by_id(id: Uuid, reports: &Reports) -> Option<PaymentHistory> {
-    let payment_histories = flatten_payment_histories(&reports);
-
-    payment_histories.into_iter().find_map(|payment_history| {
-        payment_history
-            .list
-            .iter()
-            .any(|payment_history| (payment_history.id == id))
-            .then(|| payment_history)
-    })
+pub fn get_payment_history_by_id(id: Uuid, reports: &Reports) -> Option<PaymentHistory> {
+    merge_payment_histories(&reports)
+        .into_iter()
+        .find_map(|payment_history| {
+            payment_history
+                .list
+                .iter()
+                .any(|payment_history| (payment_history.id == id))
+                .then(|| payment_history)
+        })
 }
 
-pub fn flatten_payment_histories(reports: &Reports) -> Vec<PaymentHistory> {
+pub fn merge_payment_histories(reports: &Reports) -> Vec<PaymentHistory> {
     reports
         .iter()
         .flat_map(|report| {
