@@ -33,7 +33,6 @@ impl AssociatesField {
             _ => associates,
         };
 
-        println!("Associates: {:?} {:?}", associates.len(), options);
         AssociatesField {
             associate: associates,
         }

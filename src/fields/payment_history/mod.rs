@@ -57,11 +57,11 @@ impl PaymentHistoryField {
             Since::Last => payment_histories.last(),
         }?;
 
-        let amount = self.account_balance.balance_amount.amount as u16;
+        let amount = self.account_balance.balance_amount.amount as u32;
         let compare_with_amount = compare_with_payment_history
             .account_balance
             .balance_amount
-            .amount as u16;
+            .amount as u32;
 
         Some(Changes {
             delta: get_delta(amount, compare_with_amount),
@@ -79,11 +79,11 @@ struct Changes {
     polarity: Polarity,
 }
 
-pub fn get_delta(lhs_score: u16, rhs_score: u16) -> i32 {
+pub fn get_delta(lhs_score: u32, rhs_score: u32) -> i32 {
     (lhs_score as i32 - rhs_score as i32) as i32
 }
 
-pub fn get_polarity(lhs_score: u16, rhs_score: u16) -> Polarity {
+pub fn get_polarity(lhs_score: u32, rhs_score: u32) -> Polarity {
     match get_delta(lhs_score, rhs_score) {
         delta if delta > 0 => Polarity::Positive,
         delta if delta < 0 => Polarity::Negative,
@@ -91,7 +91,7 @@ pub fn get_polarity(lhs_score: u16, rhs_score: u16) -> Polarity {
     }
 }
 
-pub fn get_impact(lhs_score: u16, rhs_score: u16) -> Impact {
+pub fn get_impact(lhs_score: u32, rhs_score: u32) -> Impact {
     match get_delta(lhs_score, rhs_score) {
         delta if delta == 0 => Impact::None,
         delta if delta < 200 => Impact::Low,
