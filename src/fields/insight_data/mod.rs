@@ -14,6 +14,11 @@ use crate::{
 use itertools::Itertools;
 use serde::Deserialize;
 
+pub enum InsightKind {
+    CurrentAccount,
+    SecuredLoan,
+}
+
 #[derive(Debug, PartialEq, Deserialize)]
 pub struct InsightDataField {
     #[serde(alias = "currentAccount")]

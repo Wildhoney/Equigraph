@@ -1,6 +1,6 @@
 mod utils;
 
-use super::{AmountField, BalanceField, PaymentStatusField};
+use super::{insight_data::InsightKind, AmountField, BalanceField, PaymentStatusField};
 use crate::{
     objects::{
         input::Since,
@@ -45,16 +45,17 @@ impl PaymentHistoryField {
     pub fn changes(&self, context: &Context, since: Since) -> Option<Changes> {
         let payment_histories = utils::get_payment_histories_by_id(self.id, &context.reports)?;
         let current_index = payment_histories
+            .list
             .iter()
             .position(|payment_history| payment_history.id == self.id)?;
 
         let compare_with_payment_history = match since {
-            Since::Previous => payment_histories.get(current_index + 1),
+            Since::Previous => payment_histories.list.get(current_index + 1),
             Since::Next => {
-                (current_index != 0).then(|| payment_histories.get(current_index - 1))?
+                (current_index != 0).then(|| payment_histories.list.get(current_index - 1))?
             }
-            Since::First => payment_histories.first(),
-            Since::Last => payment_histories.last(),
+            Since::First => payment_histories.list.first(),
+            Since::Last => payment_histories.list.last(),
         }?;
 
         let amount = self.account_balance.balance_amount.amount as u32;
@@ -65,8 +66,8 @@ impl PaymentHistoryField {
 
         Some(Changes {
             delta: get_delta(amount, compare_with_amount),
-            impact: get_impact(amount, compare_with_amount),
-            polarity: get_polarity(amount, compare_with_amount),
+            impact: get_impact(&payment_histories.kind, amount, compare_with_amount),
+            polarity: get_polarity(&payment_histories.kind, amount, compare_with_amount),
         })
     }
 }
@@ -83,15 +84,22 @@ pub fn get_delta(lhs_score: u32, rhs_score: u32) -> i32 {
     (lhs_score as i32 - rhs_score as i32) as i32
 }
 
-pub fn get_polarity(lhs_score: u32, rhs_score: u32) -> Polarity {
-    match get_delta(lhs_score, rhs_score) {
-        delta if delta > 0 => Polarity::Positive,
-        delta if delta < 0 => Polarity::Negative,
-        _ => Polarity::Unchanged,
+pub fn get_polarity(kind: &InsightKind, lhs_score: u32, rhs_score: u32) -> Polarity {
+    match kind {
+        InsightKind::CurrentAccount => match get_delta(lhs_score, rhs_score) {
+            delta if delta > 0 => Polarity::Positive,
+            delta if delta < 0 => Polarity::Negative,
+            _ => Polarity::Unchanged,
+        },
+        InsightKind::SecuredLoan => match get_delta(lhs_score, rhs_score) {
+            delta if delta < 0 => Polarity::Positive,
+            delta if delta > 0 => Polarity::Negative,
+            _ => Polarity::Unchanged,
+        },
     }
 }
 
-pub fn get_impact(lhs_score: u32, rhs_score: u32) -> Impact {
+pub fn get_impact(_kind: &InsightKind, lhs_score: u32, rhs_score: u32) -> Impact {
     match get_delta(lhs_score, rhs_score) {
         delta if delta == 0 => Impact::None,
         delta if delta < 200 => Impact::Low,

@@ -1,23 +1,26 @@
 use super::PaymentHistoryField;
-use crate::parser::types::Reports;
+use crate::{fields::insight_data::InsightKind, parser::types::Reports};
 use itertools::Itertools;
 use uuid::Uuid;
 
-pub fn get_payment_histories_by_id(
-    id: Uuid,
-    reports: &Reports,
-) -> Option<&Vec<PaymentHistoryField>> {
+pub struct PaymentHistory<'a> {
+    pub kind: InsightKind,
+    pub list: &'a Vec<PaymentHistoryField>,
+}
+
+pub fn get_payment_histories_by_id(id: Uuid, reports: &Reports) -> Option<PaymentHistory> {
     let payment_histories = flatten_payment_histories(&reports);
 
     payment_histories.into_iter().find_map(|payment_history| {
         payment_history
+            .list
             .iter()
             .any(|payment_history| (payment_history.id == id))
             .then(|| payment_history)
     })
 }
 
-pub fn flatten_payment_histories(reports: &Reports) -> Vec<&Vec<PaymentHistoryField>> {
+pub fn flatten_payment_histories(reports: &Reports) -> Vec<PaymentHistory> {
     reports
         .iter()
         .flat_map(|report| {
@@ -33,12 +36,18 @@ pub fn flatten_payment_histories(reports: &Reports) -> Vec<&Vec<PaymentHistoryFi
                         insight_data
                             .current_account
                             .iter()
-                            .map(|current_account| &current_account.payment_history)
+                            .map(|current_account| PaymentHistory {
+                                kind: InsightKind::CurrentAccount,
+                                list: &current_account.payment_history,
+                            })
                             .collect_vec(),
                         insight_data
                             .secured_loan
                             .iter()
-                            .map(|secured_loan| &secured_loan.payment_history)
+                            .map(|secured_loan| PaymentHistory {
+                                kind: InsightKind::SecuredLoan,
+                                list: &secured_loan.payment_history,
+                            })
                             .collect_vec(),
                     ]
                     .into_iter()
