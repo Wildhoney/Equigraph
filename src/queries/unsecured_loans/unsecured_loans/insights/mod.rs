@@ -1,16 +1,16 @@
-use crate::queries::current_accounts::current_account::CurrentAccountField;
+use crate::queries::unsecured_loans::unsecured_loan::UnsecuredLoanField;
 use juniper::GraphQLObject;
 
 #[derive(Debug, PartialEq, GraphQLObject)]
 #[graphql(description = "")]
-pub struct CurrentAccountsInsights {
+pub struct UnsecuredLoansInsights {
     pub count: i32,
 }
 
-impl CurrentAccountsInsights {
-    pub fn new(items: &Vec<&CurrentAccountField>) -> Self {
-        CurrentAccountsInsights {
-            count: items.len() as i32,
+impl UnsecuredLoansInsights {
+    pub fn new(insight: Vec<&UnsecuredLoanField>) -> Self {
+        UnsecuredLoansInsights {
+            count: insight.len() as i32,
         }
     }
 }
@@ -22,10 +22,10 @@ mod tests {
     use std::collections::HashMap;
 
     #[test]
-    fn it_can_get_current_accounts_insights() {
+    fn it_can_get_unsecured_loans_insights() {
         let query = r#"
-            query CurrentAccount {
-                current_accounts {
+            query UnsecuredLoansInsights {
+                unsecured_loans {
                     insights {
                         count
                     }
@@ -34,11 +34,11 @@ mod tests {
         "#;
 
         let expected = graphql_value!({
-            "current_accounts": {
+            "unsecured_loans": {
                 "insights": {
-                  "count": 5
+                    "count": 3
                 }
-              }
+            }
         });
 
         assert_eq!(run_graphql_query(query, HashMap::new()), expected);

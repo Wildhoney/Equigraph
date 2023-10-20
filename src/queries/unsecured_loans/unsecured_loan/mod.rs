@@ -1,12 +1,11 @@
 mod insights;
 
-use self::insights::SecuredLoanInsights;
+use self::insights::UnsecuredLoanInsights;
 use crate::{
     fields::{
         matched_address::MatchedAddressField,
         payment_history::{PartitionPaymentHistory, PaymentHistoryField},
-        AmountField, BalanceField, DateField, FixedPaymentTermsField, LoanTypeField,
-        PaymentFrequencyField,
+        AmountField, BalanceField, DateField, FixedPaymentTermsField, PaymentFrequencyField,
     },
     objects::{
         input::Select,
@@ -19,7 +18,7 @@ use serde::Deserialize;
 use uuid::Uuid;
 
 #[derive(Debug, PartialEq, Deserialize, Clone)]
-pub struct SecuredLoanField {
+pub struct UnsecuredLoanField {
     #[serde(default = "unique_id")]
     pub id: Uuid,
     #[serde(alias = "accountNumber")]
@@ -32,8 +31,6 @@ pub struct SecuredLoanField {
     pub start_balance: BalanceField,
     #[serde(alias = "paymentHistory")]
     pub payment_history: Vec<PaymentHistoryField>,
-    #[serde(alias = "loanType")]
-    pub loan_type: LoanTypeField,
     #[serde(alias = "startDate")]
     pub start_date: DateField,
     #[serde(alias = "lastUpdateDate")]
@@ -46,13 +43,12 @@ pub struct SecuredLoanField {
     pub company_name: String,
     #[serde(alias = "companyClass")]
     pub company_class: CompanyClass,
-    pub flexible: bool,
     #[serde(alias = "fixedPaymentTerms")]
     pub fixed_payment_terms: FixedPaymentTermsField,
 }
 
 #[juniper::graphql_object(context = Context)]
-impl SecuredLoanField {
+impl UnsecuredLoanField {
     #[graphql(name = "account_number")]
     pub fn account_number(&self) -> &String {
         &self.account_number
@@ -85,15 +81,6 @@ impl SecuredLoanField {
         &self.start_balance.balance_amount
     }
 
-    #[graphql(name = "loan_type")]
-    pub fn loan_type(&self) -> &LoanTypeField {
-        &self.loan_type
-    }
-
-    pub fn flexible(&self) -> bool {
-        self.flexible
-    }
-
     #[graphql(name = "start_date")]
     pub fn start_date(&self) -> &DateField {
         &self.start_date
@@ -119,8 +106,8 @@ impl SecuredLoanField {
         Some(&address.matched_address)
     }
 
-    pub fn insights(&self) -> SecuredLoanInsights {
-        SecuredLoanInsights::new(self.clone())
+    pub fn insights(&self) -> UnsecuredLoanInsights {
+        UnsecuredLoanInsights::new(self.clone())
     }
 
     #[graphql(name = "payment_history")]
@@ -136,14 +123,13 @@ mod tests {
     use std::collections::HashMap;
 
     #[test]
-    fn it_can_get_secured_loan() {
+    fn it_can_get_unsecured_loan() {
         let query = r#"
-            query SecuredLoan {
-                secured_loans {
-                    secured_loan {
+            query UnsecuredLoan {
+                unsecured_loans {
+                    unsecured_loan {
                         account_number
                         payment_frequency
-                        flexible
                         start_balance {
                             amount
                         }
@@ -165,44 +151,59 @@ mod tests {
         "#;
 
         let expected = graphql_value!({
-            "secured_loans": {
-                "secured_loan": [
+            "unsecured_loans": {
+                "unsecured_loan": [
                   {
-                    "account_number": "kHbepkF0tHD7+oaFLYE/+XMUAuTp58af5EZrYeBtVjs=",
+                    "account_number": "zt6alZd8Gw8CHn/fLohXfBquS9zyU34fw9l2Bn32Jio=",
                     "payment_frequency": "MONTHLY",
-                    "flexible": false,
                     "start_balance": {
                       "amount": 0
                     },
                     "fixed_payment_terms": {
-                      "number_of_payments": 300,
+                      "number_of_payments": 48,
                       "payment_amount": {
-                        "formatted": "£2,282"
+                        "formatted": "£210"
                       }
                     },
                     "start_date": {
-                      "year": 2022
+                      "year": 2020
                     },
                     "end_date": {juniper::Value::Null}
                   },
                   {
-                    "account_number": "r9jjexGpGIiqxQJx1AODd+N2KFtABRCSglQNZ26UguE=",
+                    "account_number": "tSPyQ+mZayou0q6iQiI3680Jg1GD3aCNuzxB8ph2wX8=",
                     "payment_frequency": "MONTHLY",
-                    "flexible": false,
                     "start_balance": {
                       "amount": 0
                     },
                     "fixed_payment_terms": {
-                      "number_of_payments": 0,
+                      "number_of_payments": 60,
                       "payment_amount": {
-                        "formatted": "£1,641"
+                        "formatted": "£227"
                       }
                     },
                     "start_date": {
-                      "year": 2017
+                      "year": 2023
+                    },
+                    "end_date": {juniper::Value::Null}
+                  },
+                  {
+                    "account_number": "lsrZ9iCAvJoLUh3DsLmI8ynvqpAUObNt/CHTC7WZGrc=",
+                    "payment_frequency": "MONTHLY",
+                    "start_balance": {
+                      "amount": 1920
+                    },
+                    "fixed_payment_terms": {
+                      "number_of_payments": 6,
+                      "payment_amount": {
+                        "formatted": "£320"
+                      }
+                    },
+                    "start_date": {
+                      "year": 2018
                     },
                     "end_date": {
-                      "year": 2022
+                      "year": 2018
                     }
                   }
                 ]

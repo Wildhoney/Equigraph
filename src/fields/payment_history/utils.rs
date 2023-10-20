@@ -49,6 +49,14 @@ pub fn merge_payment_histories(reports: &Reports) -> Vec<PaymentHistory> {
                                 list: &secured_loan.payment_history,
                             })
                             .collect_vec(),
+                        insight_data
+                            .unsecured_loan
+                            .iter()
+                            .map(|unsecured_loan| PaymentHistory {
+                                insight: InsightKind::UnsecuredLoan(&unsecured_loan),
+                                list: &unsecured_loan.payment_history,
+                            })
+                            .collect_vec(),
                     ]
                     .into_iter()
                     .flatten()

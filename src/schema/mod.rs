@@ -6,6 +6,7 @@ use crate::{
         associates::associates::AssociatesField,
         current_accounts::current_accounts::CurrentAccounts, scores::scores::ScoresField,
         secured_loans::secured_loans::SecuredLoans,
+        unsecured_loans::unsecured_loans::UnsecuredLoans,
     },
 };
 use juniper::{EmptyMutation, EmptySubscription, FieldResult, RootNode};
@@ -48,6 +49,17 @@ impl QueryRoot {
     #[graphql(name = "secured_loans")]
     fn secured_loans(context: &Context, active: Option<Active>) -> FieldResult<SecuredLoans> {
         Ok(InsightDataField::secured_loans(
+            context,
+            QueryOptions {
+                unique: None,
+                active,
+            },
+        ))
+    }
+
+    #[graphql(name = "unsecured_loans")]
+    fn unsecured_loans(context: &Context, active: Option<Active>) -> FieldResult<UnsecuredLoans> {
+        Ok(InsightDataField::unsecured_loans(
             context,
             QueryOptions {
                 unique: None,

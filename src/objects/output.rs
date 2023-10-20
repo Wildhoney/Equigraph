@@ -40,6 +40,10 @@ pub enum CompanyClass {
     Bank,
     #[serde(alias = "MS")]
     MortgageSupplier,
+    #[serde(alias = "RT")]
+    WTF1,
+    #[serde(alias = "FN")]
+    WTF2,
 }
 
 #[derive(Debug, GraphQLObject)]
