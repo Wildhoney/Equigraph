@@ -15,6 +15,7 @@ use crate::{
 use itertools::Itertools;
 use serde::Deserialize;
 
+#[derive(Debug)]
 pub enum InsightKind<'a> {
     CurrentAccount(&'a CurrentAccountField),
     SecuredLoan(&'a SecuredLoanField),

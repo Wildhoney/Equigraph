@@ -3,6 +3,7 @@ use crate::{fields::insight_data::InsightKind, objects::input::Select, parser::t
 use itertools::Itertools;
 use uuid::Uuid;
 
+#[derive(Debug)]
 pub struct PaymentHistory<'a> {
     pub insight: InsightKind<'a>,
     pub list: &'a Vec<PaymentHistoryField>,
