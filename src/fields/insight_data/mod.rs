@@ -1,4 +1,4 @@
-mod utils;
+pub mod utils;
 
 use self::utils::get_insights;
 use crate::{

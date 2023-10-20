@@ -1,8 +1,9 @@
+mod changes;
 mod insights;
 
-use self::insights::CurrentAccountsInsights;
+use self::{changes::CurrentAccountsChanges, insights::CurrentAccountsInsights};
 use super::current_account::CurrentAccountField;
-use crate::schema::Context;
+use crate::{objects::input::Since, schema::Context};
 use juniper::FieldResult;
 
 pub struct CurrentAccounts<'a> {
@@ -18,6 +19,15 @@ impl CurrentAccounts<'_> {
 
     pub fn insights() -> FieldResult<CurrentAccountsInsights> {
         Ok(CurrentAccountsInsights::new(&self.items))
+    }
+
+    pub fn changes(since: Since, context: &Context) -> FieldResult<CurrentAccountsChanges> {
+        match since {
+            _ => Ok(CurrentAccountsChanges::new(
+                context.reports.get(0).unwrap(),
+                context.reports.get(1).unwrap(),
+            )),
+        }
     }
 }
 
