@@ -45,6 +45,8 @@ pub struct SecuredLoanField {
     pub flexible: bool,
     #[serde(alias = "fixedPaymentTerms")]
     pub fixed_payment_terms: FixedPaymentTermsField,
+    #[serde(alias = "lastUpdateDate")]
+    pub last_update_date: DateField,
 }
 
 #[juniper::graphql_object(context = Context)]
@@ -108,6 +110,11 @@ impl SecuredLoanField {
     #[graphql(name = "fixed_payment_terms")]
     pub fn fixed_payment_terms(&self) -> &FixedPaymentTermsField {
         &self.fixed_payment_terms
+    }
+
+    #[graphql(name = "last_update_date")]
+    pub fn last_update_date(&self) -> &DateField {
+        &self.last_update_date
     }
 
     pub fn insights(&self) -> SecuredLoanInsights {
