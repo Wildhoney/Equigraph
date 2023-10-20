@@ -1,9 +1,11 @@
 mod utils;
 
+use self::utils::select_payment_history;
+
 use super::{insight_data::InsightKind, AmountField, BalanceField, PaymentStatusField};
 use crate::{
     objects::{
-        input::Since,
+        input::{Select, Since},
         output::{Impact, Polarity},
     },
     schema::Context,
@@ -23,6 +25,16 @@ pub struct PaymentHistoryField {
     pub age_in_months: i32,
     #[serde(alias = "paymentStatus")]
     pub payment_status: PaymentStatusField,
+}
+
+pub trait PartitionPaymentHistory {
+    fn partition(&self, select: Select) -> &[PaymentHistoryField];
+}
+
+impl PartitionPaymentHistory for Vec<PaymentHistoryField> {
+    fn partition(&self, select: Select) -> &[PaymentHistoryField] {
+        select_payment_history(select, self)
+    }
 }
 
 #[juniper::graphql_object(context = Context)]

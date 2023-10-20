@@ -1,9 +1,6 @@
 use crate::{
-    fields::{
-        payment_history::PaymentHistoryField, DateField, PaymentFrequencyField,
-        SuppliedAddressDataField,
-    },
-    objects::input::{EndingZeroes, Like, Select},
+    fields::{DateField, PaymentFrequencyField, SuppliedAddressDataField},
+    objects::input::{EndingZeroes, Like},
     parser::types::Reports,
 };
 use chrono::{Datelike, Months, TimeZone, Utc};
@@ -44,19 +41,6 @@ pub fn get_amount(
     };
 
     format!("{}", value)
-}
-
-pub fn partition_payment_history(
-    select: Select,
-    payment_histories: &Vec<PaymentHistoryField>,
-) -> &[PaymentHistoryField] {
-    match select {
-        Select::All => &payment_histories[..],
-        Select::Latest => &payment_histories.get(0..1).unwrap_or(&[]),
-        Select::Oldest => &payment_histories
-            .get(payment_histories.len() - 1..)
-            .unwrap_or(&[]),
-    }
 }
 
 pub fn find_address_by_id(id: Uuid, reports: &Reports) -> Option<&SuppliedAddressDataField> {

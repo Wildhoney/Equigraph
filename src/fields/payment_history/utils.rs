@@ -1,5 +1,5 @@
 use super::PaymentHistoryField;
-use crate::{fields::insight_data::InsightKind, parser::types::Reports};
+use crate::{fields::insight_data::InsightKind, objects::input::Select, parser::types::Reports};
 use itertools::Itertools;
 use uuid::Uuid;
 
@@ -57,4 +57,17 @@ pub fn merge_payment_histories(reports: &Reports) -> Vec<PaymentHistory> {
                 .collect_vec()
         })
         .collect_vec()
+}
+
+pub fn select_payment_history(
+    select: Select,
+    payment_histories: &Vec<PaymentHistoryField>,
+) -> &[PaymentHistoryField] {
+    match select {
+        Select::All => &payment_histories[..],
+        Select::Latest => &payment_histories.get(0..1).unwrap_or(&[]),
+        Select::Oldest => &payment_histories
+            .get(payment_histories.len() - 1..)
+            .unwrap_or(&[]),
+    }
 }

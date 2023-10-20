@@ -3,15 +3,17 @@ mod insights;
 use self::insights::SecuredLoanInsights;
 use crate::{
     fields::{
-        payment_history::PaymentHistoryField, AmountField, BalanceField, DateField,
-        FixedPaymentTermsField, LoanTypeField, PaymentFrequencyField,
+        matched_address::MatchedAddressField,
+        payment_history::{PartitionPaymentHistory, PaymentHistoryField},
+        AmountField, BalanceField, DateField, FixedPaymentTermsField, LoanTypeField,
+        PaymentFrequencyField,
     },
     objects::{
         input::Select,
         output::{Company, CompanyClass},
     },
     schema::Context,
-    utils::{partition_payment_history, unique_id},
+    utils::{find_address_by_id, unique_id},
 };
 use serde::Deserialize;
 use uuid::Uuid;
@@ -34,6 +36,8 @@ pub struct SecuredLoanField {
     pub loan_type: LoanTypeField,
     #[serde(alias = "startDate")]
     pub start_date: DateField,
+    #[serde(alias = "lastUpdateDate")]
+    pub last_update_date: DateField,
     #[serde(alias = "endDate")]
     pub end_date: Option<DateField>,
     #[serde(alias = "paymentFrequency")]
@@ -45,8 +49,6 @@ pub struct SecuredLoanField {
     pub flexible: bool,
     #[serde(alias = "fixedPaymentTerms")]
     pub fixed_payment_terms: FixedPaymentTermsField,
-    #[serde(alias = "lastUpdateDate")]
-    pub last_update_date: DateField,
 }
 
 #[juniper::graphql_object(context = Context)]
@@ -83,11 +85,6 @@ impl SecuredLoanField {
         &self.start_balance.balance_amount
     }
 
-    #[graphql(name = "payment_history")]
-    pub fn payment_history(&self, select: Select) -> &[PaymentHistoryField] {
-        partition_payment_history(select, &self.payment_history)
-    }
-
     #[graphql(name = "loan_type")]
     pub fn loan_type(&self) -> &LoanTypeField {
         &self.loan_type
@@ -102,6 +99,11 @@ impl SecuredLoanField {
         &self.start_date
     }
 
+    #[graphql(name = "last_update_date")]
+    pub fn update_date(&self) -> &DateField {
+        &self.last_update_date
+    }
+
     #[graphql(name = "end_date")]
     pub fn end_date(&self) -> &Option<DateField> {
         &self.end_date
@@ -112,13 +114,18 @@ impl SecuredLoanField {
         &self.fixed_payment_terms
     }
 
-    #[graphql(name = "last_update_date")]
-    pub fn last_update_date(&self) -> &DateField {
-        &self.last_update_date
+    pub fn address(&self, context: &Context) -> Option<&MatchedAddressField> {
+        let address = find_address_by_id(self.id, &context.reports)?;
+        Some(&address.matched_address)
     }
 
     pub fn insights(&self) -> SecuredLoanInsights {
         SecuredLoanInsights::new(self.clone())
+    }
+
+    #[graphql(name = "payment_history")]
+    pub fn payment_history(&self, select: Select) -> &[PaymentHistoryField] {
+        self.payment_history.partition(select)
     }
 }
 

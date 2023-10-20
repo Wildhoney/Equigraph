@@ -1,14 +1,15 @@
 use crate::{
     fields::{
-        matched_address::MatchedAddressField, payment_history::PaymentHistoryField, AmountField,
-        BalanceField, CreditLimitField, DateField, PaymentFrequencyField,
+        matched_address::MatchedAddressField,
+        payment_history::{PartitionPaymentHistory, PaymentHistoryField},
+        AmountField, BalanceField, CreditLimitField, DateField, PaymentFrequencyField,
     },
     objects::{
         input::Select,
         output::{Company, CompanyClass},
     },
     schema::Context,
-    utils::{find_address_by_id, partition_payment_history, unique_id},
+    utils::{find_address_by_id, unique_id},
 };
 use serde::Deserialize;
 use uuid::Uuid;
@@ -92,14 +93,14 @@ impl CurrentAccountField {
         &self.start_date
     }
 
-    #[graphql(name = "payment_history")]
-    pub fn payment_history(&self, select: Select) -> &[PaymentHistoryField] {
-        partition_payment_history(select, &self.payment_history)
-    }
-
     pub fn address(&self, context: &Context) -> Option<&MatchedAddressField> {
         let address = find_address_by_id(self.id, &context.reports)?;
         Some(&address.matched_address)
+    }
+
+    #[graphql(name = "payment_history")]
+    pub fn payment_history(&self, select: Select) -> &[PaymentHistoryField] {
+        self.payment_history.partition(select)
     }
 }
 
