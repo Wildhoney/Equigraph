@@ -54,7 +54,7 @@ impl PaymentHistoryField {
         PaymentHistoryChanges::new(
             since,
             self.id,
-            self.account_balance.balance_amount.amount as u32,
+            &self.account_balance.balance_amount,
             &context.reports,
         )
     }

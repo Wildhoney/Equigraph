@@ -3,7 +3,7 @@ mod utils;
 use self::utils::{get_delta, get_impact, get_polarity};
 use super::utils::get_payment_history_by_id;
 use crate::{
-    fields::insight_data::InsightKind,
+    fields::{insight_data::InsightKind, AmountField},
     objects::{
         input::Since,
         output::{Impact, Polarity},
@@ -15,17 +15,18 @@ use uuid::Uuid;
 
 pub struct PaymentHistoryChanges<'a> {
     pub kind: InsightKind<'a>,
+    pub currency: &'a str,
     pub amount: u32,
     pub compare_with_amount: u32,
 }
 
 impl PaymentHistoryChanges<'_> {
-    pub fn new(
+    pub fn new<'a>(
         since: Since,
         id: Uuid,
-        amount: u32,
-        reports: &Reports,
-    ) -> Option<PaymentHistoryChanges> {
+        amount: &'a AmountField,
+        reports: &'a Reports,
+    ) -> Option<PaymentHistoryChanges<'a>> {
         let payment_histories = get_payment_history_by_id(id, reports)?;
         let current_index = payment_histories
             .list
@@ -48,16 +49,21 @@ impl PaymentHistoryChanges<'_> {
 
         Some(PaymentHistoryChanges {
             kind: payment_histories.insight,
-            amount,
+            amount: amount.amount as u32,
             compare_with_amount,
+            currency: &amount.currency,
         })
     }
 }
 
 #[juniper::graphql_object(context = Context)]
 impl PaymentHistoryChanges<'_> {
-    pub fn delta(&self) -> i32 {
-        get_delta(self.amount, self.compare_with_amount)
+    pub fn delta(&self) -> AmountField {
+        let amount = get_delta(self.amount, self.compare_with_amount);
+        AmountField {
+            amount,
+            currency: self.currency.to_string(),
+        }
     }
 
     pub fn impact(&self) -> Impact {
@@ -86,7 +92,9 @@ mod tests {
                         amount
                       }
                       changes(since: PREVIOUS) {
-                        delta
+                        delta {
+                          amount
+                        }
                         impact
                         polarity
                       }
@@ -106,7 +114,9 @@ mod tests {
                       "amount": 0
                     },
                     "changes": {
-                      "delta": 0,
+                      "delta": {
+                        "amount": 0
+                      },
                       "impact": "NONE",
                       "polarity": "UNCHANGED"
                     }
@@ -120,7 +130,9 @@ mod tests {
                       "amount": 0
                     },
                     "changes": {
-                      "delta": 0,
+                      "delta": {
+                        "amount": 0
+                      },
                       "impact": "NONE",
                       "polarity": "UNCHANGED"
                     }
@@ -134,7 +146,9 @@ mod tests {
                       "amount": 0
                     },
                     "changes": {
-                      "delta": 0,
+                      "delta": {
+                        "amount": 0
+                      },
                       "impact": "NONE",
                       "polarity": "UNCHANGED"
                     }
@@ -148,7 +162,9 @@ mod tests {
                       "amount": 0
                     },
                     "changes": {
-                      "delta": 0,
+                      "delta": {
+                        "amount": 0
+                      },
                       "impact": "NONE",
                       "polarity": "UNCHANGED"
                     }
@@ -162,7 +178,9 @@ mod tests {
                       "amount": 0
                     },
                     "changes": {
-                      "delta": {-2},
+                      "delta": {
+                        "amount": {-2}
+                      },
                       "impact": "LOW",
                       "polarity": "NEGATIVE"
                     }
