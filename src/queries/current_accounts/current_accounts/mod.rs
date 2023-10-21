@@ -1,9 +1,10 @@
-mod changes;
 mod insights;
 
-use self::{changes::CurrentAccountsChanges, insights::CurrentAccountsInsights};
+use self::insights::CurrentAccountsInsights;
 use super::current_account::CurrentAccountField;
-use crate::{objects::input::Since, schema::Context};
+use crate::{
+    fields::insight_data::changes::InsightChanges, objects::input::Since, schema::Context,
+};
 use juniper::FieldResult;
 
 pub struct CurrentAccounts<'a> {
@@ -21,13 +22,28 @@ impl CurrentAccounts<'_> {
         Ok(CurrentAccountsInsights::new(&self.items))
     }
 
-    pub fn changes(since: Since, context: &Context) -> FieldResult<CurrentAccountsChanges> {
+    pub fn changes(
+        since: Since,
+        context: &Context,
+    ) -> FieldResult<InsightChanges<CurrentAccountField>> {
         match since {
-            _ => Ok(CurrentAccountsChanges::new(
+            _ => Ok(InsightChanges::new(
                 context.reports.get(0).unwrap(),
                 context.reports.get(1).unwrap(),
+                &|insight_data| &insight_data.current_account,
             )),
         }
+    }
+}
+
+#[juniper::graphql_object(context = Context)]
+impl InsightChanges<'_, CurrentAccountField> {
+    pub fn added(&self) -> &Vec<&CurrentAccountField> {
+        &self.added
+    }
+
+    pub fn removed(&self) -> &Vec<&CurrentAccountField> {
+        &self.removed
     }
 }
 

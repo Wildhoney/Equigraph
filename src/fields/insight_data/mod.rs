@@ -1,3 +1,4 @@
+pub mod changes;
 pub mod utils;
 
 use self::utils::get_insights;
@@ -30,6 +31,10 @@ pub struct InsightDataField {
     pub secured_loan: Vec<SecuredLoanField>,
     #[serde(alias = "unsecuredLoan")]
     pub unsecured_loan: Vec<UnsecuredLoanField>,
+}
+
+pub trait AccountNumber {
+    fn get_account_number(&self) -> String;
 }
 
 impl InsightDataField {
