@@ -25,13 +25,19 @@ impl CurrentAccounts<'_> {
     pub fn changes(
         since: Since,
         context: &Context,
-    ) -> FieldResult<InsightChanges<CurrentAccountField>> {
+    ) -> FieldResult<Option<InsightChanges<CurrentAccountField>>> {
         match since {
-            _ => Ok(InsightChanges::new(
-                context.reports.get(0).unwrap(),
-                context.reports.get(1).unwrap(),
+            Since::Previous => Ok(InsightChanges::new(
+                context.reports.get(0),
+                context.reports.get(1),
                 &|insight_data| &insight_data.current_account,
             )),
+            Since::First => Ok(InsightChanges::new(
+                context.reports.get(0),
+                context.reports.last(),
+                &|insight_data| &insight_data.current_account,
+            )),
+            _ => Ok(None),
         }
     }
 }

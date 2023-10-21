@@ -18,31 +18,36 @@ where
     T: AccountNumber,
 {
     pub fn new<'a>(
-        report: &'a Report,
-        compare_with_report: &'a Report,
+        report: Option<&'a Report>,
+        compare_with_report: Option<&'a Report>,
         map: &'a dyn Fn(&'a InsightDataField) -> &'a Vec<T>,
-    ) -> InsightChanges<'a, T> {
-        let report_ids = get_ids(&report);
-        let compare_with_report_ids = get_ids(&compare_with_report);
+    ) -> Option<InsightChanges<'a, T>> {
+        match (report, compare_with_report) {
+            (Some(report), Some(compare_with_report)) => {
+                let report_ids = get_ids(&report);
+                let compare_with_report_ids = get_ids(&compare_with_report);
 
-        let added = get_insights_from_report(&report, map)
-            .into_iter()
-            .filter(|current_account| {
-                !compare_with_report_ids
-                    .iter()
-                    .contains(&&current_account.get_account_number())
-            })
-            .collect_vec();
+                let added = get_insights_from_report(&report, map)
+                    .into_iter()
+                    .filter(|current_account| {
+                        !compare_with_report_ids
+                            .iter()
+                            .contains(&&current_account.get_account_number())
+                    })
+                    .collect_vec();
 
-        let removed = get_insights_from_report(&compare_with_report, map)
-            .into_iter()
-            .filter(|current_account| {
-                !report_ids
-                    .iter()
-                    .contains(&&current_account.get_account_number())
-            })
-            .collect_vec();
+                let removed = get_insights_from_report(&compare_with_report, map)
+                    .into_iter()
+                    .filter(|current_account| {
+                        !report_ids
+                            .iter()
+                            .contains(&&current_account.get_account_number())
+                    })
+                    .collect_vec();
 
-        InsightChanges { added, removed }
+                Some(InsightChanges { added, removed })
+            }
+            _ => None,
+        }
     }
 }
