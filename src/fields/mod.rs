@@ -17,14 +17,6 @@ use juniper::GraphQLEnum;
 use serde::Deserialize;
 
 #[derive(Debug, PartialEq, Deserialize)]
-pub struct ReportField {
-    #[serde(alias = "nonAddressSpecificData")]
-    pub non_address_specific_data: NonAddressSpecificDataField,
-    #[serde(alias = "soleSearch")]
-    pub sole_search: SoleSearchField,
-}
-
-#[derive(Debug, PartialEq, Deserialize)]
 pub struct NonAddressSpecificDataField {
     pub associates: AssociatesField,
     pub scores: ScoresField,
@@ -92,10 +84,24 @@ pub struct NameField {
 
 #[derive(Debug, PartialEq, Deserialize, GraphQLEnum, Clone)]
 pub enum PaymentFrequencyField {
+    #[serde(alias = "WEEKLY")]
+    Weekly,
+    #[serde(alias = "FORTNIGHTLY")]
+    Fortnightly,
     #[serde(alias = "MONTHLY")]
     Monthly,
+    #[serde(alias = "QUARTERLY")]
+    Quarterly,
+    #[serde(alias = "BI_ANNUAL")]
+    BiAnnually,
+    #[serde(alias = "ANNUAL")]
+    Annually,
     #[serde(alias = "PERIODICALLY")]
     Periodically,
+    #[serde(alias = "OTHER")]
+    Other,
+    #[serde(alias = "UNKNOWN")]
+    Unknown,
 }
 
 #[derive(Debug, PartialEq, Deserialize, GraphQLEnum, Clone)]
@@ -106,10 +112,50 @@ pub enum LoanTypeField {
 
 #[derive(Debug, PartialEq, Deserialize, GraphQLEnum, Clone, Copy)]
 pub enum PaymentStatusField {
+    #[serde(alias = "Q")]
+    AccountInQuery,
+    #[serde(alias = "R")]
+    Repossession,
+    #[serde(alias = "V")]
+    VoluntaryRepossession,
+    #[serde(alias = "N")]
+    Inactive,
+    #[serde(alias = "D")]
+    Default,
+    #[serde(alias = "Z")]
+    NotTakenUp,
+    #[serde(alias = "S")]
+    Settled,
+    #[serde(alias = "I")]
+    AgreedPayments,
+    #[serde(alias = "X")]
+    Terminated,
+    #[serde(alias = "U")]
+    Unknown,
+    #[serde(alias = "W")]
+    WrittenOff,
+    #[serde(alias = "G")]
+    GoneAway,
+    #[serde(alias = "DOT")]
+    NoUpdateReceived,
+    #[serde(alias = "B")]
+    BadArrears,
+    #[serde(alias = "A")]
+    ModerateArrears,
     #[serde(alias = "ZERO")]
-    Zero,
-    S,
-    U,
+    UpToDate,
+    #[serde(alias = "ONE")]
+    OneMonthArrears,
+    #[serde(alias = "TWO")]
+    TwoMonthsArrears,
+    #[serde(alias = "THREE")]
+    ThreeMonthsArrears,
+    #[serde(alias = "FOUR")]
+    FourMonthsArrears,
+    #[serde(alias = "FIVE")]
+    FiveMonthsArrears,
+    #[serde(alias = "SIX")]
+    SixMonthsArrears,
 }
 
 #[derive(Debug, PartialEq, Deserialize, Clone)]

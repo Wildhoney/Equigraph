@@ -1,4 +1,4 @@
-use crate::fields::ReportField;
+use crate::queries::reports::report::ReportField;
 
 pub type Reports = Vec<Report>;
 

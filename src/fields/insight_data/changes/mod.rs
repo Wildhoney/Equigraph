@@ -18,12 +18,12 @@ where
     T: AccountNumber,
 {
     pub fn new<'a>(
-        report: Option<&'a Report>,
+        report: &'a Report,
         compare_with_report: Option<&'a Report>,
         map: &'a dyn Fn(&'a InsightDataField) -> &'a Vec<T>,
     ) -> Option<InsightChanges<'a, T>> {
-        match (report, compare_with_report) {
-            (Some(report), Some(compare_with_report)) => {
+        match compare_with_report {
+            Some(compare_with_report) => {
                 let report_ids = get_ids(&report);
                 let compare_with_report_ids = get_ids(&compare_with_report);
 

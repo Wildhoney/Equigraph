@@ -2,9 +2,10 @@ mod insights;
 
 use self::insights::SecuredLoansInsights;
 use super::secured_loan::SecuredLoanField;
-use crate::schema::Context;
+use crate::{queries::reports::report::ReportField, schema::Context};
 
 pub struct SecuredLoans<'a> {
+    pub report: &'a ReportField,
     pub items: Vec<&'a SecuredLoanField>,
 }
 

@@ -60,6 +60,7 @@ impl PaymentHistoryChanges<'_> {
 impl PaymentHistoryChanges<'_> {
     pub fn delta(&self) -> AmountField {
         let amount = get_delta(self.amount, self.compare_with_amount);
+
         AmountField {
             amount,
             currency: self.currency.to_string(),

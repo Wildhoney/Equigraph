@@ -2,9 +2,10 @@ mod insights;
 
 use self::insights::UnsecuredLoansInsights;
 use super::unsecured_loan::UnsecuredLoanField;
-use crate::schema::Context;
+use crate::{queries::reports::report::ReportField, schema::Context};
 
 pub struct UnsecuredLoans<'a> {
+    pub report: &'a ReportField,
     pub items: Vec<&'a UnsecuredLoanField>,
 }
 

@@ -1,25 +1,5 @@
 use super::InsightDataField;
-use crate::parser::types::{Report, Reports};
-
-pub fn get_insights<'a, T>(
-    reports: &'a Reports,
-    map: &'a dyn Fn(&'a InsightDataField) -> &'a Vec<T>,
-) -> Vec<&'a T> {
-    reports
-        .iter()
-        .flat_map(|report| {
-            report
-                .sole_search
-                .primary
-                .supplied_address_data
-                .iter()
-                .flat_map(|supplied_address_data| {
-                    map(&supplied_address_data.address_specific_data.insight_data)
-                })
-                .collect::<Vec<_>>()
-        })
-        .collect::<Vec<_>>()
-}
+use crate::parser::types::Report;
 
 pub fn get_insights_from_report<'a, T>(
     report: &'a Report,

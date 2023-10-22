@@ -36,14 +36,121 @@ pub enum Impact {
 
 #[derive(Debug, PartialEq, Deserialize, GraphQLEnum, Clone)]
 pub enum CompanyClass {
+    #[serde(alias = "AC")]
+    Accountancy,
+    #[serde(alias = "BF")]
+    BankNonCLSBAndFinanceDivisions,
     #[serde(alias = "BK")]
     Bank,
+    #[serde(alias = "BS")]
+    BuildingSociety,
+    #[serde(alias = "CB")]
+    CreditBroker,
+    #[serde(alias = "CC")]
+    CreditCard,
+    #[serde(alias = "CD")]
+    ConsumerDirect,
+    #[serde(alias = "CE")]
+    CustomsAndExcise,
+    #[serde(alias = "CG")]
+    ChequeGuarantor,
+    #[serde(alias = "CH")]
+    ChargeCard,
+    #[serde(alias = "CI")]
+    CreditInsurer,
+    #[serde(alias = "CL")]
+    ConsumerLetter,
+    #[serde(alias = "CR")]
+    CommercialReporting,
+    #[serde(alias = "CS")]
+    CommunicationSupplier,
+    #[serde(alias = "CV")]
+    ConsumerVerification,
+    #[serde(alias = "DC")]
+    DebtCollector,
+    #[serde(alias = "DI")]
+    DistributionAndWholesalers,
+    #[serde(alias = "EA")]
+    EmploymentAgency,
+    #[serde(alias = "EN")]
+    EnquiryAgent,
+    #[serde(alias = "ES")]
+    EnergySupplier,
+    #[serde(alias = "FN")]
+    FinanceHouse,
+    #[serde(alias = "FS")]
+    FinancialServices,
+    #[serde(alias = "GI")]
+    GeneralInsurance,
+    #[serde(alias = "GV")]
+    Government,
+    #[serde(alias = "HC")]
+    HireCarRental,
+    #[serde(alias = "HF")]
+    HomeFurnisher,
+    #[serde(alias = "HI")]
+    HomeImprovement,
+    #[serde(alias = "HO")]
+    HouseBuilder,
+    #[serde(alias = "HS")]
+    HealthServices,
+    #[serde(alias = "HT")]
+    HotelAndTravel,
+    #[serde(alias = "IB")]
+    InsuranceBroker,
+    #[serde(alias = "IN")]
+    Insurance,
+    #[serde(alias = "IR")]
+    InlandRevenue,
+    #[serde(alias = "LA")]
+    LossAdjuster,
+    #[serde(alias = "LG")]
+    Leasing,
+    #[serde(alias = "MD")]
+    MotorDealer,
+    #[serde(alias = "ME")]
+    Media,
+    #[serde(alias = "MF")]
+    ManufacturingIndustrial,
+    #[serde(alias = "MK")]
+    Marketing,
+    #[serde(alias = "MN")]
+    #[serde(alias = "CZ")]
+    Miscellaneous,
+    #[serde(alias = "MO")]
+    MailOrder,
     #[serde(alias = "MS")]
     MortgageSupplier,
+    #[serde(alias = "OS")]
+    Overseas,
+    #[serde(alias = "PM")]
+    PropertyManagement,
+    #[serde(alias = "PO")]
+    Police,
+    #[serde(alias = "PU")]
+    PublicUtility,
+    #[serde(alias = "RN")]
+    Rental,
     #[serde(alias = "RT")]
-    WTF1,
-    #[serde(alias = "FN")]
-    WTF2,
+    Retailer,
+    #[serde(alias = "SB")]
+    StockBroker,
+    #[serde(alias = "SO")]
+    Solicitor,
+    #[serde(alias = "SR")]
+    SlotRental,
+    #[serde(alias = "SS")]
+    SecurityServices,
+    #[serde(alias = "TC")]
+    TVProgrammeSupplier,
+    #[serde(alias = "TI")]
+    TravelInsurer,
+    #[serde(alias = "TP")]
+    Thirdparty,
+    #[serde(alias = "TV")]
+    TVRental,
+    #[serde(alias = "XX")]
+    Training,
 }
 
 #[derive(Debug, GraphQLObject)]

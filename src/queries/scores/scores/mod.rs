@@ -1,5 +1,5 @@
 use super::score::{ScoreField, ScoreLabelField};
-use crate::{objects::input::Select, schema::Context};
+use crate::schema::Context;
 use serde::Deserialize;
 
 #[derive(Debug, PartialEq, Deserialize)]
@@ -9,30 +9,14 @@ pub struct ScoresField {
 
 #[juniper::graphql_object(context = Context)]
 impl ScoresField {
-    pub fn score(&self, kind: ScoreLabelField, select: Select) -> Vec<&ScoreField> {
-        let scores = self
-            .score
+    pub fn score(&self, kind: Option<ScoreLabelField>) -> Vec<&ScoreField> {
+        self.score
             .iter()
-            .filter(|score| score.score_label == kind)
-            .collect::<Vec<_>>();
-
-        match select {
-            Select::All => scores[..].to_vec(),
-            Select::Latest => scores.get(0..1).unwrap_or(&[]).to_vec(),
-            Select::Oldest => scores.get(scores.len() - 1..).unwrap_or(&[]).to_vec(),
-        }
-    }
-}
-
-impl ScoresField {
-    pub fn new(context: &Context) -> Self {
-        Self {
-            score: context
-                .reports
-                .iter()
-                .flat_map(|report| report.non_address_specific_data.scores.score.to_owned())
-                .collect::<Vec<_>>(),
-        }
+            .filter(|score| match &kind {
+                Some(kind) => score.score_label == *kind,
+                None => true,
+            })
+            .collect::<Vec<_>>()
     }
 }
 

@@ -72,7 +72,7 @@ pub fn compute_scheduled_end_date(
     let date = Utc::now();
     let end_date = match payment_frequency {
         PaymentFrequencyField::Monthly => Some(date + Months::new(number_of_payments as u32)),
-        PaymentFrequencyField::Periodically => None,
+        _ => None,
     }?;
 
     Some(DateField {

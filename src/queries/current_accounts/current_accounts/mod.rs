@@ -3,11 +3,13 @@ mod insights;
 use self::insights::CurrentAccountsInsights;
 use super::current_account::CurrentAccountField;
 use crate::{
-    fields::insight_data::changes::InsightChanges, objects::input::Since, schema::Context,
+    fields::insight_data::changes::InsightChanges, objects::input::Since,
+    queries::reports::report::ReportField, schema::Context,
 };
 use juniper::FieldResult;
 
 pub struct CurrentAccounts<'a> {
+    pub report: &'a ReportField,
     pub items: Vec<&'a CurrentAccountField>,
 }
 
@@ -23,17 +25,39 @@ impl CurrentAccounts<'_> {
     }
 
     pub fn changes(
+        &self,
         since: Since,
         context: &Context,
     ) -> FieldResult<Option<InsightChanges<CurrentAccountField>>> {
-        match since {
-            Since::Previous => Ok(InsightChanges::new(
-                context.reports.get(0),
-                context.reports.get(1),
+        let current_index = context
+            .reports
+            .iter()
+            .position(|report| report.id == self.report.id);
+
+        match (since, current_index) {
+            (Since::Previous, Some(index)) => Ok(InsightChanges::new(
+                self.report,
+                context.reports.get(index + 1),
                 &|insight_data| &insight_data.current_account,
             )),
-            Since::First => Ok(InsightChanges::new(
-                context.reports.get(0),
+            (Since::Next, Some(index)) => {
+                if index == 0 {
+                    return Ok(None);
+                }
+
+                Ok(InsightChanges::new(
+                    self.report,
+                    context.reports.get(index - 1),
+                    &|insight_data| &insight_data.current_account,
+                ))
+            }
+            (Since::First, _) => Ok(InsightChanges::new(
+                self.report,
+                context.reports.first(),
+                &|insight_data| &insight_data.current_account,
+            )),
+            (Since::Last, _) => Ok(InsightChanges::new(
+                self.report,
                 context.reports.last(),
                 &|insight_data| &insight_data.current_account,
             )),
