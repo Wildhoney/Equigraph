@@ -1,8 +1,13 @@
 mod insights;
 
+use juniper::FieldResult;
+
 use self::insights::UnsecuredLoansInsights;
 use super::unsecured_loan::UnsecuredLoanField;
-use crate::{queries::reports::report::ReportField, schema::Context};
+use crate::{
+    fields::insight_data::changes::InsightChanges, objects::input::Since,
+    queries::reports::report::ReportField, schema::Context,
+};
 
 pub struct UnsecuredLoans<'a> {
     pub report: &'a ReportField,
@@ -18,6 +23,30 @@ impl UnsecuredLoans<'_> {
 
     pub fn insights() -> UnsecuredLoansInsights {
         UnsecuredLoansInsights::new(self.items.clone())
+    }
+
+    pub fn changes(
+        &self,
+        since: Since,
+        context: &Context,
+    ) -> FieldResult<Option<InsightChanges<UnsecuredLoanField>>> {
+        Ok(InsightChanges::new(
+            since,
+            self.report,
+            &context.reports,
+            &|insight_data| &insight_data.unsecured_loan,
+        ))
+    }
+}
+
+#[juniper::graphql_object(context = Context)]
+impl InsightChanges<'_, UnsecuredLoanField> {
+    pub fn added(&self) -> &Vec<&UnsecuredLoanField> {
+        &self.added
+    }
+
+    pub fn removed(&self) -> &Vec<&UnsecuredLoanField> {
+        &self.removed
     }
 }
 

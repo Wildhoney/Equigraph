@@ -2,7 +2,11 @@ mod insights;
 
 use self::insights::SecuredLoansInsights;
 use super::secured_loan::SecuredLoanField;
-use crate::{queries::reports::report::ReportField, schema::Context};
+use crate::{
+    fields::insight_data::changes::InsightChanges, objects::input::Since,
+    queries::reports::report::ReportField, schema::Context,
+};
+use juniper::FieldResult;
 
 pub struct SecuredLoans<'a> {
     pub report: &'a ReportField,
@@ -18,6 +22,30 @@ impl SecuredLoans<'_> {
 
     pub fn insights() -> SecuredLoansInsights {
         SecuredLoansInsights::new(self.items.clone())
+    }
+
+    pub fn changes(
+        &self,
+        since: Since,
+        context: &Context,
+    ) -> FieldResult<Option<InsightChanges<SecuredLoanField>>> {
+        Ok(InsightChanges::new(
+            since,
+            self.report,
+            &context.reports,
+            &|insight_data| &insight_data.secured_loan,
+        ))
+    }
+}
+
+#[juniper::graphql_object(context = Context)]
+impl InsightChanges<'_, SecuredLoanField> {
+    pub fn added(&self) -> &Vec<&SecuredLoanField> {
+        &self.added
+    }
+
+    pub fn removed(&self) -> &Vec<&SecuredLoanField> {
+        &self.removed
     }
 }
 

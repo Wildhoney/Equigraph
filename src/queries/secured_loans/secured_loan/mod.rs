@@ -3,6 +3,7 @@ mod insights;
 use self::insights::SecuredLoanInsights;
 use crate::{
     fields::{
+        insight_data::AccountNumber,
         matched_address::MatchedAddressField,
         payment_history::{PartitionPaymentHistory, PaymentHistoryField},
         AmountField, BalanceField, DateField, FixedPaymentTermsField, LoanTypeField,
@@ -49,6 +50,12 @@ pub struct SecuredLoanField {
     pub flexible: bool,
     #[serde(alias = "fixedPaymentTerms")]
     pub fixed_payment_terms: FixedPaymentTermsField,
+}
+
+impl AccountNumber for SecuredLoanField {
+    fn get_account_number(&self) -> String {
+        self.account_number.to_owned()
+    }
 }
 
 #[juniper::graphql_object(context = Context)]

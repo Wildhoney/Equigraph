@@ -36,25 +36,21 @@ where
 
         match compare_with_report {
             Some(compare_with_report) => {
-                let report_ids = get_ids(&report);
-                let compare_with_report_ids = get_ids(&compare_with_report);
+                let report_ids = get_ids(&report, map);
+                let compare_with_report_ids = get_ids(&compare_with_report, map);
 
                 let added = get_insights_from_report(&report, map)
                     .into_iter()
-                    .filter(|current_account| {
+                    .filter(|item| {
                         !compare_with_report_ids
                             .iter()
-                            .contains(&&current_account.get_account_number())
+                            .contains(&&item.get_account_number())
                     })
                     .collect_vec();
 
                 let removed = get_insights_from_report(&compare_with_report, map)
                     .into_iter()
-                    .filter(|current_account| {
-                        !report_ids
-                            .iter()
-                            .contains(&&current_account.get_account_number())
-                    })
+                    .filter(|item| !report_ids.iter().contains(&&item.get_account_number()))
                     .collect_vec();
 
                 Some(InsightChanges { added, removed })
