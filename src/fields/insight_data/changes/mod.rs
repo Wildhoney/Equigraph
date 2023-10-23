@@ -3,7 +3,8 @@ mod utils;
 use self::utils::get_ids;
 use crate::{
     fields::insight_data::{utils::get_insights_from_report, AccountNumber, InsightDataField},
-    parser::types::Report,
+    objects::input::Since,
+    parser::types::{Report, Reports},
 };
 use itertools::Itertools;
 
@@ -18,10 +19,21 @@ where
     T: AccountNumber,
 {
     pub fn new<'a>(
+        since: Since,
         report: &'a Report,
-        compare_with_report: Option<&'a Report>,
+        reports: &'a Reports,
         map: &'a dyn Fn(&'a InsightDataField) -> &'a Vec<T>,
     ) -> Option<InsightChanges<'a, T>> {
+        let current_index = reports.iter().position(|report| report.id == report.id);
+
+        let compare_with_report = match (since, current_index) {
+            (Since::Next, Some(index)) => reports.get(index - 1),
+            (Since::Previous, Some(index)) => reports.get(index + 1),
+            (Since::First, Some(_)) => reports.first(),
+            (Since::Last, Some(_)) => reports.last(),
+            _ => return None,
+        };
+
         match compare_with_report {
             Some(compare_with_report) => {
                 let report_ids = get_ids(&report);

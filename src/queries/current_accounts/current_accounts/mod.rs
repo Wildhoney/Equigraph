@@ -29,40 +29,12 @@ impl CurrentAccounts<'_> {
         since: Since,
         context: &Context,
     ) -> FieldResult<Option<InsightChanges<CurrentAccountField>>> {
-        let current_index = context
-            .reports
-            .iter()
-            .position(|report| report.id == self.report.id);
-
-        match (since, current_index) {
-            (Since::Previous, Some(index)) => Ok(InsightChanges::new(
-                self.report,
-                context.reports.get(index + 1),
-                &|insight_data| &insight_data.current_account,
-            )),
-            (Since::Next, Some(index)) => {
-                if index == 0 {
-                    return Ok(None);
-                }
-
-                Ok(InsightChanges::new(
-                    self.report,
-                    context.reports.get(index - 1),
-                    &|insight_data| &insight_data.current_account,
-                ))
-            }
-            (Since::First, _) => Ok(InsightChanges::new(
-                self.report,
-                context.reports.first(),
-                &|insight_data| &insight_data.current_account,
-            )),
-            (Since::Last, _) => Ok(InsightChanges::new(
-                self.report,
-                context.reports.last(),
-                &|insight_data| &insight_data.current_account,
-            )),
-            _ => Ok(None),
-        }
+        Ok(InsightChanges::new(
+            since,
+            self.report,
+            &context.reports,
+            &|insight_data| &insight_data.current_account,
+        ))
     }
 }
 
