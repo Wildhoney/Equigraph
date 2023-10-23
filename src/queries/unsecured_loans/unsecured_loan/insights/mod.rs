@@ -46,59 +46,105 @@ mod tests {
     use std::collections::HashMap;
 
     #[test]
-    fn it_can_get_secured_loan_insights() {
+    fn it_can_get_unsecured_loan_insights() {
         let query = r#"
-            query UnsecuredLoanInsights {
-                unsecured_loans {
-                    unsecured_loan {
-                        insights {
-                            active
-                            payment_analysis {
-                                made
-                                total
-                                remaining
-                            }
-                        }
+        query UnsecuredLoanInsights {
+          reports {
+            report {
+              unsecured_loans {
+                unsecured_loan {
+                  insights {
+                    active
+                    payment_analysis {
+                      made
+                      total
+                      remaining
                     }
+                  }
                 }
+              }
             }
+          }
+        }
         "#;
 
         let expected = graphql_value!({
-            "unsecured_loans": {
-                "unsecured_loan": [
-                  {
-                    "insights": {
-                      "active": true,
-                      "payment_analysis": {
-                        "made": 42,
-                        "total": 48,
-                        "remaining": 6
+          "reports": {
+            "report": [
+              {
+                "unsecured_loans": {
+                  "unsecured_loan": [
+                    {
+                      "insights": {
+                        "active": true,
+                        "payment_analysis": {
+                          "made": 42,
+                          "total": 48,
+                          "remaining": 6
+                        }
+                      }
+                    },
+                    {
+                      "insights": {
+                        "active": true,
+                        "payment_analysis": {
+                          "made": 5,
+                          "total": 60,
+                          "remaining": 55
+                        }
+                      }
+                    },
+                    {
+                      "insights": {
+                        "active": false,
+                        "payment_analysis": {
+                          "made": 7,
+                          "total": {juniper::Value::Null},
+                          "remaining": {juniper::Value::Null}
+                        }
                       }
                     }
-                  },
-                  {
-                    "insights": {
-                      "active": true,
-                      "payment_analysis": {
-                        "made": 5,
-                        "total": 60,
-                        "remaining": 55
+                  ]
+                }
+              },
+              {
+                "unsecured_loans": {
+                  "unsecured_loan": [
+                    {
+                      "insights": {
+                        "active": true,
+                        "payment_analysis": {
+                          "made": 42,
+                          "total": 48,
+                          "remaining": 6
+                        }
+                      }
+                    },
+                    {
+                      "insights": {
+                        "active": true,
+                        "payment_analysis": {
+                          "made": 5,
+                          "total": 60,
+                          "remaining": 55
+                        }
+                      }
+                    },
+                    {
+                      "insights": {
+                        "active": false,
+                        "payment_analysis": {
+                          "made": 7,
+                          "total": {juniper::Value::Null},
+                          "remaining": {juniper::Value::Null}
+                        }
                       }
                     }
-                  },
-                  {
-                    "insights": {
-                      "active": false,
-                      "payment_analysis": {
-                        "made": 7,
-                        "total": {juniper::Value::Null},
-                        "remaining": {juniper::Value::Null}
-                      }
-                    }
-                  }
-                ]
+                  ]
+                }
               }
+            ]
+          }
         });
 
         assert_eq!(run_graphql_query(query, HashMap::new()), expected);

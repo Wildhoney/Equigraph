@@ -24,21 +24,38 @@ mod tests {
     #[test]
     fn it_can_get_associates_insights() {
         let query = r#"
-            query AssociatesInsights {
+        query AssociatesInsights {
+            reports {
+              report {
                 associates {
-                    insights {
-                        count
-                    }
+                  insights {
+                    count
+                  }
                 }
+              }
             }
+          }
         "#;
 
         let expected = graphql_value!({
-            "associates": {
-                "insights": {
-                    "count": 2
-                }
-            }
+            "reports": {
+                "report": [
+                  {
+                    "associates": {
+                      "insights": {
+                        "count": 1
+                      }
+                    }
+                  },
+                  {
+                    "associates": {
+                      "insights": {
+                        "count": 1
+                      }
+                    }
+                  }
+                ]
+              }
         });
 
         assert_eq!(run_graphql_query(query, HashMap::new()), expected);

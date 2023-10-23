@@ -24,21 +24,38 @@ mod tests {
     #[test]
     fn it_can_get_unsecured_loans_insights() {
         let query = r#"
-            query UnsecuredLoansInsights {
+        query UnsecuredLoansInsights {
+            reports {
+              report {
                 unsecured_loans {
-                    insights {
-                        count
-                    }
+                  insights {
+                    count
+                  }
                 }
+              }
             }
+          }
         "#;
 
         let expected = graphql_value!({
-            "unsecured_loans": {
-                "insights": {
-                    "count": 3
-                }
-            }
+            "reports": {
+                "report": [
+                  {
+                    "unsecured_loans": {
+                      "insights": {
+                        "count": 3
+                      }
+                    }
+                  },
+                  {
+                    "unsecured_loans": {
+                      "insights": {
+                        "count": 3
+                      }
+                    }
+                  }
+                ]
+              }
         });
 
         assert_eq!(run_graphql_query(query, HashMap::new()), expected);

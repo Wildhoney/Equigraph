@@ -138,71 +138,125 @@ mod tests {
     #[test]
     fn it_can_get_secured_loan() {
         let query = r#"
-            query SecuredLoan {
+        query SecuredLoan {
+            reports {
+              report {
                 secured_loans {
-                    secured_loan {
-                        account_number
-                        payment_frequency
-                        flexible
-                        start_balance {
-                            amount
-                        }
-                        fixed_payment_terms {
-                            number_of_payments
-                            payment_amount {
-                            formatted(zeroes: STRIP)
-                            }
-                        }
-                        start_date {
-                            year
-                        }
-                        end_date {
-                            year
-                        }
+                  secured_loan {
+                    account_number
+                    payment_frequency
+                    flexible
+                    start_balance {
+                      amount
                     }
+                    fixed_payment_terms {
+                      number_of_payments
+                      payment_amount {
+                        formatted(zeroes: STRIP)
+                      }
+                    }
+                    start_date {
+                      year
+                    }
+                    end_date {
+                      year
+                    }
+                  }
                 }
+              }
             }
+          }
         "#;
 
         let expected = graphql_value!({
-            "secured_loans": {
-                "secured_loan": [
+            "reports": {
+                "report": [
                   {
-                    "account_number": "kHbepkF0tHD7+oaFLYE/+XMUAuTp58af5EZrYeBtVjs=",
-                    "payment_frequency": "MONTHLY",
-                    "flexible": false,
-                    "start_balance": {
-                      "amount": 0
-                    },
-                    "fixed_payment_terms": {
-                      "number_of_payments": 300,
-                      "payment_amount": {
-                        "formatted": "£2,282"
-                      }
-                    },
-                    "start_date": {
-                      "year": 2022
-                    },
-                    "end_date": {juniper::Value::Null}
+                    "secured_loans": {
+                      "secured_loan": [
+                        {
+                          "account_number": "kHbepkF0tHD7+oaFLYE/+XMUAuTp58af5EZrYeBtVjs=",
+                          "payment_frequency": "MONTHLY",
+                          "flexible": false,
+                          "start_balance": {
+                            "amount": 0
+                          },
+                          "fixed_payment_terms": {
+                            "number_of_payments": 300,
+                            "payment_amount": {
+                              "formatted": "£2,282"
+                            }
+                          },
+                          "start_date": {
+                            "year": 2022
+                          },
+                          "end_date": {juniper::Value::Null}
+                        },
+                        {
+                          "account_number": "r9jjexGpGIiqxQJx1AODd+N2KFtABRCSglQNZ26UguE=",
+                          "payment_frequency": "MONTHLY",
+                          "flexible": false,
+                          "start_balance": {
+                            "amount": 0
+                          },
+                          "fixed_payment_terms": {
+                            "number_of_payments": 0,
+                            "payment_amount": {
+                              "formatted": "£1,641"
+                            }
+                          },
+                          "start_date": {
+                            "year": 2017
+                          },
+                          "end_date": {
+                            "year": 2022
+                          }
+                        }
+                      ]
+                    }
                   },
                   {
-                    "account_number": "r9jjexGpGIiqxQJx1AODd+N2KFtABRCSglQNZ26UguE=",
-                    "payment_frequency": "MONTHLY",
-                    "flexible": false,
-                    "start_balance": {
-                      "amount": 0
-                    },
-                    "fixed_payment_terms": {
-                      "number_of_payments": 0,
-                      "payment_amount": {
-                        "formatted": "£1,641"
-                      }
-                    },
-                    "start_date": {
-                      "year": 2017
-                    },
-                    "end_date": {
-                      "year": 2022
+                    "secured_loans": {
+                      "secured_loan": [
+                        {
+                          "account_number": "kHbepkF0tHD7+oaFLYE/+XMUAuTp58af5EZrYeBtVjs=",
+                          "payment_frequency": "MONTHLY",
+                          "flexible": false,
+                          "start_balance": {
+                            "amount": 0
+                          },
+                          "fixed_payment_terms": {
+                            "number_of_payments": 300,
+                            "payment_amount": {
+                              "formatted": "£2,282"
+                            }
+                          },
+                          "start_date": {
+                            "year": 2022
+                          },
+                          "end_date": {juniper::Value::Null}
+                        },
+                        {
+                          "account_number": "r9jjexGpGIiqxQJx1AODd+N2KFtABRCSglQNZ26UguE=",
+                          "payment_frequency": "MONTHLY",
+                          "flexible": false,
+                          "start_balance": {
+                            "amount": 0
+                          },
+                          "fixed_payment_terms": {
+                            "number_of_payments": 0,
+                            "payment_amount": {
+                              "formatted": "£1,641"
+                            }
+                          },
+                          "start_date": {
+                            "year": 2017
+                          },
+                          "end_date": {
+                            "year": 2022
+                          }
+                        }
+                      ]
                     }
                   }
                 ]

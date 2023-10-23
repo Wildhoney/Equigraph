@@ -30,26 +30,51 @@ mod tests {
     #[test]
     fn it_can_get_unsecured_loans() {
         let query = r#"
-            query UnsecuredLoans {
+        query UnsecuredLoans {
+            reports {
+              report {
                 unsecured_loans {
-                    unsecured_loan {
-                        account_number
-                    }
+                  unsecured_loan {
+                    account_number
+                  }
                 }
+              }
             }
+          }
         "#;
 
         let expected = graphql_value!({
-            "unsecured_loans": {
-                "unsecured_loan": [
+            "reports": {
+                "report": [
                   {
-                    "account_number": "zt6alZd8Gw8CHn/fLohXfBquS9zyU34fw9l2Bn32Jio="
+                    "unsecured_loans": {
+                      "unsecured_loan": [
+                        {
+                          "account_number": "zt6alZd8Gw8CHn/fLohXfBquS9zyU34fw9l2Bn32Jio="
+                        },
+                        {
+                          "account_number": "tSPyQ+mZayou0q6iQiI3680Jg1GD3aCNuzxB8ph2wX8="
+                        },
+                        {
+                          "account_number": "lsrZ9iCAvJoLUh3DsLmI8ynvqpAUObNt/CHTC7WZGrc="
+                        }
+                      ]
+                    }
                   },
                   {
-                    "account_number": "tSPyQ+mZayou0q6iQiI3680Jg1GD3aCNuzxB8ph2wX8="
-                  },
-                  {
-                    "account_number": "lsrZ9iCAvJoLUh3DsLmI8ynvqpAUObNt/CHTC7WZGrc="
+                    "unsecured_loans": {
+                      "unsecured_loan": [
+                        {
+                          "account_number": "zt6alZd8Gw8CHn/fLohXfBquS9zyU34fw9l2Bn32Jio="
+                        },
+                        {
+                          "account_number": "tSPyQ+mZayou0q6iQiI3680Jg1GD3aCNuzxB8ph2wX8="
+                        },
+                        {
+                          "account_number": "lsrZ9iCAvJoLUh3DsLmI8ynvqpAUObNt/CHTC7WZGrc="
+                        }
+                      ]
+                    }
                   }
                 ]
               }

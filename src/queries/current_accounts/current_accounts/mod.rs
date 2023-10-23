@@ -58,32 +58,61 @@ mod tests {
     #[test]
     fn it_can_get_current_accounts() {
         let query = r#"
-            query CurrentAccount {
+        query CurrentAccounts {
+            reports {
+              report {
                 current_accounts {
-                    current_account {
-                      account_number
-                    }
+                  current_account {
+                    account_number
+                  }
                 }
+              }
             }
+          }
+          
         "#;
 
         let expected = graphql_value!({
-            "current_accounts": {
-                "current_account": [
+            "reports": {
+                "report": [
                   {
-                    "account_number": "zGML/Ld93it5j86rAFo2wxM8oGHNdoWJj4WTwoRmkcc="
+                    "current_accounts": {
+                      "current_account": [
+                        {
+                          "account_number": "zGML/Ld93it5j86rAFo2wxM8oGHNdoWJj4WTwoRmkcc="
+                        },
+                        {
+                          "account_number": "3oEmu6B1FCnWguuTc93gXTPtT3NMcaxCKSm2MLOFvMw="
+                        },
+                        {
+                          "account_number": "5YduNv4WxF4SOS0GqS8uh/yOA/TFTgsQT1uH5kAB8RQ="
+                        },
+                        {
+                          "account_number": "iMt7bI9kNQtpjsWYsMr69lgUsgyg5XQVMF4dhBknm3E="
+                        },
+                        {
+                          "account_number": "LFTlUsWtDduQAo2L7zJOtNKDI86DztlNPL6Fg7iz4+M="
+                        }
+                      ]
+                    }
                   },
                   {
-                    "account_number": "3oEmu6B1FCnWguuTc93gXTPtT3NMcaxCKSm2MLOFvMw="
-                  },
-                  {
-                    "account_number": "5YduNv4WxF4SOS0GqS8uh/yOA/TFTgsQT1uH5kAB8RQ="
-                  },
-                  {
-                    "account_number": "iMt7bI9kNQtpjsWYsMr69lgUsgyg5XQVMF4dhBknm3E="
-                  },
-                  {
-                    "account_number": "LFTlUsWtDduQAo2L7zJOtNKDI86DztlNPL6Fg7iz4+M="
+                    "current_accounts": {
+                      "current_account": [
+                        {
+                          "account_number": "3oEmu6B1FCnWguuTc93gXTPtT3NMcaxCKSm2MLOFvMw="
+                        },
+                        {
+                          "account_number": "5YduNv4WxF4SOS0GqS8uh/yOA/TFTgsQT1uH5kAB8RQ="
+                        },
+                        {
+                          "account_number": "iMt7bI9kNQtpjsWYsMr69lgUsgyg5XQVMF4dhBknm3E="
+                        },
+                        {
+                          "account_number": "LFTlUsWtDduQAo2L7zJOtNKDI86DztlNPL6Fg7iz4+M="
+                        }
+                      ]
+                    }
                   }
                 ]
               }

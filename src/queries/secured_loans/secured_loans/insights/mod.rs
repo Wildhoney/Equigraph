@@ -24,21 +24,38 @@ mod tests {
     #[test]
     fn it_can_get_secured_loans_insights() {
         let query = r#"
-            query SecuredLoansInsights {
+        query SecuredLoansInsights {
+            reports {
+              report {
                 secured_loans {
-                    insights {
-                        count
-                    }
+                  insights {
+                    count
+                  }
                 }
+              }
             }
+          }
         "#;
 
         let expected = graphql_value!({
-            "secured_loans": {
-                "insights": {
-                    "count": 2
-                }
-            }
+            "reports": {
+                "report": [
+                  {
+                    "secured_loans": {
+                      "insights": {
+                        "count": 2
+                      }
+                    }
+                  },
+                  {
+                    "secured_loans": {
+                      "insights": {
+                        "count": 2
+                      }
+                    }
+                  }
+                ]
+              }
         });
 
         assert_eq!(run_graphql_query(query, HashMap::new()), expected);

@@ -30,23 +30,45 @@ mod tests {
     #[test]
     fn it_can_get_secured_loans() {
         let query = r#"
-            query SecuredLoans {
+        query SecuredLoans {
+            reports {
+              report {
                 secured_loans {
-                    secured_loan {
-                        account_number
-                    }
+                  secured_loan {
+                    account_number
+                  }
                 }
+              }
             }
+          }
         "#;
 
         let expected = graphql_value!({
-            "secured_loans": {
-                "secured_loan": [
+            "reports": {
+                "report": [
                   {
-                    "account_number": "kHbepkF0tHD7+oaFLYE/+XMUAuTp58af5EZrYeBtVjs="
+                    "secured_loans": {
+                      "secured_loan": [
+                        {
+                          "account_number": "kHbepkF0tHD7+oaFLYE/+XMUAuTp58af5EZrYeBtVjs="
+                        },
+                        {
+                          "account_number": "r9jjexGpGIiqxQJx1AODd+N2KFtABRCSglQNZ26UguE="
+                        }
+                      ]
+                    }
                   },
                   {
-                    "account_number": "r9jjexGpGIiqxQJx1AODd+N2KFtABRCSglQNZ26UguE="
+                    "secured_loans": {
+                      "secured_loan": [
+                        {
+                          "account_number": "kHbepkF0tHD7+oaFLYE/+XMUAuTp58af5EZrYeBtVjs="
+                        },
+                        {
+                          "account_number": "r9jjexGpGIiqxQJx1AODd+N2KFtABRCSglQNZ26UguE="
+                        }
+                      ]
+                    }
                   }
                 ]
               }

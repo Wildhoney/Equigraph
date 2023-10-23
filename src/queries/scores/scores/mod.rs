@@ -37,40 +37,58 @@ mod tests {
     #[test]
     fn it_can_get_scores() {
         let query = r#"
-            query Score {
+        query Scores {
+            reports {
+              report {
                 scores {
-                    old_score: score(select: ALL, kind: RNOLF04) {
-                        current
-                        maximum
-                    }
-                    new_score: score(select: ALL, kind: PSOLF01) {
-                        current
-                        maximum
-                    }
+                  old_score: score(kind: RNOLF04) {
+                    current
+                    maximum
+                  }
+                  new_score: score(kind: PSOLF01) {
+                    current
+                    maximum
+                  }
                 }
+              }
             }
+          }
         "#;
 
         let expected = graphql_value!({
-            "scores": {
-                "old_score": [
+            "reports": {
+                "report": [
                   {
-                    "current": 538,
-                    "maximum": 700
+                    "scores": {
+                      "old_score": [
+                        {
+                          "current": 538,
+                          "maximum": 700
+                        }
+                      ],
+                      "new_score": [
+                        {
+                          "current": 956,
+                          "maximum": 1000
+                        }
+                      ]
+                    }
                   },
                   {
-                    "current": 508,
-                    "maximum": 700
-                  }
-                ],
-                "new_score": [
-                  {
-                    "current": 956,
-                    "maximum": 1000
-                  },
-                  {
-                    "current": 936,
-                    "maximum": 1000
+                    "scores": {
+                      "old_score": [
+                        {
+                          "current": 508,
+                          "maximum": 700
+                        }
+                      ],
+                      "new_score": [
+                        {
+                          "current": 936,
+                          "maximum": 1000
+                        }
+                      ]
+                    }
                   }
                 ]
               }

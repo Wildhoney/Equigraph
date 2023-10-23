@@ -125,89 +125,158 @@ mod tests {
     #[test]
     fn it_can_get_unsecured_loan() {
         let query = r#"
-            query UnsecuredLoan {
-                unsecured_loans {
-                    unsecured_loan {
-                        account_number
-                        payment_frequency
-                        start_balance {
-                            amount
-                        }
-                        fixed_payment_terms {
-                            number_of_payments
-                            payment_amount {
-                            formatted(zeroes: STRIP)
-                            }
-                        }
-                        start_date {
-                            year
-                        }
-                        end_date {
-                            year
-                        }
+        query UnsecuredLoan {
+          reports {
+            report {
+              unsecured_loans {
+                unsecured_loan {
+                  account_number
+                  payment_frequency
+                  start_balance {
+                    amount
+                  }
+                  fixed_payment_terms {
+                    number_of_payments
+                    payment_amount {
+                      formatted(zeroes: STRIP)
                     }
+                  }
+                  start_date {
+                    year
+                  }
+                  end_date {
+                    year
+                  }
                 }
+              }
             }
+          }
+        }
         "#;
 
         let expected = graphql_value!({
-            "unsecured_loans": {
-                "unsecured_loan": [
-                  {
-                    "account_number": "zt6alZd8Gw8CHn/fLohXfBquS9zyU34fw9l2Bn32Jio=",
-                    "payment_frequency": "MONTHLY",
-                    "start_balance": {
-                      "amount": 0
+          "reports": {
+            "report": [
+              {
+                "unsecured_loans": {
+                  "unsecured_loan": [
+                    {
+                      "account_number": "zt6alZd8Gw8CHn/fLohXfBquS9zyU34fw9l2Bn32Jio=",
+                      "payment_frequency": "MONTHLY",
+                      "start_balance": {
+                        "amount": 0
+                      },
+                      "fixed_payment_terms": {
+                        "number_of_payments": 48,
+                        "payment_amount": {
+                          "formatted": "£210"
+                        }
+                      },
+                      "start_date": {
+                        "year": 2020
+                      },
+                      "end_date": {juniper::Value::Null}
                     },
-                    "fixed_payment_terms": {
-                      "number_of_payments": 48,
-                      "payment_amount": {
-                        "formatted": "£210"
+                    {
+                      "account_number": "tSPyQ+mZayou0q6iQiI3680Jg1GD3aCNuzxB8ph2wX8=",
+                      "payment_frequency": "MONTHLY",
+                      "start_balance": {
+                        "amount": 0
+                      },
+                      "fixed_payment_terms": {
+                        "number_of_payments": 60,
+                        "payment_amount": {
+                          "formatted": "£227"
+                        }
+                      },
+                      "start_date": {
+                        "year": 2023
+                      },
+                      "end_date": {juniper::Value::Null}
+                    },
+                    {
+                      "account_number": "lsrZ9iCAvJoLUh3DsLmI8ynvqpAUObNt/CHTC7WZGrc=",
+                      "payment_frequency": "MONTHLY",
+                      "start_balance": {
+                        "amount": 1920
+                      },
+                      "fixed_payment_terms": {
+                        "number_of_payments": 6,
+                        "payment_amount": {
+                          "formatted": "£320"
+                        }
+                      },
+                      "start_date": {
+                        "year": 2018
+                      },
+                      "end_date": {
+                        "year": 2018
                       }
-                    },
-                    "start_date": {
-                      "year": 2020
-                    },
-                    "end_date": {juniper::Value::Null}
-                  },
-                  {
-                    "account_number": "tSPyQ+mZayou0q6iQiI3680Jg1GD3aCNuzxB8ph2wX8=",
-                    "payment_frequency": "MONTHLY",
-                    "start_balance": {
-                      "amount": 0
-                    },
-                    "fixed_payment_terms": {
-                      "number_of_payments": 60,
-                      "payment_amount": {
-                        "formatted": "£227"
-                      }
-                    },
-                    "start_date": {
-                      "year": 2023
-                    },
-                    "end_date": {juniper::Value::Null}
-                  },
-                  {
-                    "account_number": "lsrZ9iCAvJoLUh3DsLmI8ynvqpAUObNt/CHTC7WZGrc=",
-                    "payment_frequency": "MONTHLY",
-                    "start_balance": {
-                      "amount": 1920
-                    },
-                    "fixed_payment_terms": {
-                      "number_of_payments": 6,
-                      "payment_amount": {
-                        "formatted": "£320"
-                      }
-                    },
-                    "start_date": {
-                      "year": 2018
-                    },
-                    "end_date": {
-                      "year": 2018
                     }
-                  }
-                ]
+                  ]
+                }
+              },
+              {
+                "unsecured_loans": {
+                  "unsecured_loan": [
+                    {
+                      "account_number": "zt6alZd8Gw8CHn/fLohXfBquS9zyU34fw9l2Bn32Jio=",
+                      "payment_frequency": "MONTHLY",
+                      "start_balance": {
+                        "amount": 0
+                      },
+                      "fixed_payment_terms": {
+                        "number_of_payments": 48,
+                        "payment_amount": {
+                          "formatted": "£210"
+                        }
+                      },
+                      "start_date": {
+                        "year": 2020
+                      },
+                      "end_date": {juniper::Value::Null}
+                    },
+                    {
+                      "account_number": "tSPyQ+mZayou0q6iQiI3680Jg1GD3aCNuzxB8ph2wX8=",
+                      "payment_frequency": "MONTHLY",
+                      "start_balance": {
+                        "amount": 0
+                      },
+                      "fixed_payment_terms": {
+                        "number_of_payments": 60,
+                        "payment_amount": {
+                          "formatted": "£227"
+                        }
+                      },
+                      "start_date": {
+                        "year": 2023
+                      },
+                      "end_date": {juniper::Value::Null}
+                    },
+                    {
+                      "account_number": "lsrZ9iCAvJoLUh3DsLmI8ynvqpAUObNt/CHTC7WZGrc=",
+                      "payment_frequency": "MONTHLY",
+                      "start_balance": {
+                        "amount": 1920
+                      },
+                      "fixed_payment_terms": {
+                        "number_of_payments": 6,
+                        "payment_amount": {
+                          "formatted": "£320"
+                        }
+                      },
+                      "start_date": {
+                        "year": 2018
+                      },
+                      "end_date": {
+                        "year": 2018
+                      }
+                    }
+                  ]
+                }
               }
+            ]
+          }
         });
 
         assert_eq!(run_graphql_query(query, HashMap::new()), expected);

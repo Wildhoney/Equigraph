@@ -85,108 +85,188 @@ mod tests {
     #[test]
     fn it_can_display_payment_history_changes() {
         let query = r#"
-            query PaymentHistory {
-                current_accounts {
-                  current_account {
-                    payment_history(select: LATEST) {
-                      account_balance {
+        query PaymentHistory {
+          reports {
+            report {
+              current_accounts {
+                current_account {
+                  payment_history(select: LATEST) {
+                    account_balance {
+                      amount
+                    }
+                    changes(since: PREVIOUS) {
+                      delta {
                         amount
                       }
-                      changes(since: PREVIOUS) {
-                        delta {
-                          amount
-                        }
-                        impact
-                        polarity
-                      }
+                      impact
+                      polarity
                     }
                   }
                 }
               }
+            }
+          }
+        }
         "#;
 
         let expected = graphql_value!({
-          "current_accounts": {
-            "current_account": [
+          "reports": {
+            "report": [
               {
-                "payment_history": [
-                  {
-                    "account_balance": {
-                      "amount": 0
+                "current_accounts": {
+                  "current_account": [
+                    {
+                      "payment_history": [
+                        {
+                          "account_balance": {
+                            "amount": 0
+                          },
+                          "changes": {
+                            "delta": {
+                              "amount": 0
+                            },
+                            "impact": "NONE",
+                            "polarity": "UNCHANGED"
+                          }
+                        }
+                      ]
                     },
-                    "changes": {
-                      "delta": {
-                        "amount": 0
-                      },
-                      "impact": "NONE",
-                      "polarity": "UNCHANGED"
+                    {
+                      "payment_history": [
+                        {
+                          "account_balance": {
+                            "amount": 0
+                          },
+                          "changes": {
+                            "delta": {
+                              "amount": 0
+                            },
+                            "impact": "NONE",
+                            "polarity": "UNCHANGED"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "payment_history": [
+                        {
+                          "account_balance": {
+                            "amount": 0
+                          },
+                          "changes": {
+                            "delta": {
+                              "amount": 0
+                            },
+                            "impact": "NONE",
+                            "polarity": "UNCHANGED"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "payment_history": [
+                        {
+                          "account_balance": {
+                            "amount": 0
+                          },
+                          "changes": {
+                            "delta": {
+                              "amount": 0
+                            },
+                            "impact": "NONE",
+                            "polarity": "UNCHANGED"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "payment_history": [
+                        {
+                          "account_balance": {
+                            "amount": 0
+                          },
+                          "changes": {
+                            "delta": {
+                              "amount": {-2}
+                            },
+                            "impact": "LOW",
+                            "polarity": "NEGATIVE"
+                          }
+                        }
+                      ]
                     }
-                  }
-                ]
+                  ]
+                }
               },
               {
-                "payment_history": [
-                  {
-                    "account_balance": {
-                      "amount": 0
+                "current_accounts": {
+                  "current_account": [
+                    {
+                      "payment_history": [
+                        {
+                          "account_balance": {
+                            "amount": 0
+                          },
+                          "changes": {
+                            "delta": {
+                              "amount": 0
+                            },
+                            "impact": "NONE",
+                            "polarity": "UNCHANGED"
+                          }
+                        }
+                      ]
                     },
-                    "changes": {
-                      "delta": {
-                        "amount": 0
-                      },
-                      "impact": "NONE",
-                      "polarity": "UNCHANGED"
-                    }
-                  }
-                ]
-              },
-              {
-                "payment_history": [
-                  {
-                    "account_balance": {
-                      "amount": 0
+                    {
+                      "payment_history": [
+                        {
+                          "account_balance": {
+                            "amount": 0
+                          },
+                          "changes": {
+                            "delta": {
+                              "amount": 0
+                            },
+                            "impact": "NONE",
+                            "polarity": "UNCHANGED"
+                          }
+                        }
+                      ]
                     },
-                    "changes": {
-                      "delta": {
-                        "amount": 0
-                      },
-                      "impact": "NONE",
-                      "polarity": "UNCHANGED"
-                    }
-                  }
-                ]
-              },
-              {
-                "payment_history": [
-                  {
-                    "account_balance": {
-                      "amount": 0
+                    {
+                      "payment_history": [
+                        {
+                          "account_balance": {
+                            "amount": 0
+                          },
+                          "changes": {
+                            "delta": {
+                              "amount": 0
+                            },
+                            "impact": "NONE",
+                            "polarity": "UNCHANGED"
+                          }
+                        }
+                      ]
                     },
-                    "changes": {
-                      "delta": {
-                        "amount": 0
-                      },
-                      "impact": "NONE",
-                      "polarity": "UNCHANGED"
+                    {
+                      "payment_history": [
+                        {
+                          "account_balance": {
+                            "amount": 0
+                          },
+                          "changes": {
+                            "delta": {
+                              "amount": {-2}
+                            },
+                            "impact": "LOW",
+                            "polarity": "NEGATIVE"
+                          }
+                        }
+                      ]
                     }
-                  }
-                ]
-              },
-              {
-                "payment_history": [
-                  {
-                    "account_balance": {
-                      "amount": 0
-                    },
-                    "changes": {
-                      "delta": {
-                        "amount": {-2}
-                      },
-                      "impact": "LOW",
-                      "polarity": "NEGATIVE"
-                    }
-                  }
-                ]
+                  ]
+                }
               }
             ]
           }

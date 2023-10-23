@@ -48,43 +48,79 @@ mod tests {
     #[test]
     fn it_can_get_secured_loan_insights() {
         let query = r#"
-            query SecuredLoanInsights {
+        query SecuredLoanInsights {
+            reports {
+              report {
                 secured_loans {
-                    secured_loan {
-                        insights {
-                            active
-                            payment_analysis {
-                                made
-                                total
-                                remaining
-                            }
-                        }
+                  secured_loan {
+                    insights {
+                      active
+                      payment_analysis {
+                        made
+                        total
+                        remaining
+                      }
                     }
+                  }
                 }
+              }
             }
+          }
         "#;
 
         let expected = graphql_value!({
-            "secured_loans": {
-                "secured_loan": [
+            "reports": {
+                "report": [
                   {
-                    "insights": {
-                      "active": true,
-                      "payment_analysis": {
-                        "made": 15,
-                        "total": 300,
-                        "remaining": 285
-                      }
+                    "secured_loans": {
+                      "secured_loan": [
+                        {
+                          "insights": {
+                            "active": true,
+                            "payment_analysis": {
+                              "made": 15,
+                              "total": 300,
+                              "remaining": 285
+                            }
+                          }
+                        },
+                        {
+                          "insights": {
+                            "active": false,
+                            "payment_analysis": {
+                              "made": 48,
+                              "total": {juniper::Value::Null},
+                              "remaining": {juniper::Value::Null}
+                            }
+                          }
+                        }
+                      ]
                     }
                   },
                   {
-                    "insights": {
-                      "active": false,
-                      "payment_analysis": {
-                        "made": 48,
-                        "total": {juniper::Value::Null},
-                        "remaining": {juniper::Value::Null}
-                      }
+                    "secured_loans": {
+                      "secured_loan": [
+                        {
+                          "insights": {
+                            "active": true,
+                            "payment_analysis": {
+                              "made": 15,
+                              "total": 300,
+                              "remaining": 285
+                            }
+                          }
+                        },
+                        {
+                          "insights": {
+                            "active": false,
+                            "payment_analysis": {
+                              "made": 48,
+                              "total": {juniper::Value::Null},
+                              "remaining": {juniper::Value::Null}
+                            }
+                          }
+                        }
+                      ]
                     }
                   }
                 ]

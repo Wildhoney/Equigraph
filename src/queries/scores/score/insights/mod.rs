@@ -28,32 +28,48 @@ mod tests {
     #[test]
     fn it_can_compute_sentiment() {
         let query = r#"
-            query Score {
-                scores {
-                  score(select: ALL, kind: PSOLF01) {
-                    insights {
-                      sentiment
-                    }
+        query Score {
+          reports {
+            report {
+              scores {
+                score(kind: PSOLF01) {
+                  insights {
+                    sentiment
                   }
                 }
               }
+            }
+          }
+        }
         "#;
 
         let expected = graphql_value!({
-            "scores": {
-                "score": [
-                  {
-                    "insights": {
-                      "sentiment": "HIGH"
+          "reports": {
+            "report": [
+              {
+                "scores": {
+                  "score": [
+                    {
+                      "insights": {
+                        "sentiment": "HIGH"
+                      }
                     }
-                  },
-                  {
-                    "insights": {
-                      "sentiment": "HIGH"
+                  ]
+                }
+              },
+              {
+                "scores": {
+                  "score": [
+                    {
+                      "insights": {
+                        "sentiment": "HIGH"
+                      }
                     }
-                  }
-                ]
+                  ]
+                }
               }
+            ]
+          }
         });
 
         assert_eq!(run_graphql_query(query, HashMap::new()), expected);

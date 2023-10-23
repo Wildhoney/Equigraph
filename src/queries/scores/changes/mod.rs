@@ -40,30 +40,46 @@ mod tests {
     #[test]
     fn it_can_display_changes() {
         let query = r#"
-            query Score {
-                scores {
-                  score(select: ALL, kind: PSOLF01) {
-                    changes(since: PREVIOUS) {
-                      impact
-                      delta
-                      impact
-                    }
+        query Score {
+          reports {
+            report {
+              scores {
+                score(kind: PSOLF01) {
+                  changes(since: PREVIOUS) {
+                    impact
+                    delta
+                    impact
                   }
                 }
               }
+            }
+          }
+        }
         "#;
 
         let expected = graphql_value!({
-          "scores": {
-            "score": [
+          "reports": {
+            "report": [
               {
-                "changes": {
-                  "impact": "HIGH",
-                  "delta": 448
+                "scores": {
+                  "score": [
+                    {
+                      "changes": {
+                        "impact": "HIGH",
+                        "delta": 448
+                      }
+                    }
+                  ]
                 }
               },
               {
-                "changes": {juniper::Value::Null}
+                "scores": {
+                  "score": [
+                    {
+                      "changes": {juniper::Value::Null}
+                    }
+                  ]
+                }
               }
             ]
           }

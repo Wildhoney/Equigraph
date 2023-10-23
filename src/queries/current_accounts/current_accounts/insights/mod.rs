@@ -24,20 +24,37 @@ mod tests {
     #[test]
     fn it_can_get_current_accounts_insights() {
         let query = r#"
-            query CurrentAccount {
+        query CurrentAccountsInsights {
+            reports {
+              report {
                 current_accounts {
-                    insights {
-                        count
-                    }
+                  insights {
+                    count
+                  }
                 }
+              }
             }
+          }
         "#;
 
         let expected = graphql_value!({
-            "current_accounts": {
-                "insights": {
-                  "count": 5
-                }
+            "reports": {
+                "report": [
+                  {
+                    "current_accounts": {
+                      "insights": {
+                        "count": 5
+                      }
+                    }
+                  },
+                  {
+                    "current_accounts": {
+                      "insights": {
+                        "count": 4
+                      }
+                    }
+                  }
+                ]
               }
         });
 
