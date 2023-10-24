@@ -189,3 +189,15 @@ impl PaymentAnalysis {
         Some(self.total)
     }
 }
+
+#[derive(Debug, PartialEq, Deserialize, GraphQLEnum, Clone)]
+pub enum CreditLimitChange {
+    #[serde(alias = "DECREASE")]
+    Decrease,
+    #[serde(alias = "INCREASE")]
+    Increase,
+    #[serde(alias = "NO_CHANGE")]
+    NoChange,
+    #[serde(alias = "UNKNOWN")]
+    Unknown,
+}
