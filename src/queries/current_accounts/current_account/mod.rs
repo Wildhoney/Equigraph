@@ -1,6 +1,5 @@
 use crate::{
     fields::{
-        insight_data::AccountNumber,
         matched_address::MatchedAddressField,
         payment_history::{PartitionPaymentHistory, PaymentHistoryField},
         AmountField, BalanceField, CreditLimitField, DateField, PaymentFrequencyField,
@@ -40,12 +39,6 @@ pub struct CurrentAccountField {
     pub payment_history: Vec<PaymentHistoryField>,
     #[serde(alias = "startDate")]
     pub start_date: DateField,
-}
-
-impl AccountNumber for CurrentAccountField {
-    fn get_account_number(&self) -> String {
-        self.account_number.to_owned()
-    }
 }
 
 #[juniper::graphql_object(context = Context)]

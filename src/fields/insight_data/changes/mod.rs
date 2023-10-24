@@ -2,7 +2,7 @@ mod utils;
 
 use self::utils::get_ids;
 use crate::{
-    fields::insight_data::{utils::get_insights_from_report, AccountNumber, InsightDataField},
+    fields::insight_data::{utils::get_insights_from_report, Insight, InsightDataField},
     objects::input::Since,
     parser::types::{Report, Reports},
 };
@@ -16,7 +16,7 @@ pub struct InsightChanges<'a, T> {
 
 impl<T> InsightChanges<'_, T>
 where
-    T: AccountNumber,
+    T: Insight,
 {
     pub fn new<'a>(
         since: Since,

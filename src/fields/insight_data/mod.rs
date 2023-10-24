@@ -25,6 +25,24 @@ pub struct InsightDataField {
     pub unsecured_loan: Vec<UnsecuredLoanField>,
 }
 
-pub trait AccountNumber {
+pub trait Insight {
     fn get_account_number(&self) -> String;
+}
+
+impl Insight for SecuredLoanField {
+    fn get_account_number(&self) -> String {
+        self.account_number.to_owned()
+    }
+}
+
+impl Insight for UnsecuredLoanField {
+    fn get_account_number(&self) -> String {
+        self.account_number.to_owned()
+    }
+}
+
+impl Insight for CurrentAccountField {
+    fn get_account_number(&self) -> String {
+        self.account_number.to_owned()
+    }
 }

@@ -1,5 +1,5 @@
 use crate::{
-    fields::insight_data::{utils::get_insights_from_report, AccountNumber, InsightDataField},
+    fields::insight_data::{utils::get_insights_from_report, Insight, InsightDataField},
     parser::types::Report,
 };
 use itertools::Itertools;
@@ -9,7 +9,7 @@ pub fn get_ids<'a, T>(
     map: &'a dyn Fn(&'a InsightDataField) -> &'a Vec<T>,
 ) -> Vec<String>
 where
-    T: AccountNumber,
+    T: Insight,
 {
     get_insights_from_report(compare_with_report, map)
         .iter()
