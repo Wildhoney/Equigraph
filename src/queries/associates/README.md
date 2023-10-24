@@ -2,19 +2,23 @@
 
 ```graphql
 query Associates {
-  associates {
-    insights {
-      count
-    }
-    associate(unique: true) {
-      name {
-        title
-      }
-      date_of_birth {
-        formatted(like: "%Y-%m-%d")
-        day
-        month
-        year
+  reports {
+    report {
+      associates {
+        insights {
+          count
+        }
+        associate(unique: true) {
+          name {
+            title
+          }
+          date_of_birth {
+            formatted(like: "%Y-%m-%d")
+            day
+            month
+            year
+          }
+        }
       }
     }
   }

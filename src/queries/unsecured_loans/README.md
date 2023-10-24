@@ -8,7 +8,6 @@ query UnsecuredLoans {
         unsecured_loan {
           account_number
           payment_frequency
-          flexible
           start_balance {
             amount
           }

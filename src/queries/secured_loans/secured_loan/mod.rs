@@ -90,7 +90,8 @@ impl SecuredLoanField {
         &self.loan_type
     }
 
-    pub fn flexible(&self) -> bool {
+    #[graphql(name = "is_flexible")]
+    pub fn is_flexible(&self) -> bool {
         self.flexible
     }
 
@@ -145,7 +146,7 @@ mod tests {
                   secured_loan {
                     account_number
                     payment_frequency
-                    flexible
+                    is_flexible
                     start_balance {
                       amount
                     }
@@ -177,7 +178,7 @@ mod tests {
                         {
                           "account_number": "kHbepkF0tHD7+oaFLYE/+XMUAuTp58af5EZrYeBtVjs=",
                           "payment_frequency": "MONTHLY",
-                          "flexible": false,
+                          "is_flexible": false,
                           "start_balance": {
                             "amount": 0
                           },
@@ -195,7 +196,7 @@ mod tests {
                         {
                           "account_number": "r9jjexGpGIiqxQJx1AODd+N2KFtABRCSglQNZ26UguE=",
                           "payment_frequency": "MONTHLY",
-                          "flexible": false,
+                          "is_flexible": false,
                           "start_balance": {
                             "amount": 0
                           },
@@ -221,7 +222,7 @@ mod tests {
                         {
                           "account_number": "kHbepkF0tHD7+oaFLYE/+XMUAuTp58af5EZrYeBtVjs=",
                           "payment_frequency": "MONTHLY",
-                          "flexible": false,
+                          "is_flexible": false,
                           "start_balance": {
                             "amount": 0
                           },
@@ -239,7 +240,7 @@ mod tests {
                         {
                           "account_number": "r9jjexGpGIiqxQJx1AODd+N2KFtABRCSglQNZ26UguE=",
                           "payment_frequency": "MONTHLY",
-                          "flexible": false,
+                          "is_flexible": false,
                           "start_balance": {
                             "amount": 0
                           },
