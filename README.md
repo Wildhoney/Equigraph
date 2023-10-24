@@ -6,6 +6,7 @@
 - [Associates](https://github.com/Wildhoney/Equigraph/tree/main/src/queries/associates)
 - [Current Accounts](https://github.com/Wildhoney/Equigraph/tree/main/src/queries/current_accounts)
 - [Secured Loans](https://github.com/Wildhoney/Equigraph/tree/main/src/queries/secured_loans)
+- [Unsecured Loans](https://github.com/Wildhoney/Equigraph/tree/main/src/queries/unsecured_loans)
 
 ## Variables
 

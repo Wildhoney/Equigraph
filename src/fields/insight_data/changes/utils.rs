@@ -1,5 +1,5 @@
 use crate::{
-    fields::insight_data::{utils::get_insights_from_report, Insight, InsightDataField},
+    fields::insight_data::{traits::Insight, utils::get_insights_from_report, InsightDataField},
     parser::types::Report,
 };
 use itertools::Itertools;

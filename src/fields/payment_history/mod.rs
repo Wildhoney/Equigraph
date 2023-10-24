@@ -1,5 +1,5 @@
 mod changes;
-mod utils;
+pub mod utils;
 
 use self::{changes::PaymentHistoryChanges, utils::select_payment_history};
 use super::{AmountField, BalanceField, PaymentStatusField};

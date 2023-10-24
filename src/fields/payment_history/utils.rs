@@ -1,5 +1,9 @@
 use super::PaymentHistoryField;
-use crate::{fields::insight_data::InsightKind, objects::input::Select, parser::types::Reports};
+use crate::{
+    fields::insight_data::{traits::Insights, InsightKind},
+    objects::input::Select,
+    parser::types::Reports,
+};
 use itertools::Itertools;
 use uuid::Uuid;
 
@@ -34,30 +38,9 @@ pub fn merge_payment_histories(reports: &Reports) -> Vec<PaymentHistory> {
                     let insight_data = &supplied_address_data.address_specific_data.insight_data;
 
                     vec![
-                        insight_data
-                            .current_account
-                            .iter()
-                            .map(|current_account| PaymentHistory {
-                                insight: InsightKind::CurrentAccount(&current_account),
-                                list: &current_account.payment_history,
-                            })
-                            .collect_vec(),
-                        insight_data
-                            .secured_loan
-                            .iter()
-                            .map(|secured_loan| PaymentHistory {
-                                insight: InsightKind::SecuredLoan(&secured_loan),
-                                list: &secured_loan.payment_history,
-                            })
-                            .collect_vec(),
-                        insight_data
-                            .unsecured_loan
-                            .iter()
-                            .map(|unsecured_loan| PaymentHistory {
-                                insight: InsightKind::UnsecuredLoan(&unsecured_loan),
-                                list: &unsecured_loan.payment_history,
-                            })
-                            .collect_vec(),
+                        insight_data.current_account.get_payment_histories(),
+                        insight_data.unsecured_loan.get_payment_histories(),
+                        insight_data.secured_loan.get_payment_histories(),
                     ]
                     .into_iter()
                     .flatten()

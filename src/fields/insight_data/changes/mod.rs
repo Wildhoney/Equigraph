@@ -1,8 +1,9 @@
 mod utils;
 
 use self::utils::get_ids;
+use super::traits::Insight;
 use crate::{
-    fields::insight_data::{utils::get_insights_from_report, Insight, InsightDataField},
+    fields::insight_data::{utils::get_insights_from_report, InsightDataField},
     objects::input::Since,
     parser::types::{Report, Reports},
 };
