@@ -14,13 +14,13 @@ pub fn get_polarity(kind: &InsightKind, lhs_score: u32, rhs_score: u32) -> Polar
             delta if delta < 0 => Polarity::Negative,
             _ => Polarity::Unchanged,
         },
-        InsightKind::SecuredLoan(_) | InsightKind::UnsecuredLoan(_) => {
-            match get_delta(lhs_score, rhs_score) {
-                delta if delta < 0 => Polarity::Positive,
-                delta if delta > 0 => Polarity::Negative,
-                _ => Polarity::Unchanged,
-            }
-        }
+        InsightKind::SecuredLoan(_)
+        | InsightKind::UnsecuredLoan(_)
+        | InsightKind::CreditCard(_) => match get_delta(lhs_score, rhs_score) {
+            delta if delta < 0 => Polarity::Positive,
+            delta if delta > 0 => Polarity::Negative,
+            _ => Polarity::Unchanged,
+        },
     }
 }
 
@@ -37,6 +37,11 @@ pub fn get_impact(kind: &InsightKind, lhs_score: u32, rhs_score: u32) -> Impact 
         },
         InsightKind::UnsecuredLoan(unsecured_loan) => match get_delta(lhs_score, rhs_score) {
             delta if delta < 0 && unsecured_loan.end_date.is_some() => Impact::High,
+            delta if delta < 0 || delta > 0 => Impact::Low,
+            _ => Impact::None,
+        },
+        InsightKind::CreditCard(credit_card) => match get_delta(lhs_score, rhs_score) {
+            delta if delta < 0 && credit_card.end_date.is_some() => Impact::High,
             delta if delta < 0 || delta > 0 => Impact::Low,
             _ => Impact::None,
         },

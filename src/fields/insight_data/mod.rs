@@ -16,6 +16,7 @@ pub enum InsightKind<'a> {
     CurrentAccount(&'a InsightField<CurrentAccount>),
     SecuredLoan(&'a InsightField<SecuredLoan>),
     UnsecuredLoan(&'a InsightField<UnsecuredLoan>),
+    CreditCard(&'a InsightField<CreditCard>),
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
@@ -26,8 +27,8 @@ pub struct InsightDataField {
     pub secured_loan: Vec<InsightField<SecuredLoan>>,
     #[serde(alias = "unsecuredLoan")]
     pub unsecured_loan: Vec<InsightField<UnsecuredLoan>>,
-    // #[serde(alias = "creditCard")]
-    // pub credit_card: Vec<CreditLimitField>,
+    #[serde(alias = "creditCard")]
+    pub credit_card: Vec<InsightField<CreditCard>>,
 }
 
 #[derive(Debug, PartialEq, Deserialize, Default)]

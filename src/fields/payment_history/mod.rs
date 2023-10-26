@@ -29,44 +29,47 @@ pub struct PaymentHistoryField {
 
 #[derive(Debug, PartialEq, Deserialize, Clone)]
 pub struct StatementField {
-    pub cash_advance_count: i32,
-    pub cash_advance_value: AmountField,
-    pub credit_limit_change: CreditLimitChange,
-    pub payment_amount: AmountField,
-    pub promotional_rate: bool,
-    pub statement_balance: BalanceField,
+    pub cash_advance_count: Option<i32>,
+    pub cash_advance_value: Option<AmountField>,
+    pub credit_limit_change: Option<CreditLimitChange>,
+    pub payment_amount: Option<AmountField>,
+    pub promotional_rate: Option<bool>,
+    pub statement_balance: Option<BalanceField>,
 }
 
 #[juniper::graphql_object(context = Context)]
 impl StatementField {
     #[graphql(name = "cash_advance_count")]
-    pub fn cash_advance_count(&self) -> i32 {
+    pub fn cash_advance_count(&self) -> Option<i32> {
         self.cash_advance_count
     }
 
     #[graphql(name = "cash_advance_value")]
-    pub fn cash_advance_value(&self) -> &AmountField {
+    pub fn cash_advance_value(&self) -> &Option<AmountField> {
         &self.cash_advance_value
     }
 
     #[graphql(name = "credit_limit_change")]
-    pub fn credit_limit_change(&self) -> &CreditLimitChange {
+    pub fn credit_limit_change(&self) -> &Option<CreditLimitChange> {
         &self.credit_limit_change
     }
 
     #[graphql(name = "payment_amount")]
-    pub fn payment_amount(&self) -> &AmountField {
+    pub fn payment_amount(&self) -> &Option<AmountField> {
         &self.payment_amount
     }
 
     #[graphql(name = "is_promotional_rate")]
-    pub fn is_promotional_rate(&self) -> bool {
+    pub fn is_promotional_rate(&self) -> Option<bool> {
         self.promotional_rate
     }
 
     #[graphql(name = "statement_balance")]
-    pub fn statement_balance(&self) -> &AmountField {
-        &self.statement_balance.balance_amount
+    pub fn statement_balance(&self) -> Option<&AmountField> {
+        match &self.statement_balance {
+            Some(balance) => Some(&balance.balance_amount),
+            _ => None,
+        }
     }
 }
 

@@ -3,7 +3,7 @@ use crate::{
         insight_data::utils::get_insights_from_report, NonAddressSpecificDataField, SoleSearchField,
     },
     queries::{
-        associates::associates::AssociatesField,
+        associates::associates::AssociatesField, credit_cards::credit_cards::CreditCards,
         current_accounts::current_accounts::CurrentAccounts, scores::scores::ScoresField,
         secured_loans::secured_loans::SecuredLoans,
         unsecured_loans::unsecured_loans::UnsecuredLoans,
@@ -56,6 +56,14 @@ impl ReportField {
         Ok(UnsecuredLoans {
             report: &self,
             items: get_insights_from_report(self, &|insight_data| &insight_data.unsecured_loan),
+        })
+    }
+
+    #[graphql(name = "credit_cards")]
+    pub fn credit_cards(&self) -> FieldResult<CreditCards> {
+        Ok(CreditCards {
+            report: &self,
+            items: get_insights_from_report(self, &|insight_data| &insight_data.credit_card),
         })
     }
 }
