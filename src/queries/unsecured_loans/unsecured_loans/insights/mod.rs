@@ -1,15 +1,16 @@
-use crate::queries::unsecured_loans::unsecured_loan::UnsecuredLoanField;
 use juniper::GraphQLObject;
 
+use crate::fields::insight_data::{InsightField, UnsecuredLoan};
+
 #[derive(Debug, PartialEq, GraphQLObject)]
-#[graphql(description = "")]
-pub struct UnsecuredLoansInsights {
+#[graphql(name = "UnsecuredLoansInsights", description = "")]
+pub struct Insights {
     pub count: i32,
 }
 
-impl UnsecuredLoansInsights {
-    pub fn new(insight: Vec<&UnsecuredLoanField>) -> Self {
-        UnsecuredLoansInsights {
+impl Insights {
+    pub fn new(insight: Vec<&InsightField<UnsecuredLoan>>) -> Self {
+        Insights {
             count: insight.len() as i32,
         }
     }
@@ -24,7 +25,7 @@ mod tests {
     #[test]
     fn it_can_get_unsecured_loans_insights() {
         let query = r#"
-        query UnsecuredLoansInsights {
+        query Insights {
             reports {
               report {
                 unsecured_loans {

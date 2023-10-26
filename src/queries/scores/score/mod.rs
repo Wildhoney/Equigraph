@@ -1,8 +1,8 @@
 mod insights;
 pub mod utils;
 
-use self::{insights::ScoresInsights, utils::get_maximum_score};
-use super::changes::ScoresChanges;
+use self::{insights::Insights, utils::get_maximum_score};
+use super::changes::Changes;
 use crate::{objects::input::Since, schema::Context, utils::unique_id};
 use juniper::GraphQLEnum;
 use serde::Deserialize;
@@ -40,11 +40,11 @@ impl ScoreField {
         get_maximum_score(&self.score_label)
     }
 
-    pub fn changes(&self, since: Since, context: &Context) -> Option<ScoresChanges> {
-        ScoresChanges::new(&context, since, &self)
+    pub fn changes(&self, since: Since, context: &Context) -> Option<Changes> {
+        Changes::new(&context, since, &self)
     }
 
-    pub fn insights(&self) -> ScoresInsights {
-        ScoresInsights::new(&self)
+    pub fn insights(&self) -> Insights {
+        Insights::new(&self)
     }
 }

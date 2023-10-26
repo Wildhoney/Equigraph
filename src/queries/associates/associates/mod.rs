@@ -1,6 +1,6 @@
 mod insights;
 
-use self::insights::AssociatesInsights;
+use self::insights::Insights;
 use super::associate::AssociateField;
 use crate::schema::Context;
 use serde::Deserialize;
@@ -16,7 +16,7 @@ impl AssociatesField {
         &self.associate
     }
 
-    pub fn insights(&self) -> AssociatesInsights {
-        AssociatesInsights::new(self.associate.clone())
+    pub fn insights(&self) -> Insights {
+        Insights::new(self.associate.clone())
     }
 }

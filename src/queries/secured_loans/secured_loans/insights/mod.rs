@@ -1,15 +1,15 @@
-use crate::queries::secured_loans::secured_loan::SecuredLoanField;
+use crate::fields::insight_data::{InsightField, SecuredLoan};
 use juniper::GraphQLObject;
 
 #[derive(Debug, PartialEq, GraphQLObject)]
-#[graphql(description = "")]
-pub struct SecuredLoansInsights {
+#[graphql(name = "SecuredLoansInsights", description = "")]
+pub struct Insights {
     pub count: i32,
 }
 
-impl SecuredLoansInsights {
-    pub fn new(insight: Vec<&SecuredLoanField>) -> Self {
-        SecuredLoansInsights {
+impl Insights {
+    pub fn new(insight: Vec<&InsightField<SecuredLoan>>) -> Self {
+        Insights {
             count: insight.len() as i32,
         }
     }
@@ -24,7 +24,7 @@ mod tests {
     #[test]
     fn it_can_get_secured_loans_insights() {
         let query = r#"
-        query SecuredLoansInsights {
+        query Insights {
             reports {
               report {
                 secured_loans {

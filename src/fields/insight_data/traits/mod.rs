@@ -1,19 +1,12 @@
-use super::InsightKind;
-use crate::{
-    fields::payment_history::utils::PaymentHistory,
-    queries::{
-        current_accounts::current_account::CurrentAccountField,
-        secured_loans::secured_loan::SecuredLoanField,
-        unsecured_loans::unsecured_loan::UnsecuredLoanField,
-    },
-};
+use super::{CurrentAccount, InsightField, InsightKind, SecuredLoan, UnsecuredLoan};
+use crate::fields::payment_history::utils::PaymentHistory;
 use itertools::Itertools;
 
 pub trait Insights {
     fn get_payment_histories(&self) -> Vec<PaymentHistory>;
 }
 
-impl Insights for Vec<CurrentAccountField> {
+impl Insights for Vec<InsightField<CurrentAccount>> {
     fn get_payment_histories(&self) -> Vec<PaymentHistory> {
         self.iter()
             .map(|current_account| PaymentHistory {
@@ -24,7 +17,7 @@ impl Insights for Vec<CurrentAccountField> {
     }
 }
 
-impl Insights for Vec<SecuredLoanField> {
+impl Insights for Vec<InsightField<SecuredLoan>> {
     fn get_payment_histories(&self) -> Vec<PaymentHistory> {
         self.iter()
             .map(|secured_loan| PaymentHistory {
@@ -35,7 +28,7 @@ impl Insights for Vec<SecuredLoanField> {
     }
 }
 
-impl Insights for Vec<UnsecuredLoanField> {
+impl Insights for Vec<InsightField<UnsecuredLoan>> {
     fn get_payment_histories(&self) -> Vec<PaymentHistory> {
         self.iter()
             .map(|unsecured_loan| PaymentHistory {
@@ -50,19 +43,19 @@ pub trait Insight {
     fn get_account_number(&self) -> String;
 }
 
-impl Insight for SecuredLoanField {
+impl Insight for InsightField<SecuredLoan> {
     fn get_account_number(&self) -> String {
         self.account_number.to_owned()
     }
 }
 
-impl Insight for UnsecuredLoanField {
+impl Insight for InsightField<UnsecuredLoan> {
     fn get_account_number(&self) -> String {
         self.account_number.to_owned()
     }
 }
 
-impl Insight for CurrentAccountField {
+impl Insight for InsightField<CurrentAccount> {
     fn get_account_number(&self) -> String {
         self.account_number.to_owned()
     }

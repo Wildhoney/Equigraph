@@ -2,14 +2,14 @@ use crate::queries::associates::associate::AssociateField;
 use juniper::GraphQLObject;
 
 #[derive(Debug, PartialEq, GraphQLObject)]
-#[graphql(description = "")]
-pub struct AssociatesInsights {
+#[graphql(name = "AssociatesInsights", description = "")]
+pub struct Insights {
     pub count: i32,
 }
 
-impl AssociatesInsights {
+impl Insights {
     pub fn new(associates: Vec<AssociateField>) -> Self {
-        AssociatesInsights {
+        Insights {
             count: associates.len() as i32,
         }
     }
@@ -24,7 +24,7 @@ mod tests {
     #[test]
     fn it_can_get_associates_insights() {
         let query = r#"
-        query AssociatesInsights {
+        query Insights {
             reports {
               report {
                 associates {

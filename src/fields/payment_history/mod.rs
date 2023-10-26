@@ -1,7 +1,7 @@
 mod changes;
 pub mod utils;
 
-use self::{changes::PaymentHistoryChanges, utils::select_payment_history};
+use self::{changes::Changes, utils::select_payment_history};
 use super::{AmountField, BalanceField, PaymentStatusField};
 use crate::{
     objects::{
@@ -101,8 +101,8 @@ impl PaymentHistoryField {
         &self.statement
     }
 
-    pub fn changes(&self, context: &Context, since: Since) -> Option<PaymentHistoryChanges> {
-        PaymentHistoryChanges::new(
+    pub fn changes(&self, context: &Context, since: Since) -> Option<Changes> {
+        Changes::new(
             since,
             self.id,
             &self.account_balance.balance_amount,

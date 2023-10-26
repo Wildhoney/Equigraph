@@ -1,22 +1,26 @@
-use super::SecuredLoanField;
 use crate::{
-    fields::DateField, objects::output::PaymentAnalysis, schema::Context,
+    fields::{
+        insight_data::{InsightField, SecuredLoan},
+        DateField,
+    },
+    objects::output::PaymentAnalysis,
+    schema::Context,
     utils::compute_scheduled_end_date,
 };
 
 #[derive(Debug, PartialEq)]
-pub struct SecuredLoanInsights {
-    pub insight: SecuredLoanField,
+pub struct Insights<'a> {
+    pub insight: &'a InsightField<SecuredLoan>,
 }
 
-impl SecuredLoanInsights {
-    pub fn new(insight: SecuredLoanField) -> Self {
-        SecuredLoanInsights { insight }
+impl Insights<'_> {
+    pub fn new<'a>(insight: &'a InsightField<SecuredLoan>) -> Insights<'a> {
+        Insights { insight }
     }
 }
 
-#[juniper::graphql_object(context = Context)]
-impl SecuredLoanInsights {
+#[juniper::graphql_object(name = "SecuredLoanInsights", context = Context)]
+impl Insights<'_> {
     pub fn active(&self) -> bool {
         self.insight.end_date.is_none()
     }
@@ -24,7 +28,11 @@ impl SecuredLoanInsights {
     #[graphql(name = "current_end_date")]
     pub fn current_end_date(&self) -> Option<DateField> {
         compute_scheduled_end_date(
-            self.insight.fixed_payment_terms.number_of_payments,
+            self.insight
+                .fixed_payment_terms
+                .as_ref()
+                .unwrap()
+                .number_of_payments,
             &self.insight.payment_frequency,
         )
     }
@@ -33,7 +41,12 @@ impl SecuredLoanInsights {
     pub fn payment_analysis(&self) -> PaymentAnalysis {
         PaymentAnalysis {
             active: self.insight.end_date.is_none(),
-            total: self.insight.fixed_payment_terms.number_of_payments,
+            total: self
+                .insight
+                .fixed_payment_terms
+                .as_ref()
+                .unwrap()
+                .number_of_payments,
             payments: self.insight.payment_history.len() as i32,
         }
     }
@@ -48,7 +61,7 @@ mod tests {
     #[test]
     fn it_can_get_secured_loan_insights() {
         let query = r#"
-        query SecuredLoanInsights {
+        query Insights {
             reports {
               report {
                 secured_loans {

@@ -1,36 +1,36 @@
 mod insights;
 
-use juniper::FieldResult;
-
-use self::insights::UnsecuredLoansInsights;
-use super::unsecured_loan::UnsecuredLoanField;
+use self::insights::Insights;
 use crate::{
-    fields::insight_data::changes::InsightChanges, objects::input::Since,
-    queries::reports::report::ReportField, schema::Context,
+    fields::insight_data::{changes::Changes, InsightField, UnsecuredLoan},
+    objects::input::Since,
+    queries::reports::report::ReportField,
+    schema::Context,
 };
+use juniper::FieldResult;
 
 pub struct UnsecuredLoans<'a> {
     pub report: &'a ReportField,
-    pub items: Vec<&'a UnsecuredLoanField>,
+    pub items: Vec<&'a InsightField<UnsecuredLoan>>,
 }
 
 #[juniper::graphql_object(context = Context)]
 impl UnsecuredLoans<'_> {
     #[graphql(name = "unsecured_loan")]
-    pub fn unsecured_loan() -> &Vec<&UnsecuredLoanField> {
+    pub fn unsecured_loan() -> &Vec<&InsightField<UnsecuredLoan>> {
         &self.items
     }
 
-    pub fn insights() -> UnsecuredLoansInsights {
-        UnsecuredLoansInsights::new(self.items.clone())
+    pub fn insights() -> Insights {
+        Insights::new(self.items.clone())
     }
 
     pub fn changes(
         &self,
         since: Since,
         context: &Context,
-    ) -> FieldResult<Option<InsightChanges<UnsecuredLoanField>>> {
-        Ok(InsightChanges::new(
+    ) -> FieldResult<Option<Changes<InsightField<UnsecuredLoan>>>> {
+        Ok(Changes::new(
             since,
             self.report,
             &context.reports,
@@ -40,12 +40,12 @@ impl UnsecuredLoans<'_> {
 }
 
 #[juniper::graphql_object(context = Context)]
-impl InsightChanges<'_, UnsecuredLoanField> {
-    pub fn added(&self) -> &Vec<&UnsecuredLoanField> {
+impl Changes<'_, InsightField<UnsecuredLoan>> {
+    pub fn added(&self) -> &Vec<&InsightField<UnsecuredLoan>> {
         &self.added
     }
 
-    pub fn removed(&self) -> &Vec<&UnsecuredLoanField> {
+    pub fn removed(&self) -> &Vec<&InsightField<UnsecuredLoan>> {
         &self.removed
     }
 }

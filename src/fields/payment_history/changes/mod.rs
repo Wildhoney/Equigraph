@@ -13,20 +13,20 @@ use crate::{
 };
 use uuid::Uuid;
 
-pub struct PaymentHistoryChanges<'a> {
+pub struct Changes<'a> {
     pub kind: InsightKind<'a>,
     pub currency: &'a str,
     pub amount: u32,
     pub compare_with_amount: u32,
 }
 
-impl PaymentHistoryChanges<'_> {
+impl Changes<'_> {
     pub fn new<'a>(
         since: Since,
         id: Uuid,
         amount: &'a AmountField,
         reports: &'a Reports,
-    ) -> Option<PaymentHistoryChanges<'a>> {
+    ) -> Option<Changes<'a>> {
         let payment_histories = get_payment_history_by_id(id, reports)?;
         let current_index = payment_histories
             .list
@@ -47,7 +47,7 @@ impl PaymentHistoryChanges<'_> {
             .balance_amount
             .amount as u32;
 
-        Some(PaymentHistoryChanges {
+        Some(Changes {
             kind: payment_histories.insight,
             amount: amount.amount as u32,
             compare_with_amount,
@@ -56,8 +56,8 @@ impl PaymentHistoryChanges<'_> {
     }
 }
 
-#[juniper::graphql_object(context = Context)]
-impl PaymentHistoryChanges<'_> {
+#[juniper::graphql_object(name = "PaymentHistoryChanges", context = Context)]
+impl Changes<'_> {
     pub fn delta(&self) -> AmountField {
         let amount = get_delta(self.amount, self.compare_with_amount);
 

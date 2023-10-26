@@ -6,14 +6,14 @@ use crate::objects::output::Sentiment;
 use juniper::GraphQLObject;
 
 #[derive(Debug, PartialEq, GraphQLObject)]
-#[graphql(description = "")]
-pub struct ScoresInsights {
+#[graphql(name = "ScoreInsights", description = "")]
+pub struct Insights {
     pub sentiment: Option<Sentiment>,
 }
 
-impl ScoresInsights {
+impl Insights {
     pub fn new(score: &ScoreField) -> Self {
-        ScoresInsights {
+        Insights {
             sentiment: get_sentiment(score.value, get_maximum_score(&score.score_label)),
         }
     }

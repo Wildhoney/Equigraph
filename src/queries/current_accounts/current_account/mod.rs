@@ -1,48 +1,17 @@
 use crate::{
     fields::{
+        insight_data::{CurrentAccount, InsightField},
         matched_address::MatchedAddressField,
         payment_history::{PartitionPaymentHistory, PaymentHistoryField},
-        AmountField, BalanceField, CreditLimitField, DateField, PaymentFrequencyField,
+        AmountField, DateField, PaymentFrequencyField,
     },
-    objects::{
-        input::Select,
-        output::{Company, CompanyClass},
-    },
+    objects::{input::Select, output::Company},
     schema::Context,
-    utils::{find_address_by_id, unique_id},
+    utils::find_address_by_id,
 };
-use serde::Deserialize;
-use uuid::Uuid;
 
-#[derive(Debug, PartialEq, Deserialize, Clone)]
-pub struct CurrentAccountField {
-    #[serde(default = "unique_id")]
-    pub id: Uuid,
-    #[serde(alias = "accountNumber")]
-    pub account_number: String,
-    #[serde(alias = "currentBalance")]
-    pub current_balance: BalanceField,
-    #[serde(alias = "creditLimit")]
-    pub credit_limit: Option<CreditLimitField>,
-    #[serde(alias = "defaultBalance")]
-    pub default_balance: BalanceField,
-    #[serde(alias = "startBalance")]
-    pub start_balance: BalanceField,
-    pub overdraft: bool,
-    #[serde(alias = "paymentFrequency")]
-    pub payment_frequency: PaymentFrequencyField,
-    #[serde(alias = "companyName")]
-    pub company_name: String,
-    #[serde(alias = "companyClass")]
-    pub company_class: CompanyClass,
-    #[serde(alias = "paymentHistory")]
-    pub payment_history: Vec<PaymentHistoryField>,
-    #[serde(alias = "startDate")]
-    pub start_date: DateField,
-}
-
-#[juniper::graphql_object(context = Context)]
-impl CurrentAccountField {
+#[juniper::graphql_object(name = "CurrentAccount", context = Context)]
+impl InsightField<CurrentAccount> {
     #[graphql(name = "account_number")]
     pub fn account_number(&self) -> &String {
         &self.account_number
@@ -57,7 +26,7 @@ impl CurrentAccountField {
 
     #[graphql(name = "has_overdraft")]
     pub fn has_overdraft(&self) -> &bool {
-        &self.overdraft
+        self.overdraft.as_ref().unwrap()
     }
 
     #[graphql(name = "current_balance")]

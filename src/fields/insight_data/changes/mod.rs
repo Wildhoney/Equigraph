@@ -10,12 +10,12 @@ use crate::{
 use itertools::Itertools;
 
 #[derive(Debug, PartialEq)]
-pub struct InsightChanges<'a, T> {
+pub struct Changes<'a, T> {
     pub added: Vec<&'a T>,
     pub removed: Vec<&'a T>,
 }
 
-impl<T> InsightChanges<'_, T>
+impl<T> Changes<'_, T>
 where
     T: Insight,
 {
@@ -24,7 +24,7 @@ where
         report: &'a Report,
         reports: &'a Reports,
         map: &'a dyn Fn(&'a InsightDataField) -> &'a Vec<T>,
-    ) -> Option<InsightChanges<'a, T>> {
+    ) -> Option<Changes<'a, T>> {
         let current_index = reports.iter().position(|report| report.id == report.id);
 
         let compare_with_report = match (since, current_index) {
@@ -54,7 +54,7 @@ where
                     .filter(|item| !report_ids.iter().contains(&&item.get_account_number()))
                     .collect_vec();
 
-                Some(InsightChanges { added, removed })
+                Some(Changes { added, removed })
             }
             _ => None,
         }

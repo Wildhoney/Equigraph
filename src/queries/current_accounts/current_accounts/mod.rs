@@ -1,35 +1,36 @@
 mod insights;
 
-use self::insights::CurrentAccountsInsights;
-use super::current_account::CurrentAccountField;
+use self::insights::Insights;
 use crate::{
-    fields::insight_data::changes::InsightChanges, objects::input::Since,
-    queries::reports::report::ReportField, schema::Context,
+    fields::insight_data::{changes::Changes, CurrentAccount, InsightField},
+    objects::input::Since,
+    queries::reports::report::ReportField,
+    schema::Context,
 };
 use juniper::FieldResult;
 
 pub struct CurrentAccounts<'a> {
     pub report: &'a ReportField,
-    pub items: Vec<&'a CurrentAccountField>,
+    pub items: Vec<&'a InsightField<CurrentAccount>>,
 }
 
 #[juniper::graphql_object(context = Context)]
 impl CurrentAccounts<'_> {
     #[graphql(name = "current_account")]
-    pub fn current_account() -> &Vec<&CurrentAccountField> {
+    pub fn current_account() -> &Vec<&InsightField<CurrentAccount>> {
         &self.items
     }
 
-    pub fn insights() -> FieldResult<CurrentAccountsInsights> {
-        Ok(CurrentAccountsInsights::new(&self.items))
+    pub fn insights() -> FieldResult<Insights> {
+        Ok(Insights::new(&self.items))
     }
 
     pub fn changes(
         &self,
         since: Since,
         context: &Context,
-    ) -> FieldResult<Option<InsightChanges<CurrentAccountField>>> {
-        Ok(InsightChanges::new(
+    ) -> FieldResult<Option<Changes<InsightField<CurrentAccount>>>> {
+        Ok(Changes::new(
             since,
             self.report,
             &context.reports,
@@ -39,12 +40,12 @@ impl CurrentAccounts<'_> {
 }
 
 #[juniper::graphql_object(context = Context)]
-impl InsightChanges<'_, CurrentAccountField> {
-    pub fn added(&self) -> &Vec<&CurrentAccountField> {
+impl Changes<'_, InsightField<CurrentAccount>> {
+    pub fn added(&self) -> &Vec<&InsightField<CurrentAccount>> {
         &self.added
     }
 
-    pub fn removed(&self) -> &Vec<&CurrentAccountField> {
+    pub fn removed(&self) -> &Vec<&InsightField<CurrentAccount>> {
         &self.removed
     }
 }

@@ -12,18 +12,18 @@ use crate::{
 use juniper::GraphQLObject;
 
 #[derive(Debug, PartialEq, GraphQLObject)]
-#[graphql(description = "")]
-pub struct ScoresChanges {
+#[graphql(name = "ScoresChanges", description = "")]
+pub struct Changes {
     pub delta: i32,
     pub impact: Impact,
     pub polarity: Polarity,
 }
 
-impl ScoresChanges {
+impl Changes {
     pub fn new(context: &Context, since: Since, score: &ScoreField) -> Option<Self> {
         let compare_with_score = find_score_by_id_and_since(since, &score.id, &context.reports)?;
 
-        Some(ScoresChanges {
+        Some(Changes {
             delta: get_delta(score.value, compare_with_score),
             impact: get_impact(score.value, compare_with_score),
             polarity: get_polarity(score.value, compare_with_score),

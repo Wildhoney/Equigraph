@@ -1,58 +1,20 @@
 mod insights;
 
-use self::insights::SecuredLoanInsights;
+use self::insights::Insights;
 use crate::{
     fields::{
+        insight_data::{InsightField, SecuredLoan},
         matched_address::MatchedAddressField,
         payment_history::{PartitionPaymentHistory, PaymentHistoryField},
-        AmountField, BalanceField, DateField, FixedPaymentTermsField, LoanTypeField,
-        PaymentFrequencyField,
+        AmountField, DateField, FixedPaymentTermsField, LoanTypeField, PaymentFrequencyField,
     },
-    objects::{
-        input::Select,
-        output::{Company, CompanyClass},
-    },
+    objects::{input::Select, output::Company},
     schema::Context,
-    utils::{find_address_by_id, unique_id},
+    utils::find_address_by_id,
 };
-use serde::Deserialize;
-use uuid::Uuid;
 
-#[derive(Debug, PartialEq, Deserialize, Clone)]
-pub struct SecuredLoanField {
-    #[serde(default = "unique_id")]
-    pub id: Uuid,
-    #[serde(alias = "accountNumber")]
-    pub account_number: String,
-    #[serde(alias = "currentBalance")]
-    pub current_balance: BalanceField,
-    #[serde(alias = "defaultBalance")]
-    pub default_balance: BalanceField,
-    #[serde(alias = "startBalance")]
-    pub start_balance: BalanceField,
-    #[serde(alias = "paymentHistory")]
-    pub payment_history: Vec<PaymentHistoryField>,
-    #[serde(alias = "loanType")]
-    pub loan_type: LoanTypeField,
-    #[serde(alias = "startDate")]
-    pub start_date: DateField,
-    #[serde(alias = "lastUpdateDate")]
-    pub last_update_date: DateField,
-    #[serde(alias = "endDate")]
-    pub end_date: Option<DateField>,
-    #[serde(alias = "paymentFrequency")]
-    pub payment_frequency: PaymentFrequencyField,
-    #[serde(alias = "companyName")]
-    pub company_name: String,
-    #[serde(alias = "companyClass")]
-    pub company_class: CompanyClass,
-    pub flexible: bool,
-    #[serde(alias = "fixedPaymentTerms")]
-    pub fixed_payment_terms: FixedPaymentTermsField,
-}
-
-#[juniper::graphql_object(context = Context)]
-impl SecuredLoanField {
+#[juniper::graphql_object(name = "SecuredLoan", context = Context)]
+impl InsightField<SecuredLoan> {
     #[graphql(name = "account_number")]
     pub fn account_number(&self) -> &String {
         &self.account_number
@@ -87,12 +49,12 @@ impl SecuredLoanField {
 
     #[graphql(name = "loan_type")]
     pub fn loan_type(&self) -> &LoanTypeField {
-        &self.loan_type
+        self.loan_type.as_ref().unwrap()
     }
 
     #[graphql(name = "is_flexible")]
-    pub fn is_flexible(&self) -> bool {
-        self.flexible
+    pub fn is_flexible(&self) -> &bool {
+        self.flexible.as_ref().unwrap()
     }
 
     #[graphql(name = "start_date")]
@@ -112,7 +74,7 @@ impl SecuredLoanField {
 
     #[graphql(name = "fixed_payment_terms")]
     pub fn fixed_payment_terms(&self) -> &FixedPaymentTermsField {
-        &self.fixed_payment_terms
+        self.fixed_payment_terms.as_ref().unwrap()
     }
 
     pub fn address(&self, context: &Context) -> Option<&MatchedAddressField> {
@@ -120,8 +82,8 @@ impl SecuredLoanField {
         Some(&address.matched_address)
     }
 
-    pub fn insights(&self) -> SecuredLoanInsights {
-        SecuredLoanInsights::new(self.clone())
+    pub fn insights(&self) -> Insights {
+        Insights::new(self)
     }
 
     #[graphql(name = "payment_history")]

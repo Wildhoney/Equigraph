@@ -1,15 +1,15 @@
-use crate::queries::current_accounts::current_account::CurrentAccountField;
+use crate::fields::insight_data::{CurrentAccount, InsightField};
 use juniper::GraphQLObject;
 
 #[derive(Debug, PartialEq, GraphQLObject)]
-#[graphql(description = "")]
-pub struct CurrentAccountsInsights {
+#[graphql(name = "CurrentAccountsInsights", description = "")]
+pub struct Insights {
     pub count: i32,
 }
 
-impl CurrentAccountsInsights {
-    pub fn new(items: &Vec<&CurrentAccountField>) -> Self {
-        CurrentAccountsInsights {
+impl Insights {
+    pub fn new(items: &Vec<&InsightField<CurrentAccount>>) -> Self {
+        Insights {
             count: items.len() as i32,
         }
     }
