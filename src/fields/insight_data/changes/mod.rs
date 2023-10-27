@@ -35,6 +35,7 @@ where
             _ => return None,
         };
 
+        // TODO: Refactor to use traits.
         match compare_with_report {
             Some(compare_with_report) => {
                 let report_ids = get_ids(&report, map);
