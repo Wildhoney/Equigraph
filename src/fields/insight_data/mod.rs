@@ -3,6 +3,7 @@ pub mod traits;
 pub mod utils;
 
 use crate::{objects::output::CompanyClass, utils::unique_id};
+use itertools::Itertools;
 use serde::Deserialize;
 use uuid::Uuid;
 
@@ -12,11 +13,22 @@ use super::{
 };
 
 #[derive(Debug)]
-pub enum InsightKind<'a> {
+pub enum InsightVariant<'a> {
     CurrentAccount(&'a InsightField<CurrentAccount>),
     SecuredLoan(&'a InsightField<SecuredLoan>),
     UnsecuredLoan(&'a InsightField<UnsecuredLoan>),
     CreditCard(&'a InsightField<CreditCard>),
+}
+
+impl InsightVariant<'_> {
+    pub fn get_payment_history(&self) -> &Vec<PaymentHistoryField> {
+        match self {
+            InsightVariant::CurrentAccount(item) => &item.payment_history,
+            InsightVariant::SecuredLoan(item) => &item.payment_history,
+            InsightVariant::UnsecuredLoan(item) => &item.payment_history,
+            InsightVariant::CreditCard(item) => &item.payment_history,
+        }
+    }
 }
 
 #[derive(Debug, PartialEq, Deserialize)]
@@ -29,6 +41,36 @@ pub struct InsightDataField {
     pub unsecured_loan: Vec<InsightField<UnsecuredLoan>>,
     #[serde(alias = "creditCard")]
     pub credit_card: Vec<InsightField<CreditCard>>,
+}
+
+pub trait InsightsTrait {
+    fn get_insights(&self) -> Vec<InsightVariant>;
+}
+
+impl InsightsTrait for InsightDataField {
+    fn get_insights(&self) -> Vec<InsightVariant> {
+        vec![
+            self.secured_loan
+                .iter()
+                .map(|item| InsightVariant::SecuredLoan(item))
+                .collect_vec(),
+            self.unsecured_loan
+                .iter()
+                .map(|item| InsightVariant::UnsecuredLoan(item))
+                .collect_vec(),
+            self.current_account
+                .iter()
+                .map(|item| InsightVariant::CurrentAccount(item))
+                .collect_vec(),
+            self.credit_card
+                .iter()
+                .map(|item| InsightVariant::CreditCard(item))
+                .collect_vec(),
+        ]
+        .into_iter()
+        .flatten()
+        .collect_vec()
+    }
 }
 
 #[derive(Debug, PartialEq, Deserialize, Default)]
@@ -44,9 +86,9 @@ pub struct UnsecuredLoan;
 pub struct CreditCard;
 
 #[derive(Debug, PartialEq, Deserialize, Clone)]
-pub struct InsightField<Kind> {
+pub struct InsightField<InsightVariant> {
     #[serde(skip_deserializing, skip_serializing)]
-    kind: Kind,
+    insight_variant: InsightVariant,
     #[serde(default = "unique_id")]
     pub id: Uuid,
     #[serde(alias = "accountNumber")]
