@@ -14,13 +14,13 @@ pub fn get_polarity(insight_variant: &InsightVariant, lhs_score: u32, rhs_score:
             delta if delta < 0 => Polarity::Negative,
             _ => Polarity::Unchanged,
         },
-        InsightVariant::SecuredLoan(_) | InsightVariant::UnsecuredLoan(_) | InsightVariant::CreditCard(_) => {
-            match get_delta(lhs_score, rhs_score) {
-                delta if delta < 0 => Polarity::Positive,
-                delta if delta > 0 => Polarity::Negative,
-                _ => Polarity::Unchanged,
-            }
-        }
+        InsightVariant::SecuredLoan(_)
+        | InsightVariant::UnsecuredLoan(_)
+        | InsightVariant::CreditCard(_) => match get_delta(lhs_score, rhs_score) {
+            delta if delta < 0 => Polarity::Positive,
+            delta if delta > 0 => Polarity::Negative,
+            _ => Polarity::Unchanged,
+        },
     }
 }
 

@@ -1,5 +1,5 @@
 use crate::{
-    fields::insight_data::{InsightsTrait, InsightVariant},
+    fields::insight_data::{InsightVariant, InsightsTrait},
     queries::reports::report::ReportField,
 };
 use itertools::Itertools;
@@ -19,15 +19,13 @@ impl ReportsTrait for Reports {
     }
 
     fn find_insight_containing_payment_history(&self, id: Uuid) -> Option<InsightVariant> {
-        self.get_insights()
-            .into_iter()
-            .find_map(|insight| {
-                insight
-                    .get_payment_history()
-                    .iter()
-                    .any(|payment_history| (payment_history.id == id))
-                    .then(|| insight)
-            })
+        self.get_insights().into_iter().find_map(|insight| {
+            insight
+                .get_payment_history()
+                .iter()
+                .any(|payment_history| (payment_history.id == id))
+                .then(|| insight)
+        })
     }
 }
 

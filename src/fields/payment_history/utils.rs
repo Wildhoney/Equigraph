@@ -1,7 +1,5 @@
 use super::PaymentHistoryField;
-use crate::{
-    objects::input::Select,
-};
+use crate::objects::input::Select;
 
 pub fn select_payment_history(
     select: Select,
