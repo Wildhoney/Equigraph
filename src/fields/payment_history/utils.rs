@@ -41,6 +41,7 @@ pub fn merge_payment_histories(reports: &Reports) -> Vec<PaymentHistory> {
                         insight_data.current_account.get_payment_histories(),
                         insight_data.unsecured_loan.get_payment_histories(),
                         insight_data.secured_loan.get_payment_histories(),
+                        insight_data.credit_card.get_payment_histories(),
                     ]
                     .into_iter()
                     .flatten()
