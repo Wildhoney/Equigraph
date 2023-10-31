@@ -4,10 +4,10 @@ use self::insights::Insights;
 use crate::{
     fields::insight_data::{changes::Changes, InsightField, SecuredLoan},
     objects::input::Since,
+    parser::types::{ReportTrait, ReportsTrait},
     queries::reports::report::ReportField,
     schema::Context,
 };
-use juniper::FieldResult;
 
 pub struct SecuredLoans<'a> {
     pub report: &'a ReportField,
@@ -29,18 +29,19 @@ impl SecuredLoans<'_> {
         &self,
         since: Since,
         context: &Context,
-    ) -> FieldResult<Option<Changes<InsightField<SecuredLoan>>>> {
-        Ok(Changes::new(
-            since,
-            self.report,
-            &context.reports,
-            &|insight_data| &insight_data.secured_loan,
-        ))
+    ) -> Option<Changes<&InsightField<SecuredLoan>>> {
+        let secured_loans = self.report.get_secured_loans();
+        let compare_with_secured_loans = context
+            .reports
+            .since(&since, &self.report.id)?
+            .get_secured_loans();
+
+        Some(Changes::new(secured_loans, compare_with_secured_loans))
     }
 }
 
 #[juniper::graphql_object(context = Context)]
-impl Changes<'_, InsightField<SecuredLoan>> {
+impl Changes<&InsightField<SecuredLoan>> {
     pub fn added(&self) -> &Vec<&InsightField<SecuredLoan>> {
         &self.added
     }

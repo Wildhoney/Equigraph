@@ -1,10 +1,10 @@
 use crate::{
     fields::insight_data::{changes::Changes, CreditCard, InsightField},
     objects::input::Since,
+    parser::types::{ReportTrait, ReportsTrait},
     queries::reports::report::ReportField,
     schema::Context,
 };
-use juniper::FieldResult;
 
 pub struct CreditCards<'a> {
     pub report: &'a ReportField,
@@ -22,18 +22,19 @@ impl CreditCards<'_> {
         &self,
         since: Since,
         context: &Context,
-    ) -> FieldResult<Option<Changes<InsightField<CreditCard>>>> {
-        Ok(Changes::new(
-            since,
-            self.report,
-            &context.reports,
-            &|insight_data| &insight_data.credit_card,
-        ))
+    ) -> Option<Changes<&InsightField<CreditCard>>> {
+        let credit_cards = self.report.get_credit_cards();
+        let compare_with_credit_cards = context
+            .reports
+            .since(&since, &self.report.id)?
+            .get_credit_cards();
+
+        Some(Changes::new(credit_cards, compare_with_credit_cards))
     }
 }
 
 #[juniper::graphql_object(context = Context)]
-impl Changes<'_, InsightField<CreditCard>> {
+impl Changes<&InsightField<CreditCard>> {
     pub fn added(&self) -> &Vec<&InsightField<CreditCard>> {
         &self.added
     }

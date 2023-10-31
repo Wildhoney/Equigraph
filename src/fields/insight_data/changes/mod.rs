@@ -1,63 +1,39 @@
-mod utils;
-
-use self::utils::get_ids;
 use super::traits::Insight;
-use crate::{
-    fields::insight_data::{utils::get_insights_from_report, InsightDataField},
-    objects::input::Since,
-    parser::types::{Report, Reports},
-};
 use itertools::Itertools;
 
 #[derive(Debug, PartialEq)]
-pub struct Changes<'a, T> {
-    pub added: Vec<&'a T>,
-    pub removed: Vec<&'a T>,
+pub struct Changes<T> {
+    pub added: Vec<T>,
+    pub removed: Vec<T>,
 }
 
-impl<T> Changes<'_, T>
+impl<T> Changes<T>
 where
-    T: Insight,
+    T: Insight + Clone,
 {
-    pub fn new<'a>(
-        since: Since,
-        report: &'a Report,
-        reports: &'a Reports,
-        map: &'a dyn Fn(&'a InsightDataField) -> &'a Vec<T>,
-    ) -> Option<Changes<'a, T>> {
-        let current_index = reports.iter().position(|report| report.id == report.id);
+    pub fn new<'a>(insights: Vec<T>, compare_with_insights: Vec<T>) -> Changes<T> {
+        let insight_ids = insights
+            .iter()
+            .map(|item| item.get_account_number())
+            .collect_vec();
 
-        let compare_with_report = match (since, current_index) {
-            (Since::Next, Some(index)) => reports.get(index - 1),
-            (Since::Previous, Some(index)) => reports.get(index + 1),
-            (Since::First, Some(_)) => reports.first(),
-            (Since::Last, Some(_)) => reports.last(),
-            _ => return None,
-        };
+        let compare_with_insight_ids = compare_with_insights
+            .iter()
+            .map(|item| item.get_account_number())
+            .collect_vec();
 
-        // TODO: Refactor to use traits.
-        match compare_with_report {
-            Some(compare_with_report) => {
-                let report_ids = get_ids(&report, map);
-                let compare_with_report_ids = get_ids(&compare_with_report, map);
+        let added = insights
+            .clone()
+            .into_iter()
+            .filter(|insight| !compare_with_insight_ids.contains(&&insight.get_account_number()))
+            .collect_vec();
 
-                let added = get_insights_from_report(&report, map)
-                    .into_iter()
-                    .filter(|item| {
-                        !compare_with_report_ids
-                            .iter()
-                            .contains(&&item.get_account_number())
-                    })
-                    .collect_vec();
+        let removed = insights
+            .clone()
+            .into_iter()
+            .filter(|insight| !insight_ids.contains(&&insight.get_account_number()))
+            .collect_vec();
 
-                let removed = get_insights_from_report(&compare_with_report, map)
-                    .into_iter()
-                    .filter(|item| !report_ids.iter().contains(&&item.get_account_number()))
-                    .collect_vec();
-
-                Some(Changes { added, removed })
-            }
-            _ => None,
-        }
+        Changes { added, removed }
     }
 }

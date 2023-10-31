@@ -4,6 +4,7 @@ use self::insights::Insights;
 use crate::{
     fields::insight_data::{changes::Changes, CurrentAccount, InsightField},
     objects::input::Since,
+    parser::types::{ReportTrait, ReportsTrait},
     queries::reports::report::ReportField,
     schema::Context,
 };
@@ -29,18 +30,23 @@ impl CurrentAccounts<'_> {
         &self,
         since: Since,
         context: &Context,
-    ) -> FieldResult<Option<Changes<InsightField<CurrentAccount>>>> {
-        Ok(Changes::new(
-            since,
-            self.report,
-            &context.reports,
-            &|insight_data| &insight_data.current_account,
+    ) -> Option<Changes<&InsightField<CurrentAccount>>> {
+        let current_accounts = self.report.get_current_accounts();
+
+        let compare_with_current_accounts = context
+            .reports
+            .since(&since, &self.report.id)?
+            .get_current_accounts();
+
+        Some(Changes::new(
+            current_accounts,
+            compare_with_current_accounts,
         ))
     }
 }
 
 #[juniper::graphql_object(context = Context)]
-impl Changes<'_, InsightField<CurrentAccount>> {
+impl Changes<&InsightField<CurrentAccount>> {
     pub fn added(&self) -> &Vec<&InsightField<CurrentAccount>> {
         &self.added
     }

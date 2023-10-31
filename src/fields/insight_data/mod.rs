@@ -88,7 +88,7 @@ pub struct CreditCard;
 #[derive(Debug, PartialEq, Deserialize, Clone)]
 pub struct InsightField<InsightVariant> {
     #[serde(skip_deserializing, skip_serializing)]
-    insight_variant: InsightVariant,
+    variant: InsightVariant,
     #[serde(default = "unique_id")]
     pub id: Uuid,
     #[serde(alias = "accountNumber")]
