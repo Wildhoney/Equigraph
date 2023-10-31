@@ -14,6 +14,7 @@ pub trait ReportsTrait {
     fn get_insights(&self) -> Vec<InsightVariant>;
     fn find_insight_containing_payment_history(&self, id: Uuid) -> Option<InsightVariant>;
     fn since(&self, since: &Since, id: &Uuid) -> Option<&ReportField>;
+    fn find_report_by_score_id(&self, id: &Uuid) -> Option<&ReportField>;
 }
 
 impl ReportsTrait for Reports {
@@ -43,6 +44,17 @@ impl ReportsTrait for Reports {
                 .iter()
                 .any(|payment_history| (payment_history.id == id))
                 .then(|| insight)
+        })
+    }
+
+    fn find_report_by_score_id(&self, id: &Uuid) -> Option<&ReportField> {
+        self.iter().find(|report| {
+            report
+                .non_address_specific_data
+                .scores
+                .score
+                .iter()
+                .any(|score| score.id == *id)
         })
     }
 }

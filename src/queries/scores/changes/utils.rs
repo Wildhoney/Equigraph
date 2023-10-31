@@ -3,7 +3,7 @@ use crate::{
         input::Since,
         output::{Impact, Polarity},
     },
-    parser::types::Reports,
+    parser::types::{Reports, ReportsTrait},
 };
 use uuid::Uuid;
 
@@ -28,24 +28,9 @@ pub fn get_impact(lhs_score: u16, rhs_score: u16) -> Impact {
 }
 
 pub fn find_score_by_id_and_since(since: Since, id: &Uuid, reports: &Reports) -> Option<u16> {
-    let current_index = reports.iter().position(|report| {
-        report
-            .non_address_specific_data
-            .scores
-            .score
-            .iter()
-            .any(|score| score.id == *id)
-    })?;
-
-    let report = match since {
-        Since::Previous => reports.get(current_index + 1),
-        Since::Next => (current_index != 0).then(|| reports.get(current_index - 1))?,
-        Since::First => reports.first(),
-        Since::Last => reports.last(),
-    }?;
-
     Some(
-        report
+        reports
+            .since(&since, &reports.find_report_by_score_id(id)?.id)?
             .non_address_specific_data
             .scores
             .score
