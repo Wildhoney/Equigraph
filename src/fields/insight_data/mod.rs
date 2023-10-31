@@ -2,15 +2,14 @@ pub mod changes;
 pub mod traits;
 pub mod utils;
 
-use crate::{objects::output::CompanyClass, utils::unique_id};
-use itertools::Itertools;
-use serde::Deserialize;
-use uuid::Uuid;
-
 use super::{
     payment_history::PaymentHistoryField, BalanceField, CreditLimitField, DateField,
     FixedPaymentTermsField, LoanTypeField, PaymentFrequencyField,
 };
+use crate::{objects::output::CompanyClass, utils::unique_id};
+use itertools::Itertools;
+use serde::Deserialize;
+use uuid::Uuid;
 
 #[derive(Debug)]
 pub enum InsightVariant<'a> {

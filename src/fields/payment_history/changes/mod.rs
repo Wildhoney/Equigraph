@@ -1,6 +1,7 @@
 mod utils;
 
 use self::utils::{get_delta, get_impact, get_polarity};
+use super::PaymentHistoryTrait;
 use crate::{
     fields::{insight_data::InsightVariant, AmountField},
     objects::{
@@ -28,19 +29,7 @@ impl Changes<'_> {
     ) -> Option<Changes<'a>> {
         let insight = reports.find_insight_containing_payment_history(id)?;
         let payment_histories = insight.get_payment_history();
-
-        let current_index = payment_histories
-            .iter()
-            .position(|payment_history| payment_history.id == id)?;
-
-        let compare_with_payment_history = match since {
-            Since::Previous => payment_histories.get(current_index + 1),
-            Since::Next => {
-                (current_index != 0).then(|| payment_histories.get(current_index - 1))?
-            }
-            Since::First => payment_histories.first(),
-            Since::Last => payment_histories.last(),
-        }?;
+        let compare_with_payment_history = payment_histories.since(&since, &id)?;
 
         let compare_with_amount = compare_with_payment_history
             .account_balance

@@ -27,6 +27,27 @@ pub struct PaymentHistoryField {
     pub statement: Option<StatementField>,
 }
 
+trait PaymentHistoryTrait<'a> {
+    fn since(&self, since: &Since, id: &Uuid) -> Option<&PaymentHistoryField>;
+}
+
+impl PaymentHistoryTrait<'_> for &Vec<PaymentHistoryField> {
+    fn since(&self, since: &Since, id: &Uuid) -> Option<&PaymentHistoryField> {
+        let current_index = self
+            .iter()
+            .position(|payment_history| payment_history.id == *id)?;
+
+        let payment_histories = match since {
+            Since::Previous => self.get(current_index + 1),
+            Since::Next => (current_index != 0).then(|| self.get(current_index - 1))?,
+            Since::First => self.first(),
+            Since::Last => self.last(),
+        }?;
+
+        Some(payment_histories)
+    }
+}
+
 #[derive(Debug, PartialEq, Deserialize, Clone)]
 pub struct StatementField {
     pub cash_advance_count: Option<i32>,
