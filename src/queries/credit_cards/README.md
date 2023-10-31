@@ -17,12 +17,6 @@ query CreditCards {
                 amount
                 formatted
               }
-              cash_advance {
-                count
-                amount {
-                  formatted(zeroes: STRIP)
-                }
-              }
             }
           }
           start_date {
