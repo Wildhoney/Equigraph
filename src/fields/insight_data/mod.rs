@@ -1,6 +1,5 @@
 pub mod changes;
 pub mod traits;
-pub mod utils;
 
 use super::{
     payment_history::PaymentHistoryField, BalanceField, CreditLimitField, DateField,

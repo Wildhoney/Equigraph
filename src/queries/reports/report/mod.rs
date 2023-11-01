@@ -1,8 +1,6 @@
 use crate::{
-    fields::{
-        insight_data::utils::get_insights_from_report, NonAddressSpecificDataField, ProviderField,
-        SoleSearchField,
-    },
+    fields::{NonAddressSpecificDataField, ProviderField, SoleSearchField},
+    parser::types::ReportTrait,
     queries::{
         associates::associates::AssociatesField, credit_cards::credit_cards::CreditCards,
         current_accounts::current_accounts::CurrentAccounts, scores::scores::ScoresField,
@@ -46,7 +44,7 @@ impl ReportField {
     pub fn current_accounts(&self) -> FieldResult<CurrentAccounts> {
         Ok(CurrentAccounts {
             report: &self,
-            items: get_insights_from_report(self, &|insight_data| &insight_data.current_account),
+            items: self.get_current_accounts(),
         })
     }
 
@@ -54,7 +52,7 @@ impl ReportField {
     pub fn secured_loans(&self) -> FieldResult<SecuredLoans> {
         Ok(SecuredLoans {
             report: &self,
-            items: get_insights_from_report(self, &|insight_data| &insight_data.secured_loan),
+            items: self.get_secured_loans(),
         })
     }
 
@@ -62,7 +60,7 @@ impl ReportField {
     pub fn unsecured_loans(&self) -> FieldResult<UnsecuredLoans> {
         Ok(UnsecuredLoans {
             report: &self,
-            items: get_insights_from_report(self, &|insight_data| &insight_data.unsecured_loan),
+            items: self.get_unsecured_loans(),
         })
     }
 
@@ -70,7 +68,7 @@ impl ReportField {
     pub fn credit_cards(&self) -> FieldResult<CreditCards> {
         Ok(CreditCards {
             report: &self,
-            items: get_insights_from_report(self, &|insight_data| &insight_data.credit_card),
+            items: self.get_credit_cards(),
         })
     }
 }

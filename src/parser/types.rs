@@ -1,7 +1,7 @@
 use crate::{
     fields::insight_data::{
-        utils::get_insights_from_report, CreditCard, CurrentAccount, InsightField, InsightVariant,
-        InsightsTrait, SecuredLoan, UnsecuredLoan,
+        CreditCard, CurrentAccount, InsightDataField, InsightField, InsightVariant, InsightsTrait,
+        SecuredLoan, UnsecuredLoan,
     },
     objects::input::Since,
     queries::reports::report::ReportField,
@@ -63,6 +63,10 @@ pub type Report = ReportField;
 
 pub trait ReportTrait {
     fn get_insights(&self) -> Vec<InsightVariant>;
+    fn get_insights_by_variant<'a, T>(
+        &'a self,
+        map: &'a dyn Fn(&'a InsightDataField) -> &'a Vec<T>,
+    ) -> Vec<&'a T>;
     fn get_current_accounts(&self) -> Vec<&InsightField<CurrentAccount>>;
     fn get_credit_cards(&self) -> Vec<&InsightField<CreditCard>>;
     fn get_secured_loans(&self) -> Vec<&InsightField<SecuredLoan>>;
@@ -84,19 +88,33 @@ impl ReportTrait for Report {
             .collect_vec()
     }
 
+    fn get_insights_by_variant<'a, T>(
+        &'a self,
+        map: &'a dyn Fn(&'a InsightDataField) -> &'a Vec<T>,
+    ) -> Vec<&'a T> {
+        self.sole_search
+            .primary
+            .supplied_address_data
+            .iter()
+            .flat_map(|supplied_address_data| {
+                map(&supplied_address_data.address_specific_data.insight_data)
+            })
+            .collect_vec()
+    }
+
     fn get_current_accounts(&self) -> Vec<&InsightField<CurrentAccount>> {
-        get_insights_from_report(&self, &|insight_data| &insight_data.current_account)
+        self.get_insights_by_variant(&|insight_data| &insight_data.current_account)
     }
 
     fn get_credit_cards(&self) -> Vec<&InsightField<CreditCard>> {
-        get_insights_from_report(&self, &|insight_data| &insight_data.credit_card)
+        self.get_insights_by_variant(&|insight_data| &insight_data.credit_card)
     }
 
     fn get_secured_loans(&self) -> Vec<&InsightField<SecuredLoan>> {
-        get_insights_from_report(&self, &|insight_data| &insight_data.secured_loan)
+        self.get_insights_by_variant(&|insight_data| &insight_data.secured_loan)
     }
 
     fn get_unsecured_loans(&self) -> Vec<&InsightField<UnsecuredLoan>> {
-        get_insights_from_report(&self, &|insight_data| &insight_data.unsecured_loan)
+        self.get_insights_by_variant(&|insight_data| &insight_data.unsecured_loan)
     }
 }
