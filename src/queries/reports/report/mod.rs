@@ -1,6 +1,7 @@
 use crate::{
     fields::{
-        insight_data::utils::get_insights_from_report, NonAddressSpecificDataField, SoleSearchField,
+        insight_data::utils::get_insights_from_report, NonAddressSpecificDataField, ProviderField,
+        SoleSearchField,
     },
     queries::{
         associates::associates::AssociatesField, credit_cards::credit_cards::CreditCards,
@@ -19,6 +20,8 @@ use uuid::Uuid;
 pub struct ReportField {
     #[serde(default = "unique_id")]
     pub id: Uuid,
+    #[serde(alias = "providerField")]
+    pub provider: ProviderField,
     #[serde(alias = "nonAddressSpecificData")]
     pub non_address_specific_data: NonAddressSpecificDataField,
     #[serde(alias = "soleSearch")]
@@ -27,6 +30,10 @@ pub struct ReportField {
 
 #[juniper::graphql_object(context = Context)]
 impl ReportField {
+    pub fn provider(&self) -> &ProviderField {
+        &self.provider
+    }
+
     pub fn scores(&self) -> FieldResult<&ScoresField> {
         Ok(&self.non_address_specific_data.scores)
     }

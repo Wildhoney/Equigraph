@@ -105,6 +105,12 @@ pub enum PaymentFrequencyField {
 }
 
 #[derive(Debug, PartialEq, Deserialize, GraphQLEnum, Clone)]
+pub enum ProviderField {
+    #[serde(alias = "EQ")]
+    Equifax,
+}
+
+#[derive(Debug, PartialEq, Deserialize, GraphQLEnum, Clone)]
 pub enum LoanTypeField {
     #[serde(alias = "MORTGAGE")]
     Mortgage,
