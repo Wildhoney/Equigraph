@@ -1,16 +1,11 @@
 use crate::{
-    fields::{NonAddressSpecificDataField, ProviderField, SoleSearchField},
-    parser::types::ReportTrait,
-    queries::{
-        associates::associates::AssociatesField, credit_cards::credit_cards::CreditCards,
-        current_accounts::current_accounts::CurrentAccounts, scores::scores::ScoresField,
-        secured_loans::secured_loans::SecuredLoans,
-        unsecured_loans::unsecured_loans::UnsecuredLoans,
+    fields::{
+        NonAddressSpecificDataField, ProviderField, SoleSearchField, SuppliedAddressDataField,
     },
+    queries::{associates::associates::AssociatesField, scores::scores::ScoresField},
     schema::Context,
     utils::unique_id,
 };
-use juniper::FieldResult;
 use serde::Deserialize;
 use uuid::Uuid;
 
@@ -32,43 +27,15 @@ impl ReportField {
         &self.provider
     }
 
-    pub fn scores(&self) -> FieldResult<&ScoresField> {
-        Ok(&self.non_address_specific_data.scores)
+    pub fn scores(&self) -> &ScoresField {
+        &self.non_address_specific_data.scores
     }
 
-    pub fn associates(&self) -> FieldResult<&AssociatesField> {
-        Ok(&self.non_address_specific_data.associates)
+    pub fn associates(&self) -> &AssociatesField {
+        &self.non_address_specific_data.associates
     }
 
-    #[graphql(name = "current_accounts")]
-    pub fn current_accounts(&self) -> FieldResult<CurrentAccounts> {
-        Ok(CurrentAccounts {
-            report: &self,
-            items: self.get_current_accounts(),
-        })
-    }
-
-    #[graphql(name = "secured_loans")]
-    pub fn secured_loans(&self) -> FieldResult<SecuredLoans> {
-        Ok(SecuredLoans {
-            report: &self,
-            items: self.get_secured_loans(),
-        })
-    }
-
-    #[graphql(name = "unsecured_loans")]
-    pub fn unsecured_loans(&self) -> FieldResult<UnsecuredLoans> {
-        Ok(UnsecuredLoans {
-            report: &self,
-            items: self.get_unsecured_loans(),
-        })
-    }
-
-    #[graphql(name = "credit_cards")]
-    pub fn credit_cards(&self) -> FieldResult<CreditCards> {
-        Ok(CreditCards {
-            report: &self,
-            items: self.get_credit_cards(),
-        })
+    pub fn addresses(&self) -> &Vec<SuppliedAddressDataField> {
+        &self.sole_search.primary.supplied_address_data
     }
 }

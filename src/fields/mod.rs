@@ -43,6 +43,62 @@ pub struct SuppliedAddressDataField {
     pub notice_of_correction_or_dispute_present: bool,
 }
 
+#[juniper::graphql_object(context = Context)]
+impl SuppliedAddressDataField {
+    #[graphql(name = "has_notice_of_correction_or_dispute_present")]
+    pub fn has_notice_of_correction_or_dispute_present(&self) -> bool {
+        self.notice_of_correction_or_dispute_present
+    }
+
+    pub fn address(&self) -> &MatchedAddressField {
+        &self.matched_address
+    }
+
+    // #[graphql(name = "current_accounts")]
+    // pub fn current_accounts(&self) -> Option<CurrentAccounts> {
+    //     match self.report {
+    //         Some(ref report) => Some(CurrentAccounts {
+    //             report,
+    //             items: &self.address_specific_data.insight_data.current_account,
+    //         }),
+    //         None => None,
+    //     }
+    // }
+
+    // #[graphql(name = "unsecured_loans")]
+    // pub fn unsecured_loans(&self) -> Option<UnsecuredLoans> {
+    //     match self.report {
+    //         Some(ref report) => Some(UnsecuredLoans {
+    //             report: &report,
+    //             items: &self.address_specific_data.insight_data.unsecured_loan,
+    //         }),
+    //         None => None,
+    //     }
+    // }
+
+    // #[graphql(name = "secured_loans")]
+    // pub fn secured_loans(&self) -> Option<SecuredLoans> {
+    //     match self.report {
+    //         Some(ref report) => Some(SecuredLoans {
+    //             report: &report,
+    //             items: &self.address_specific_data.insight_data.secured_loan,
+    //         }),
+    //         None => None,
+    //     }
+    // }
+
+    // #[graphql(name = "credit_cards")]
+    // pub fn credit_cards(&self) -> Option<CreditCards> {
+    //     match self.report {
+    //         Some(ref report) => Some(CreditCards {
+    //             report: &report,
+    //             items: &self.address_specific_data.insight_data.credit_card,
+    //         }),
+    //         None => None,
+    //     }
+    // }
+}
+
 #[derive(Debug, PartialEq, Deserialize)]
 pub struct AddressSpecificDataField {
     #[serde(alias = "insightData")]
