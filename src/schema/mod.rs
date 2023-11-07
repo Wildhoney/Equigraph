@@ -1,6 +1,4 @@
-use crate::{
-    objects::input::Select, parser::types::Reports, queries::reports::reports::ReportsField,
-};
+use crate::{objects::input::Select, parser::types::Reports, queries::reports::reports};
 use juniper::{EmptyMutation, EmptySubscription, FieldResult, RootNode};
 
 pub struct QueryRoot;
@@ -20,18 +18,20 @@ impl juniper::Context for Context {}
 
 #[juniper::graphql_object(context = Context)]
 impl QueryRoot {
-    fn reports(context: &Context, select: Option<Select>) -> FieldResult<ReportsField> {
+    fn reports(context: &Context, select: Option<Select>) -> FieldResult<reports::dto::Output> {
         match select {
-            Some(Select::Latest) => {
-                Ok(ReportsField::new(&context.reports.get(0..1).unwrap_or(&[])))
-            }
-            Some(Select::Oldest) => Ok(ReportsField::new(
+            Some(Select::Latest) => Ok(reports::dto::Output::new(
+                &context.reports.get(0..1).unwrap_or(&[]),
+            )),
+            Some(Select::Oldest) => Ok(reports::dto::Output::new(
                 &context
                     .reports
                     .get(context.reports.len() - 1..)
                     .unwrap_or(&[]),
             )),
-            _ => Ok(ReportsField::new(&context.reports.get(..).unwrap_or(&[]))),
+            _ => Ok(reports::dto::Output::new(
+                &context.reports.get(..).unwrap_or(&[]),
+            )),
         }
     }
 }

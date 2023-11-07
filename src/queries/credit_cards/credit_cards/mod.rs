@@ -1,13 +1,12 @@
 use crate::{
     fields::insight_data::{changes::Changes, CreditCard, InsightField},
     objects::input::Since,
-    parser::types::{ReportTrait, ReportsTrait},
-    queries::reports::report::ReportField,
+    parser::types::{Report, ReportTrait, ReportsTrait},
     schema::Context,
 };
 
 pub struct CreditCards<'a> {
-    pub report: &'a ReportField,
+    pub report: &'a Report,
     pub items: Vec<&'a InsightField<CreditCard>>,
 }
 

@@ -4,13 +4,12 @@ use self::insights::Insights;
 use crate::{
     fields::insight_data::{changes::Changes, InsightField, SecuredLoan},
     objects::input::Since,
-    parser::types::{ReportTrait, ReportsTrait},
-    queries::reports::report::ReportField,
+    parser::types::{Report, ReportTrait, ReportsTrait},
     schema::Context,
 };
 
 pub struct SecuredLoans<'a> {
-    pub report: &'a ReportField,
+    pub report: &'a Report,
     pub items: Vec<&'a InsightField<SecuredLoan>>,
 }
 

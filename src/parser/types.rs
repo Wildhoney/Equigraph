@@ -4,17 +4,19 @@ use crate::{
         SecuredLoan, UnsecuredLoan,
     },
     objects::input::Since,
-    queries::reports::report::ReportField,
+    queries::reports::report,
 };
 use itertools::Itertools;
 use uuid::Uuid;
+
+pub type Report = report::dto::Input;
 pub type Reports = Vec<Report>;
 
 pub trait ReportsTrait {
     fn get_insights(&self) -> Vec<InsightVariant>;
     fn find_insight_containing_payment_history(&self, id: Uuid) -> Option<InsightVariant>;
-    fn since(&self, since: &Since, id: &Uuid) -> Option<&ReportField>;
-    fn find_report_by_score_id(&self, id: &Uuid) -> Option<&ReportField>;
+    fn since(&self, since: &Since, id: &Uuid) -> Option<&Report>;
+    fn find_report_by_score_id(&self, id: &Uuid) -> Option<&Report>;
 }
 
 impl ReportsTrait for Reports {
@@ -24,7 +26,7 @@ impl ReportsTrait for Reports {
             .collect_vec()
     }
 
-    fn since(&self, since: &Since, id: &Uuid) -> Option<&ReportField> {
+    fn since(&self, since: &Since, id: &Uuid) -> Option<&Report> {
         let current_index = self.iter().position(|report| report.id == *id)?;
 
         let report = match since {
@@ -47,7 +49,7 @@ impl ReportsTrait for Reports {
         })
     }
 
-    fn find_report_by_score_id(&self, id: &Uuid) -> Option<&ReportField> {
+    fn find_report_by_score_id(&self, id: &Uuid) -> Option<&Report> {
         self.iter().find(|report| {
             report
                 .non_address_specific_data
@@ -58,8 +60,6 @@ impl ReportsTrait for Reports {
         })
     }
 }
-
-pub type Report = ReportField;
 
 pub trait ReportTrait {
     fn get_insights(&self) -> Vec<InsightVariant>;
